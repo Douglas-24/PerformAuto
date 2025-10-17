@@ -33,4 +33,11 @@ export class UserService {
         const allUsers = await this.prisma.user.findMany()
         return apiResponse(200, "Lista de usuarios",allUsers)
     }
+
+    async deleteUser(id:number):Promise<successfulResponse>{
+        const user = await this.prisma.user.findUnique({where: {id}})
+        if(!user) throw new NotFoundException('Usuario no encontrado')
+        await this.prisma.user.delete({where: {id:id}})
+        return apiResponse(200,'Usuario eliminado correctamente')
+    }
 }

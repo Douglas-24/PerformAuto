@@ -12,17 +12,23 @@ export class UserController {
     }
 
     @Patch(':id')
-    async updateUser(@Param('id') id:number, @Body() user: User){
+    async updateUser(@Param('id') id:number, @Body() user: User):Promise<successfulResponse>{
         return this.userService.updateUser(+id, user)
     }
 
     @Get()
-    async getAllUser(){
+    async getAllUser():Promise<successfulResponse>{
         return this.userService.getAllUser()
     }
 
     @Get(':id')
-    async getUserById(@Param('id') id:string){
+    async getUserById(@Param('id') id:string):Promise<successfulResponse>{
         return this.userService.getUser(+id)
     }
+
+    @Delete(':id')
+    async deleteUSer(@Param('id') id:string):Promise<successfulResponse>{
+        return this.userService.deleteUser(+id)
+    }
+    
 }
