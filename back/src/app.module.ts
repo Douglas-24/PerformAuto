@@ -4,8 +4,9 @@ import { UserModule } from './modules/user/user.module';
 import { APP_FILTER } from '@nestjs/core';
 import { HttpErrorFilter } from './core/filters/http-error.filter';
 import { PrismaErrorFilter } from './core/filters/prisma-error.filter';
+import { AuthModule } from './modules/auth/auth.module';
 @Module({
-  imports: [PrismaModule, UserModule],
+  imports: [PrismaModule, UserModule, AuthModule],
   providers: [
     {
       provide: APP_FILTER,
