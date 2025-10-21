@@ -2,16 +2,40 @@
     <header>
         <app-header></app-header>
     </header>
-    <main class="flex-grow">
-        <section class="grid grid-cols-1 md:grid-cols-2 gap-6 p-4">
-            <div class="bg-gray p-4 shadow rounded">Card 1</div>
-            <div class="bg-white p-4 shadow rounded">Card 2</div>
+    <main class="">
+        <div class="bg-[url('/assets/imgs/fotoEslogan.jpg')] bg-cover bg-center  h-[50rem] flex justify-center mb-28">
+            <div class="text-amber-50 text-5xl flex items-center">
+                <p>Reparamos con precisión, trabajamos con pasión</p>
+            </div>
+        </div>
+        <div class="grid grid-cols-2 m-28 border-2 rounded-4xl">
+            <div>
+                <img src="assets/imgs/fotoInicio.jpg" alt="" class="rounded-3xl">
+            </div>
+            <div class="flex flex-col items-center pt-18">
+                <h1 class="text-5xl mb-8">¿Quienes somos?</h1>
+                <div class=" m-10">
+                    <p class="text-2xl">
+                    Mas que un taller mecanico convencional, especializado en el mantenimiento y reparación de
+                    vehículos, comprometido con la seguridad, la eficiencia y la atención personalizada. Ofrecemos
+                    soluciones mecánicas integrales para todo tipo de coches, desde revisiones periódicas hasta
+                    intervenciones complejas, siempre con el respaldo de profesionales cualificados y tecnología
+                    actualizada.
 
-            <div class="bg-white p-4 shadow rounded">Card 3</div>
-            <div class="bg-white p-4 shadow rounded">Card 4</div>
-        </section>
+                    Nuestro objetivo es que tu vehículo funcione como debe, sin sorpresas. Trabajamos con repuestos de
+                    calidad, diagnóstico electrónico preciso y una atención cercana que garantiza transparencia en cada
+                    paso, en nuestro taller encontrarás el compromiso y la experiencia que tu coche necesita
+                </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="m-28 flex items-center justify-center">
+            <h1 class="text-7xl font-medium">Servicios</h1>
+        </div>
     </main>
-    <footer class="justify-center">
+
+    <footer>
         <app-footer></app-footer>
     </footer>
 </div>
