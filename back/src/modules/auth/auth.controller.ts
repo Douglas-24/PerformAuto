@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { apiResponse } from 'src/core/utils/ApiResponse';
 import type { User } from 'src/core/interfaces/user.interfaces';
@@ -13,7 +13,7 @@ interface credentials {
 @Controller('auth')
 export class AuthController {
     constructor(private authService:AuthService){}
-
+    
     @Post('login')
     async login(@Body() credentials:credentials):Promise<successfulResponse>{
         const token = await this.authService.login(credentials.email, credentials.password)
