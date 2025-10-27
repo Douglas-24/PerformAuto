@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post,Request, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { apiResponse } from 'src/core/utils/ApiResponse';
 import type { User } from 'src/core/interfaces/user.interfaces';
@@ -28,4 +28,10 @@ export class AuthController {
         const token = await this.authService.register(userRegister)
         return apiResponse(200, 'Registro completado correctamente', token)
     }
+
+    @Get('profile')
+    async getProfile(@Request() req: {user: User}){
+        return req.user
+    }
+
 }
