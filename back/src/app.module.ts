@@ -5,8 +5,10 @@ import { APP_FILTER } from '@nestjs/core';
 import { HttpErrorFilter } from './core/filters/http-error.filter';
 import { PrismaErrorFilter } from './core/filters/prisma-error.filter';
 import { AuthModule } from './modules/auth/auth.module';
+import { CoreModule } from './core/core.module';
+import { FeaturesModule } from './modules/features.module';
 @Module({
-  imports: [PrismaModule, UserModule, AuthModule],
+  imports: [PrismaModule, CoreModule, FeaturesModule],
   providers: [
     {
       provide: APP_FILTER,
@@ -15,7 +17,7 @@ import { AuthModule } from './modules/auth/auth.module';
     {
       provide: APP_FILTER,
       useClass: HttpErrorFilter
-    }
+    },
   ]
 })
 export class AppModule {}
