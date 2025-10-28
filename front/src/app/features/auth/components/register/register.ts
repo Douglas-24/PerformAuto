@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-register',
@@ -7,5 +7,9 @@ import { Component } from '@angular/core';
   styleUrl: './register.css'
 })
 export class Register {
+  @Output() goLogin = new EventEmitter<boolean>()
 
+  goFormLogin(){
+    this.goLogin.emit(false)
+  }
 }
