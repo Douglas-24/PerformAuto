@@ -1,5 +1,5 @@
 import { Component, inject, Output, EventEmitter } from '@angular/core';
-import {FormGroup, FormControl, ReactiveFormsModule} from '@angular/forms';
+import {FormGroup, FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
 import { AuthService } from '../../service/auth.service';
 import { DinamicForm } from "../../../../shared/dinamic-form/dinamic-form";
 import { ConfigFieldsForm } from '../../../../core/interfaces/configFiledsForm';
@@ -21,7 +21,7 @@ export class Login {
   private authService = inject(AuthService)
 
   loginForm = new FormGroup({
-    email:new FormControl(''),
+    email:new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('')
   })
 

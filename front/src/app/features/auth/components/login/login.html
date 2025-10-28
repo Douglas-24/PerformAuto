@@ -5,7 +5,7 @@
 <div class="flex items-center justify-between mt-4">
     <span class="w-1/5 border-b dark:border-gray-600 lg:w-1/4"></span>
 
-    <p class="text-xs text-center text-gray-500 uppercase dark:text-gray-400 ">Inicia sesion</p>
+    <p class="text-lg text-center text-gray-500 uppercase dark:text-gray-400 ">Inicia sesion</p>
 
     <span class="w-1/5 border-b dark:border-gray-400 lg:w-1/4"></span>
 </div>
@@ -13,8 +13,10 @@
 <app-dinamic-form [formGroup]="loginForm" [configfields]="configField"></app-dinamic-form>
 
 <div class="mt-6">
-    <button (click)="login()"
-        class="flex items-center justify-between w-full px-6 py-3 text-lg tracking-wide text-white capitalize transition-colors duration-300 transform bg-gray-800 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-50">
+    <button [disabled]="loginForm.invalid" (click)="login()" class="{{ loginForm.invalid
+    ? 'flex items-center justify-between w-full px-6 py-3 text-lg tracking-wide text-white capitalize transition-colors duration-300 transform bg-gray-400 cursor-not-allowed rounded-lg focus:outline-none focus:ring focus:ring-red-300 focus:ring-opacity-50'
+    : 'flex items-center justify-between w-full px-6 py-3 text-lg tracking-wide text-white capitalize transition-colors duration-300 transform bg-gray-800 hover:bg-gray-700 rounded-lg focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-50'
+  }}">
         <span>Iniciar sesion</span>
 
         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 rtl:-scale-x-100" viewBox="0 0 20 20"
@@ -30,7 +32,7 @@
 <div class="flex items-center justify-between mt-4">
     <span class="w-1/5 border-b dark:border-gray-600 md:w-1/4"></span>
 
-    <p (click)="goToFormRegister()" class="text-xs text-gray-500 uppercase dark:text-gray-400 hover:underline">Crea una
+    <p (click)="goToFormRegister()" class="text-lg text-gray-500 uppercase dark:text-gray-400 hover:underline">Crea una
         cuenta</p>
 
     <span class="w-1/5 border-b dark:border-gray-600 md:w-1/4"></span>
