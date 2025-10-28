@@ -11,8 +11,10 @@
         </div>
         }
         @if (showFormRegister) {
-        <div class="flex items-center w-full max-w-3xl p-8 mx-auto lg:px-12 lg:w-3/5">
-            <app-register (goLogin)="showForm($event)"></app-register>
+        <div class="flex items-center w-full max-w-5xl p-8 mx-auto lg:px-12 lg:w-3/5">
+            <div class="w-full">
+                <app-register (goLogin)="showForm($event)"></app-register>
+            </div>
         </div>
         }
     </div>
