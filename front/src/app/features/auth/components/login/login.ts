@@ -1,8 +1,9 @@
 import { Component, inject, Output, EventEmitter } from '@angular/core';
 import {FormGroup, FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
-import { AuthService } from '../../service/auth.service';
 import { DinamicForm } from "../../../../shared/dinamic-form/dinamic-form";
 import { ConfigFieldsForm } from '../../../../core/interfaces/configFiledsForm';
+import { AuthService } from '../../../../core/service/auth.service';
+import { Router } from '@angular/router';
 
 interface credentials {
     email: string,
@@ -19,10 +20,11 @@ export class Login {
   @Output() goRegister = new EventEmitter<boolean>()
 
   private authService = inject(AuthService)
+  private route = inject(Router)
 
   loginForm = new FormGroup({
     email:new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('')
+    password: new FormControl('', [Validators.required,Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/)])
   })
 
    configField: ConfigFieldsForm[] = [
@@ -35,7 +37,18 @@ export class Login {
       email: this.loginForm.value.email ?? '',
       password: this.loginForm.value.password ?? ''
     }
-    this.authService.login(credentials)
+    this.authService.login(credentials).subscribe({
+      next: (resp) => {
+        if(resp.data.access_token){
+          localStorage.setItem('token', resp.data.access_token)
+          this.route.navigate(['/profile'])
+        }
+      },
+      error: (error)=>{
+        console.log(error);
+        
+      }
+    })
     
   }
 

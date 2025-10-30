@@ -28,6 +28,7 @@ export class DinamicForm {
     if (control.errors['maxlength']) return `Máximo ${control.errors['maxlength'].requiredLength} caracteres`;
     if (control.errors['min']) return `Valor mínimo: ${control.errors['min'].min}`;
     if (control.errors['max']) return `Valor máximo: ${control.errors['max'].max}`;
+    if (control.errors['pattern']) return `La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un símbolo.`
 
     return 'Campo inválido';
   }
