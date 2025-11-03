@@ -4,6 +4,7 @@ import { DinamicForm } from "../../../../shared/dinamic-form/dinamic-form";
 import { ConfigFieldsForm } from '../../../../core/interfaces/configFiledsForm';
 import { AuthService } from '../../../../core/service/auth.service';
 import { Router } from '@angular/router';
+import { ToastServices } from '../../../../core/service/toast.service';
 
 interface credentials {
     email: string,
@@ -21,6 +22,7 @@ export class Login {
 
   private authService = inject(AuthService)
   private route = inject(Router)
+  private toast = inject(ToastServices)
 
   loginForm = new FormGroup({
     email:new FormControl('', [Validators.required, Validators.email]),
@@ -46,10 +48,10 @@ export class Login {
       },
       error: (error)=>{
         console.log(error);
+        this.toast.show('Error de inicio de sesion', 'Email o contrasena incorrectas', 'error', 4000)
         
       }
     })
-    
   }
 
   goToFormRegister(){
