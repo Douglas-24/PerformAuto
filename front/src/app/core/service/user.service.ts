@@ -23,4 +23,8 @@ export class UserService {
     return this.http.put<apiReponse>(this.url + user.id, user )
   }
 
+  delateUser(user:User):Observable<apiReponse>{
+    return this.http.delete<apiReponse>(this.url + user.id)
+  }
+
 }

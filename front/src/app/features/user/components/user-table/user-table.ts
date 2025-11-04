@@ -7,9 +7,10 @@ import { DinamicModal } from '../../../../shared/dinamic-modal/dinamic-modal';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ConfigFieldsForm } from '../../../../core/interfaces/configFiledsForm';
 import { environments } from '../../../../core/environments/environments';
+import { DinamicTable } from '../../../../shared/dinamic-table/dinamic-table';
 @Component({
   selector: 'app-user-table',
-  imports: [],
+  imports: [DinamicTable],
   templateUrl: './user-table.html',
   styleUrl: './user-table.css'
 })
@@ -26,7 +27,7 @@ export class UserTable {
     phone_number: new FormControl('', [Validators.required, Validators.pattern(/^\d{9}$/)]),
     address: new FormControl('', [Validators.required]),
     postal_code: new FormControl('', [Validators.required, Validators.pattern(/^\d{5}$/)]),
-    role: new FormControl('')
+    rol: new FormControl('')
   });
 
   configField: ConfigFieldsForm[] = [
@@ -37,19 +38,18 @@ export class UserTable {
     { key: 'phone_number', label: 'Numero de telefono', type: 'text' },
     { key: 'address', label: 'Direccion', type: 'text' },
     { key: 'postal_code', label: 'Codigo postal', type: 'text' },
-    { key: 'role', label: 'Rol', type: 'select', options: environments.roles },
+    { key: 'rol', label: 'Rol', type: 'select', options: environments.roles },
   ]
 
   allUsers: User[] = []
   ngOnInit(): void {
     this.getAllUsers()
   }
+
   getAllUsers() {
     this.userService.getAllUser().subscribe({
       next: (resp) => {
         this.allUsers = resp.data
-        console.log(resp.data);
-        
       },
       error: (error) => {
         this.toast.show('Error al obtener todos los usuarios', 'No se han podido obtener los usuarios', 'error')
@@ -59,7 +59,7 @@ export class UserTable {
     })
   }
 
-  mappingUserForm(userUpdate?:User): User {
+  mappingUserForm(userUpdate?: User): User {
     const formValue = this.userForm.value;
     const user: User = {
       id: Number(userUpdate?.id),
@@ -70,55 +70,69 @@ export class UserTable {
       phone_number: Number(formValue.phone_number),
       address: formValue.address || '',
       postal_code: Number(formValue.postal_code),
-      rol: formValue.role as Role || Role.CLIENT
+      rol: formValue.rol as Role || Role.CLIENT
     };
     return user
   }
 
-  async openModal(user?:User) {
+  async openModal(user?: User, deleteAccion?:boolean) {
+    const title = !user ? 'Crear nuevo usuario' : user.name + ' ' + user.lastname
+    const typeModal = !user ? 'Crear' : 'Actualizar'
+    const messageCreateUpdate = user ? 'Actualizar al usuario ' +user.name + ' ' + user.lastname : 'Crear nuevo usuario'
     const modalRef = this.modal.open(DinamicModal, {
       data: {
-        title: !user ? 'Crear nuevo usuario' : user.name + ' ' + user.lastname,
-        formGroup: this.userForm,
-        configFields: this.configField,
-        typeModal: !user ? 'Crear' : 'Actualizar',
-        updateDataForm: user ? user : null
+        title: !deleteAccion ? title : 'Eliminar usuario ',
+        message: deleteAccion && user ? 'Estas seguro de que quieres eliminar al usuario ' + user.name + ' ' + user.lastname: messageCreateUpdate,
+        formGroup: !deleteAccion ? this.userForm : null,
+        configFields:!deleteAccion ? this.configField : null,
+        typeModal: !deleteAccion ? typeModal : 'Confirmar',
+        updateDataForm: user  ? user : null
       }
 
     })
     const confirmed = await modalRef.closed.toPromise();
     if (confirmed) {
-      if(user){
-        this.createOrUpdateUser(user)
-      }else this.createOrUpdateUser()
+      if(deleteAccion && user){
+        this.deleteUser(user)
+      }else{
+        user ? this.createOrUpdateUser(user) : this.createOrUpdateUser()
+      }
+
     } else {
       this.userForm.reset({
-        role: ''
+        rol: ''
       });
     }
   }
 
-  createOrUpdateUser(userUpdate?:User) {
+  createOrUpdateUser(userUpdate?: User) {
     const user = this.mappingUserForm(userUpdate)
-    if(userUpdate){
-    this.userService.updateUser(user).subscribe({
-      next: (resp) =>{
-        console.log(resp);
-        
-      },
-      error:(error)=>{
-        console.log(error);
-        
-      }
-    })
-   }else{
-     this.userService.postUser(user).subscribe({
-      next: (resp) => {
-        this.getAllUsers()
-        this.toast.show('Accion Exitosa', resp.data.message, 'success')
-      }
-    })
-   }
+    if (userUpdate) {
+      this.userService.updateUser(user).subscribe({
+        next: (resp) => {
+          this.getAllUsers()
+          this.toast.show('Accion Exitosa', resp.message, 'success')
+        },
+        error: (error) => {
+          console.log(error);
+        }
+      })
+    } else {
+      this.userService.postUser(user).subscribe({
+        next: (resp) => {
+          this.getAllUsers()
+          this.toast.show('Accion Exitosa', resp.message, 'success')
+        }
+      })
+    }
   }
 
+  deleteUser(user: User) {
+    this.userService.delateUser(user).subscribe({
+      next: (resp) => {
+        this.getAllUsers()
+        this.toast.show('Accion Exitosa', resp.message, 'success')
+      }
+    })
+  }
 }

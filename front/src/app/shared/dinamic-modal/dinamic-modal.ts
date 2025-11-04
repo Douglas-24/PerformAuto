@@ -6,7 +6,7 @@ import { ConfigFieldsForm } from '../../core/interfaces/configFiledsForm';
 interface dataModal {
   title:string,
   message?: string,
-  typeModal: 'Crear' | 'Eliminar'| 'Confirmar' | 'Actualizar'
+  typeModal: 'Crear' | 'Confirmar' | 'Actualizar'
   formGroup?:FormGroup,
   configFields?: ConfigFieldsForm[],
   updateDataForm?: any,
