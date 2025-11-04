@@ -10,12 +10,15 @@ import { ConfigFieldsForm } from '../../core/interfaces/configFiledsForm';
 export class DinamicForm {
   @Input() formGroup!: FormGroup
   @Input() configfields: ConfigFieldsForm[] = []
+  @Input() dataForm !: any
 
   fields: ConfigFieldsForm[] = [];
 
   ngOnChanges() {
     this.fields = this.configfields.filter(field => this.formGroup.contains(field.key));
-    
+    if(this.dataForm){
+      this.formGroup.patchValue(this.dataForm)
+    }
   }
 
   getErrorMessage(controlName: string): string | null {

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ToastServices } from '../../core/service/toast.service';
 
 @Component({
@@ -13,7 +13,7 @@ export class DinamicToast {
   visible = false;
   type: 'success' | 'error' | 'info' | 'warning' = 'info';
 
-  constructor(private toastService: ToastServices) { }
+  private toastService = inject(ToastServices)
 
   ngOnInit() {
     this.toastService.toast$.subscribe(toast => {
