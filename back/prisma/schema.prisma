@@ -32,4 +32,19 @@ model User {
   address String
   postal_code Int
   rol Role @default(CLIENT)
+  cars Car[]
+}
+
+model Car {
+  id Int @id @default(autoincrement())
+  photo String
+  brand String
+  model String
+  enrolment String @unique// Matricula
+  chassis_number String @unique // Numero de bastidor
+  last_revision String
+  current_mileage Int
+  engine String
+  owner User @relation(fields: [ownerId], references: [id])
+  ownerId Int
 }
