@@ -11,16 +11,20 @@ export class PrismaErrorFilter<T> implements ExceptionFilter {
 
     response.status(status).json({
       statusCode: status,
-      message: this.instanceErrorPrisma(exception.code),
+      message: this.instanceErrorPrisma(exception),
       code: exception.code,
       timestamp: new Date().toISOString(),
     });
   }
 
-  instanceErrorPrisma(code:string):string{
+  instanceErrorPrisma(exception: Prisma.PrismaClientKnownRequestError): string {
     let messageError
 
-    if(code = 'P2002')messageError='Campos duplicados'
+    if (exception.code = 'P2002') {
+      const fields = exception.meta?.target;
+      console.log(`Error: campo(s) duplicado(s): ` + fields);
+      messageError = 'Campos duplicados'
+    }
     // else if (code) messageError = ''
     return messageError
   }

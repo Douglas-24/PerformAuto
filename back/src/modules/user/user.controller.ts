@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Put } from '@nestjs/common';
 import { UserService } from './user.service';
 import { successfulResponse } from 'src/core/interfaces/successfulResponse.interface';
-import type { User } from 'src/core/interfaces/user.interfaces';
+import { CreateUserDto } from './dto/create-user-dto';
+import { UpdateUserDto } from './dto/update-user-dto';
 import { apiResponse } from 'src/core/utils/ApiResponse';
 
 @Controller('user')
@@ -9,13 +10,13 @@ export class UserController {
     constructor(private userService:UserService){}
 
     @Post()
-    async postUser(@Body() user:User ):Promise<successfulResponse>{
+    async postUser(@Body() user:CreateUserDto ):Promise<successfulResponse>{
         const userCreate = await this.userService.createUser(user)    
         return apiResponse(201, "Usuario creado correctamente", userCreate)
     }
 
-    @Patch(':id')
-    async updateUser(@Param('id') id:number, @Body() user: User):Promise<successfulResponse>{
+    @Put(':id')
+    async updateUser(@Param('id') id:number, @Body() user: UpdateUserDto):Promise<successfulResponse>{
         const updateUser = await this.userService.updateUser(+id, user)
         return apiResponse(200, "Usuario actualizado", updateUser)
     }
@@ -23,9 +24,7 @@ export class UserController {
 
     @Get()
     async getAllUser():Promise<successfulResponse>{
-        const allUsers = await this.userService.getAllUser()
-        console.log('entra');
-        
+        const allUsers = await this.userService.getAllUser()        
         return apiResponse(200, "Lista de usuarios",allUsers)
     }
 
