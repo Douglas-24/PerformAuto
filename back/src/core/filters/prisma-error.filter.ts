@@ -22,10 +22,8 @@ export class PrismaErrorFilter<T> implements ExceptionFilter {
 
     if (exception.code = 'P2002') {
       const fields = exception.meta?.target;
-      console.log(`Error: campo(s) duplicado(s): ` + fields);
-      messageError = 'Campos duplicados'
+      messageError = `Error: campo(s) duplicado(s): ` + fields
     }
-    // else if (code) messageError = ''
     return messageError
   }
 }
