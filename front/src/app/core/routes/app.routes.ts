@@ -1,19 +1,22 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from '../../features/main/pages/home-component/home-component';
 import { authGuardGuard } from '../guards/auth-guard-guard';
+import { MainLayout } from '../../features/main/pages/main-layout/main-layout';
+import { controlPanelRoutes } from './controlPanel.routes';
 export const routes: Routes = [
     {
         path: '',
         component: HomeComponent
     },
     {
-        path:'auth',
+        path: 'auth',
         loadComponent: () => import('../../features/auth/page/auth-page/auth-page').then(m => m.AuthPage)
 
     },
     {
-        path:'profile',
-        loadComponent: () => import('../../features/profile/pages/profile-pages/profile-pages').then(m => m.ProfilePage),
-        canActivate: [authGuardGuard]
+        path: '',
+        component: MainLayout,
+        canActivate: [authGuardGuard],
+        children: controlPanelRoutes
     }
 ];

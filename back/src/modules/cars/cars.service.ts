@@ -3,12 +3,17 @@ import { CreateCarDto } from './dto/create-car.dto';
 import { UpdateCarDto } from './dto/update-car.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Car } from '@prisma/client';
+import { UserService } from '../user/user.service';
 @Injectable()
 export class CarsService {
-
-  constructor(private readonly prisma: PrismaService) { }
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly userService:UserService
+  ) { }
 
   async create(createCarDto: CreateCarDto): Promise<Car> {
+    const owner = await this.userService.getUser(createCarDto.ownerId)
+    if(!owner) throw new NotFoundException('El dueño del coche no existe en nuestra base de datos')
     const newCar = await this.prisma.car.create({data: createCarDto})
     return newCar
   }
