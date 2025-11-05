@@ -1,12 +1,17 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from "@angular/router";
-
+import { AuthService } from '../../core/service/auth.service';
 @Component({
   selector: 'app-header',
   imports: [RouterLink],
   templateUrl: './header.html',
   styleUrl: './header.css'
 })
-export class Header {
-
+export class Header implements OnInit{
+  private authService = inject(AuthService)
+  logged:boolean = false
+  ngOnInit(): void {
+    this.logged = this.authService.isLogged() 
+  }
+  
 }
