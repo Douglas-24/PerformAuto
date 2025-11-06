@@ -5,7 +5,7 @@ import { inject } from '@angular/core';
 export const authGuardGuard: CanActivateFn = () => {
   const authService = inject(AuthService)
   const router = inject(Router)
-
+  
   if(!authService.isLogged()){
     router.navigate(['/auth'])
     return false

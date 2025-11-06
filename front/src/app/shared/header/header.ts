@@ -11,7 +11,20 @@ export class Header implements OnInit{
   private authService = inject(AuthService)
   logged:boolean = false
   ngOnInit(): void {
-    this.logged = this.authService.isLogged() 
+    this.logged =localStorage.getItem('token') ? true : false 
+    this.getProfile()
+    
+  }
+
+  getProfile(){
+    this.authService.getProfile().subscribe({
+      next:(resp) =>{
+        if(resp.user) this.logged = true
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    })
   }
   
 }

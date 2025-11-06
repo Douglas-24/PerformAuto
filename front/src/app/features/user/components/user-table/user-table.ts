@@ -52,9 +52,7 @@ export class UserTable {
         this.allUsers = resp.data
       },
       error: (error) => {
-        this.toast.show('Error al obtener todos los usuarios', 'No se han podido obtener los usuarios', 'error')
-        console.log(error);
-
+        // this.toast.show('Error al obtener todos los usuarios', 'No se han podido obtener los usuarios', 'error')
       }
     })
   }

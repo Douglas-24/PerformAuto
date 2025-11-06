@@ -11,7 +11,11 @@ export const routes: Routes = [
     {
         path: 'auth',
         loadComponent: () => import('../../features/auth/page/auth-page/auth-page').then(m => m.AuthPage)
-
+        
+    },
+    {
+        path:'unauthorized',
+        loadComponent: () => import('../../shared/unauthorized-page/unauthorized-page').then(m => m.UnauthorizedPage)
     },
     {
         path: '',

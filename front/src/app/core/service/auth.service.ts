@@ -25,6 +25,11 @@ export class AuthService {
     return this.http.post<apiReponse>(this.url+'register', dataUser)
   }
 
+  getProfile():Observable<{user: User}>{
+    return this.http.get<{user: User}>(this.url+'profile')
+  }
+
+
   isLogged():boolean{
     return localStorage.getItem('token') ? true : false
   }

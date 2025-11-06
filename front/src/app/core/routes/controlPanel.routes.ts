@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuardGuard } from '../guards/auth-guard-guard';
+import { roleGuard } from '../guards/role-guard.guard';
+import { Role } from '../interfaces/user.interfaces';
 export const controlPanelRoutes: Routes = [
     {
         path: '',
@@ -19,12 +21,16 @@ export const controlPanelRoutes: Routes = [
             {
                 path: 'users',
                 loadComponent: () =>
-                    import('../../features/user/pages/user-pages/user-pages').then(m => m.UserPages)
+                    import('../../features/user/pages/user-pages/user-pages').then(m => m.UserPages),
+                canActivate: [roleGuard],
+                data: { roles: [Role.ADMIN] }
             },
             {
                 path: 'cars',
                 loadComponent: () =>
-                    import('../../features/cars/page/page-cars/page-cars').then(m => m.PageCars)
+                    import('../../features/cars/page/page-cars/page-cars').then(m => m.PageCars),
+                canActivate: [roleGuard],
+                data: { roles: [Role.ADMIN] }
             }
         ]
     }

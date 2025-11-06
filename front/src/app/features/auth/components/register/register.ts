@@ -1,5 +1,5 @@
 import { Component, Output, EventEmitter } from '@angular/core';
-import { ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
+import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { ConfigFieldsForm } from '../../../../core/interfaces/configFiledsForm';
 import { DinamicForm } from "../../../../shared/dinamic-form/dinamic-form";
 @Component({
@@ -12,15 +12,15 @@ export class Register {
   @Output() goLogin = new EventEmitter<boolean>()
 
   registerForm = new FormGroup({
-    name: new FormControl(''),
-    lastname: new FormControl(''),
-    dni: new FormControl(''),
-    email: new FormControl(''),
-    password: new FormControl(''),
-    confirmPassword: new FormControl(''),
-    phone_number: new FormControl(''),
-    address: new FormControl(''),
-    postal_code: new FormControl(''),
+    name: new FormControl('', [Validators.required,Validators.minLength(3), Validators.pattern(/^[a-zA-ZÀ-ÿ\s]+$/)]),
+    lastname: new FormControl('', [Validators.required,Validators.minLength(2), Validators.pattern(/^[a-zA-ZÀ-ÿ\s]+$/)]),
+    dni: new FormControl('', [Validators.required, Validators.pattern(/^\d{8}[A-Z]$/)]),
+    email: new FormControl('', [Validators.required]),
+    password: new FormControl('', [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).+$/)]),
+    confirmPassword: new FormControl('', [Validators.required,  Validators.minLength(8), Validators.pattern(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).+$/)]),
+    phone_number: new FormControl('', [Validators.required, Validators.pattern(/^\d{9}$/)]),
+    address: new FormControl('',[Validators.required, Validators.minLength(5)]),
+    postal_code: new FormControl('', [Validators.required, Validators.pattern(/^\d{5}$/)]),
   })
 
   configField: ConfigFieldsForm[] = [
