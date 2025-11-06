@@ -4,14 +4,16 @@ import { successfulResponse } from 'src/core/interfaces/successfulResponse.inter
 import { CreateUserDto } from './dto/create-user-dto';
 import { UpdateUserDto } from './dto/update-user-dto';
 import { apiResponse } from 'src/core/utils/ApiResponse';
-
+import { passwordGenerate } from 'src/core/utils/generator';
 @Controller('user')
 export class UserController {
     constructor(private userService:UserService){}
 
     @Post()
-    async postUser(@Body() user:CreateUserDto ):Promise<successfulResponse>{
-        const userCreate = await this.userService.createUser(user)    
+    async postUser(@Body() user: Omit<CreateUserDto, 'password'> ):Promise<successfulResponse>{
+        const passGenerate = passwordGenerate()
+        const userUpdate:CreateUserDto = {...user, password: passGenerate}
+        const userCreate = await this.userService.createUser(userUpdate)    
         return apiResponse(201, "Usuario creado correctamente", userCreate)
     }
 
