@@ -1,5 +1,4 @@
-export interface User {
-  id: number;
+interface BaseUser {
   name: string;
   lastname: string;
   dni: string;
@@ -8,6 +7,14 @@ export interface User {
   address: string;
   postal_code: number;
   rol: Role | 'CLIENT';
+}
+
+export interface User extends BaseUser {
+  id?: number;
+}
+
+export interface UserRegister extends BaseUser {
+  password: string;
 }
 
 export enum Role {

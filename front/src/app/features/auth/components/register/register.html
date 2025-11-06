@@ -19,9 +19,10 @@
 
 
 <div class="flex mt-6">
-    <button
-        (click)="registerUser()"
-        class="flex items-center justify-between w-full px-6 py-3 text-xl tracking-wide text-white capitalize transition-colors duration-300 transform bg-gray-800 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-50">
+    <button [disabled]="registerForm.invalid" (click)="registerUser()" class="{{ registerForm.invalid
+    ? 'flex items-center justify-between w-full px-6 py-3 text-lg tracking-wide text-white capitalize transition-colors duration-300 transform bg-gray-400 cursor-not-allowed rounded-lg focus:outline-none focus:ring focus:ring-red-300 focus:ring-opacity-50'
+    : 'flex items-center justify-between w-full px-6 py-3 text-lg tracking-wide text-white capitalize transition-colors duration-300 transform bg-gray-800 hover:bg-gray-700 rounded-lg focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-50'
+  }}">
         <p>Registrarse</p>
 
         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 rtl:-scale-x-100" viewBox="0 0 20 20"

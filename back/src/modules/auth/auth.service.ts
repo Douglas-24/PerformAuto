@@ -15,8 +15,10 @@ export class AuthService {
         const user = await this.userService.getUserByEmail(email)
         if(!user.account_verified) throw new UnauthorizedException('La cuenta no esta verificada')
         
-        const isMatch = await bcrypt.compare(pass, user.password); 
+        const isMatch = await bcrypt.compare(pass, user.password);
+         
         if(!isMatch) throw new UnauthorizedException('Creendenciales invalidas')
+
         const {password, ...payload} = user
 
         const access_token = await this.jwt.signAsync(payload)
@@ -24,16 +26,11 @@ export class AuthService {
     }
 
     async register(user: User):Promise<string>{
-        
-        const hash = await bcrypt.hash(user.password, 10);
-        
-        user.password = hash
         const registerUser = await this.userService.createUser(user)
         const payload = {userId: registerUser.id}
         const token = this.jwt.sign(payload)
         const url = `http://localhost:3000/api/auth/verify?token=${token}`
         this.mailService.sendVerifyEmail(user.email, user.name, url)
-        console.log(url);
         
         return 'Se te a enviado un correo'
     }

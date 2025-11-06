@@ -52,7 +52,7 @@ export class UserTable {
         this.allUsers = resp.data
       },
       error: (error) => {
-        // this.toast.show('Error al obtener todos los usuarios', 'No se han podido obtener los usuarios', 'error')
+        this.toast.show('Error al obtener todos los usuarios', 'No se han podido obtener los usuarios', 'error')
       }
     })
   }
@@ -60,7 +60,7 @@ export class UserTable {
   mappingUserForm(userUpdate?: User): User {
     const formValue = this.userForm.value;
     const user: User = {
-      id: Number(userUpdate?.id),
+      ...(userUpdate?.id && { id: Number(userUpdate.id) }),
       name: formValue.name || '',
       lastname: formValue.lastname || '',
       dni: formValue.dni || '',
