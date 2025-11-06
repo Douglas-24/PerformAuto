@@ -18,6 +18,10 @@ export const routes: Routes = [
         loadComponent: () => import('../../shared/unauthorized-page/unauthorized-page').then(m => m.UnauthorizedPage)
     },
     {
+        path: 'verifyAccout',
+        loadComponent:  () => import('../../shared/verify-account-page/verify-account-page').then(m => m.VerifyAccountPage)
+    },
+    {
         path: '',
         component: MainLayout,
         canActivate: [authGuardGuard],

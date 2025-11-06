@@ -29,6 +29,9 @@ export class AuthService {
     return this.http.get<{user: User}>(this.url+'profile')
   }
 
+  verifyAccount(token:string):Observable<apiReponse>{
+    return this.http.get<apiReponse>(this.url +'verify?token=' +token)
+  }
 
   isLogged():boolean{
     return localStorage.getItem('token') ? true : false

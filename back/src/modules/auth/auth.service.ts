@@ -29,7 +29,7 @@ export class AuthService {
         const registerUser = await this.userService.createUser(user)
         const payload = {userId: registerUser.id}
         const token = this.jwt.sign(payload)
-        const url = `http://localhost:3000/api/auth/verify?token=${token}`
+        const url = `http://localhost:4200/verifyAccout?token=${token}`
         this.mailService.sendVerifyEmail(user.email, user.name, url)
         
         return 'Se te a enviado un correo'
