@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { AuthService } from '../../../../core/service/auth.service';
+import { User } from '../../../../core/interfaces/user.interfaces';
 @Component({
   selector: 'app-profile-pages',
   imports: [],
@@ -6,5 +8,21 @@ import { Component } from '@angular/core';
   styleUrl: './profile-pages.css'
 })
 export class ProfilePage {
+  private authService = inject(AuthService)
+  user:User | null = null
 
+  ngOnInit(){
+    this.getProfile()
+  }
+  
+  getProfile(){
+    this.authService.getProfile().subscribe({
+      next:(resp) =>{
+        this.user = resp.user
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    })
+  }
 }
