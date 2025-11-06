@@ -13,7 +13,7 @@ export class UserController {
     async postUser(@Body() user: Omit<CreateUserDto, 'password'> ):Promise<successfulResponse>{
         const passGenerate = passwordGenerate()
         const userUpdate:CreateUserDto = {...user, password: passGenerate}
-        const userCreate = await this.userService.createUser(userUpdate)    
+        const userCreate = await this.userService.createUser(userUpdate, true)    
         return apiResponse(201, "Usuario creado correctamente", userCreate)
     }
 

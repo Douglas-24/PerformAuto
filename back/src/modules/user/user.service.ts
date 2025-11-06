@@ -15,12 +15,13 @@ export class UserService {
         private readonly mailService: MailService
     ) { }
 
-    async createUser(user: CreateUserDto): Promise<User> {
+    async createUser(user: CreateUserDto, verified:boolean = false): Promise<User> {
         const pass = user.password
         const hash = await bcrypt.hash(pass, 10);
         user.password = hash
+        user.account_verified = verified
         const createUser = await this.prisma.user.create({ data: user })
-        this.mailService.sendWelcone(user.email,`${user.name} ${user.lastname}`, pass)
+        if(verified)this.mailService.sendWelcone(user.email,`${user.name} ${user.lastname}`, pass)
         return createUser
     }
 
@@ -51,7 +52,8 @@ export class UserService {
                 phone_number: true,
                 address: true,
                 postal_code: true,
-                rol: true
+                rol: true,
+                account_verified: true
             }
         })
         return allUsers

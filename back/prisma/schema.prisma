@@ -32,6 +32,7 @@ model User {
   address String
   postal_code Int
   rol Role @default(CLIENT)
+  account_verified Boolean @default(false)
   cars Car[]
 }
 

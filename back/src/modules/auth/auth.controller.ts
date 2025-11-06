@@ -1,10 +1,9 @@
-import { Body, Controller, Get, Post,Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post,Query,Request, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { apiResponse } from 'src/core/utils/ApiResponse';
-import type { User } from 'src/core/interfaces/user.interfaces';
 import { successfulResponse } from 'src/core/interfaces/successfulResponse.interface';
 import { Public } from 'src/core/decorators/public.decorator';
-
+import type { User } from '@prisma/client';
 interface credentials {
     email: string,
     dni ?: string,
@@ -25,13 +24,20 @@ export class AuthController {
     @Public()
     @Post('register')
     async register(@Body() userRegister:User):Promise<successfulResponse>{
-        const token = await this.authService.register(userRegister)
-        return apiResponse(200, 'Registro completado correctamente', token)
+        const register = await this.authService.register(userRegister)
+        return apiResponse(200,register)
     }
 
     @Get('profile')
     async getProfile(@Request() req: {user: User}){
         return req.user
+    }
+    
+    @Public()
+    @Get('verify')
+    async verifyAccount(@Query('token') token:string):Promise<successfulResponse>{
+        const resp = await this.authService.verifyAccount(token)
+        return apiResponse(200, 'Cuenta verificada correctamente')
     }
 
 }

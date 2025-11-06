@@ -13,4 +13,15 @@ export class MailService {
             context: {name, password}
         })
     }
+
+    async sendVerifyEmail(to:string, name:string, url:string){
+        await this.mailerService.sendMail({
+            to,
+            subject: 'Verifica tu cuenta',
+            template: 'verifiAccount',
+            context: {name, url}
+        })
+    }
+
+
 }
