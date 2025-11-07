@@ -23,5 +23,14 @@ export class MailService {
         })
     }
 
+    async sendForgotPass(to:string, name:string, url:string){
+        await this.mailerService.sendMail({
+            to,
+            subject: 'Restablecer contraseña',
+            template: 'forgotPass',
+            context: {name, url}
+        })
+    }
+
 
 }

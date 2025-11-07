@@ -4,6 +4,8 @@ import { User } from '@prisma/client';
 import { UserService } from '../user/user.service';
 import * as bcrypt from 'bcrypt'
 import { MailService } from '../mail/mail.service'
+import { constants } from 'src/core/utils/constants';
+import { ResetPasswordDto } from './dto/ResetPasswordDto';
 @Injectable()
 export class AuthService {
     constructor( private jwt: JwtService, 
@@ -33,6 +35,28 @@ export class AuthService {
         this.mailService.sendVerifyEmail(user.email, user.name, url)
         
         return 'Se te a enviado un correo'
+    }
+
+    async forgotPass(email:string){
+        const user = await this.userService.getUserByEmail(email)
+        const token = this.jwt.sign({email: user.email})
+        const url = constants.urlFront+'recoverPass?token='+token
+        this.mailService.sendForgotPass(email, `${user.name} ${user.lastname}`, url)
+        return 'Se te ha enviado un correo'
+    }
+
+    async recoverPass(data:ResetPasswordDto){
+        const payload = this.jwt.decode(data.token)
+        
+        const userEmail = payload.email
+        const user =await this.userService.getUserByEmail(userEmail)
+
+        const hashedPass = await bcrypt.hash(data.newPassword, 10)
+        user.password = hashedPass
+
+        await this.userService.updateUser(user.id,user)
+
+
     }
 
     async verifyAccount(token:string){

@@ -4,12 +4,12 @@ import { apiResponse } from 'src/core/utils/ApiResponse';
 import { successfulResponse } from 'src/core/interfaces/successfulResponse.interface';
 import { Public } from 'src/core/decorators/public.decorator';
 import type { User } from '@prisma/client';
+import { ResetPasswordDto } from './dto/ResetPasswordDto';
 interface credentials {
     email: string,
     dni ?: string,
     password: string
 }
-
 @Controller('auth')
 export class AuthController {
     constructor(private authService:AuthService){}
@@ -38,6 +38,20 @@ export class AuthController {
     async verifyAccount(@Query('token') token:string):Promise<successfulResponse>{
         const resp = await this.authService.verifyAccount(token)
         return apiResponse(200, 'Cuenta verificada correctamente')
+    }
+
+    @Public()
+    @Post('forgotPass')
+    async forgotPass(@Body() email:{email:string}):Promise<successfulResponse>{
+        const resp = await this.authService.forgotPass(email.email)
+        return apiResponse(200, resp)
+    }
+
+    @Public()
+    @Post('recoverPass')
+    async recoverPass(@Body() data:ResetPasswordDto){
+        const resp = await this.authService.recoverPass(data)
+        return apiResponse(200, 'Contraseña restablecidad correctamente')
     }
 
 }
