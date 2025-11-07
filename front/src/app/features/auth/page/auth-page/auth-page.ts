@@ -1,10 +1,10 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Login } from '../../components/login/login';
 import { Register } from '../../components/register/register';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 @Component({
   selector: 'app-auth-page',
-  imports: [Login, Register],
+  imports: [Login, Register, RouterLink],
   templateUrl: './auth-page.html',
   styleUrl: './auth-page.css'
 })

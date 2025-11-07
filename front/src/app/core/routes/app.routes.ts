@@ -19,7 +19,8 @@ export const routes: Routes = [
     },
     {
         path: 'verifyAccout',
-        loadComponent:  () => import('../../shared/verify-account-page/verify-account-page').then(m => m.VerifyAccountPage)
+        loadComponent:  () => import('../../shared/verify-account-page/verify-account-page').then(m => m.VerifyAccountPage),
+        canActivate:[authGuardGuard]
     },
     {
         path: '',
