@@ -33,6 +33,14 @@ export class AuthService {
     return this.http.get<apiReponse>(this.url +'verify?token=' +token)
   }
 
+  forgotPass(email:{email:string}):Observable<apiReponse>{
+    return this.http.post<apiReponse>(this.url+'forgotPass',email)
+  }
+
+  recoverPass(dataRecover: {token:string, newPassword:string}):Observable<apiReponse>{
+    return this.http.post<apiReponse>(this.url+'recoverPass', dataRecover)
+  }
+
   isLogged():boolean{
     return localStorage.getItem('token') ? true : false
   }

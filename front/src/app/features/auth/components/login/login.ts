@@ -3,7 +3,7 @@ import {FormGroup, FormControl, ReactiveFormsModule, Validators} from '@angular/
 import { DinamicForm } from "../../../../shared/dinamic-form/dinamic-form";
 import { ConfigFieldsForm } from '../../../../core/interfaces/configFiledsForm';
 import { AuthService } from '../../../../core/service/auth.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ToastServices } from '../../../../core/service/toast.service';
 
 interface credentials {
@@ -13,7 +13,7 @@ interface credentials {
 }
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule, DinamicForm],
+  imports: [ReactiveFormsModule, DinamicForm, RouterLink],
   templateUrl: './login.html',
   styleUrl: './login.css'
 })

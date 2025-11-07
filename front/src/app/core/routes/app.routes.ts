@@ -23,6 +23,14 @@ export const routes: Routes = [
         canActivate:[authGuardGuard]
     },
     {
+        path:'forgotPass',
+        loadComponent:  () => import('../../shared/forgot-pass/forgot-pass').then(m => m.ForgotPass),
+    },
+    {
+        path:'recoverPass',
+        loadComponent:  () => import('../../shared/recover-pass/recover-pass').then(m => m.RecoverPass),
+    },
+    {
         path: '',
         component: MainLayout,
         canActivate: [authGuardGuard],
