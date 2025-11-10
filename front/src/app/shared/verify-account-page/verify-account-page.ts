@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { Router, ActivatedRoute , RouterLink } from '@angular/router';
+import { ActivatedRoute , RouterLink } from '@angular/router';
 import { AuthService } from '../../core/service/auth.service';
 @Component({
   selector: 'app-verify-account-page',
@@ -10,7 +10,6 @@ import { AuthService } from '../../core/service/auth.service';
 export class VerifyAccountPage implements OnInit {
   message = 'Verificando cuenta'
   showBoton = false
-  private route = inject(Router)
   private activateRoute = inject(ActivatedRoute)
   private authService = inject(AuthService)
   ngOnInit(): void {

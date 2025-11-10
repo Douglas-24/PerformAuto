@@ -11,7 +11,9 @@ export const controlPanelRoutes: Routes = [
             {
                 path:'control-panel',
                 loadComponent: () => 
-                    import('../../features/dashboard/components/control-panel/control-panel').then(m => m.ControlPanel)
+                    import('../../features/dashboard/components/control-panel/control-panel').then(m => m.ControlPanel),
+                canActivate: [roleGuard],
+                data: { roles: [Role.ADMIN] }
             },
             {
                 path: 'profile',

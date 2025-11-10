@@ -5,6 +5,8 @@ import { CreateUserDto } from './dto/create-user-dto';
 import { UpdateUserDto } from './dto/update-user-dto';
 import { apiResponse } from 'src/core/utils/ApiResponse';
 import { passwordGenerate } from 'src/core/utils/generator';
+import { RoleGuard } from 'src/core/guards/role.guard';
+import { Role } from '@prisma/client';
 @Controller('user')
 export class UserController {
     constructor(private userService:UserService){}
@@ -23,7 +25,7 @@ export class UserController {
         return apiResponse(200, "Usuario actualizado", updateUser)
     }
 
-
+    @UseGuards(new RoleGuard([Role.ADMIN]))
     @Get()
     async getAllUser():Promise<successfulResponse>{
         const allUsers = await this.userService.getAllUser()        
