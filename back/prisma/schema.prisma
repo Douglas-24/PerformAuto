@@ -21,31 +21,74 @@ enum Role {
   MECHANIC // Mecanico
 }
 
+enum StateServie {
+  STARTED
+  PENDING
+  FINISH
+}
+
 model User {
-  id    Int    @id @default(autoincrement())
-  name  String
-  lastname String
-  dni String @unique
-  email String @unique 
-  password String
-  phone_number Int @unique
-  address String
-  postal_code Int
-  rol Role @default(CLIENT)
-  account_verified Boolean @default(false)
-  cars Car[]
+  id                 Int       @id @default(autoincrement())
+  name               String
+  lastname           String
+  dni                String    @unique
+  email              String    @unique
+  password           String
+  phone_number       Int       @unique
+  address            String
+  postal_code        Int
+  rol                Role      @default(CLIENT)
+  account_verified   Boolean   @default(false)
+  cars               Car[]
+  servicesAsClient   Service[] @relation("ClientRelation")
+  servicesAsMechanic Service[] @relation("MechanicRelation")
 }
 
 model Car {
-  id Int @id @default(autoincrement())
-  photo String
-  brand String
-  model String
-  enrolment String @unique// Matricula
-  chassis_number String @unique // Numero de bastidor
-  last_revision DateTime
+  id              Int       @id @default(autoincrement())
+  photo           String
+  brand           String
+  model           String
+  enrolment       String    @unique // Matricula
+  chassis_number  String    @unique // Numero de bastidor
+  last_revision   DateTime
   current_mileage Int
-  engine String
-  owner User @relation(fields: [ownerId], references: [id])
-  ownerId Int
+  engine          String
+  owner           User      @relation(fields: [ownerId], references: [id])
+  ownerId         Int
+  services        Service[]
 }
+
+model Type_Service {
+  id             Int       @id @default(autoincrement())
+  name           String
+  description    String
+  price          Int
+  frequency_km   Int // Cada cuantos km realizar este servicio
+  frequency_time String // Cada cierto tiempo realizar el servicio
+  services       Service[]
+}
+
+model Service {
+  id            Int          @id @default(autoincrement())
+  state         StateServie
+  total_cost    Int
+  client        User         @relation("ClientRelation",fields: [clientId], references: [id])
+  clientId      Int
+  car           Car          @relation(fields: [carId], references: [id])
+  carId         Int
+  type_service  Type_Service @relation(fields: [typeServiceId], references: [id])
+  typeServiceId Int
+  mechanic      User         @relation("MechanicRelation", fields: [mechanicId], references: [id])
+  mechanicId    Int
+}
+
+// model appointment {
+//   id            Int @id @default(autoincrement())
+
+// }
+
+// model budget {
+//   id            Int @id @default(autoincrement())
+
+// }
