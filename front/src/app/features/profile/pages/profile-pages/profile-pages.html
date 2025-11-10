@@ -1,0 +1,42 @@
+<section class=" py-10 px-6">
+  <div class="max-w-3xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-md p-8">
+
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Perfil</h2>
+      <span class="px-3 py-1 text-sm font-semibold rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
+        {{ user?.rol }}
+      </span>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-700 dark:text-gray-300">
+      <div>
+        <p class="font-semibold">Nombre:</p>
+        <p>{{ user?.name }} {{ user?.lastname }}</p>
+      </div>
+      <div>
+        <p class="font-semibold">DNI:</p>
+        <p>{{ user?.dni }}</p>
+      </div>
+      <div>
+        <p class="font-semibold">Email:</p>
+        <p>{{ user?.email }}</p>
+      </div>
+      <div>
+        <p class="font-semibold">Teléfono:</p>
+        <p>{{ user?.phone_number }}</p>
+      </div>
+      <div>
+        <p class="font-semibold">Dirección:</p>
+        <p>{{ user?.address }}</p>
+      </div>
+      <div>
+        <p class="font-semibold">Código Postal:</p>
+        <p>{{ user?.postal_code }}</p>
+      </div>
+    </div>
+
+    <div class="mt-8 flex justify-end gap-4">
+      <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition">Editar</button>
+    </div>
+  </div>
+</section>
