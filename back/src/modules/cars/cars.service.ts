@@ -44,4 +44,8 @@ export class CarsService {
     await this.prisma.car.delete({where: {id}})
     return 'Coche eliminado';
   }
+
+  async getAllCarsUser (id:number) {
+
+  }
 }
