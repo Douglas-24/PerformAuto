@@ -25,7 +25,7 @@ export class CarsController {
     return apiResponse(200, 'Lista de coches', allCars)
   }
 
-  @UseGuards(new RoleGuard([Role.ADMIN, Role.CUSTOMER_SERVICE]))
+  // @UseGuards(new RoleGuard([Role.ADMIN, Role.CUSTOMER_SERVICE]))
   @Get(':id')
   async findOne(@Param('id') id: string):Promise<successfulResponse> {
     const car = await this.carsService.findOne(+id);

@@ -17,7 +17,7 @@ export class TypeServiceController {
     return apiResponse(200, 'Tipo de servicio creado correctamente', typeService)
   }
 
-  @UseGuards(new RoleGuard([Role.ADMIN]))
+
   @Get()
   async findAll():Promise<successfulResponse>  {
     const typesServices = await this.typeServiceService.findAll();
