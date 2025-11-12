@@ -33,6 +33,13 @@ export const controlPanelRoutes: Routes = [
                     import('../../features/cars/page/page-cars/page-cars').then(m => m.PageCars),
                 canActivate: [roleGuard],
                 data: { roles: [Role.ADMIN] }
+            },
+            {
+                path:'userCars',
+                loadComponent: () =>
+                    import('../../features/cars/page/user-cars-page/user-cars-page').then(m => m.UserCarsPage),
+                // canActivate: [roleGuard],
+                // data: { roles: [Role.ADMIN] }
             }
         ]
     }

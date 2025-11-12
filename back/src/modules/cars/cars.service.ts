@@ -45,7 +45,12 @@ export class CarsService {
     return 'Coche eliminado';
   }
 
-  async getAllCarsUser (id:number) {
-
+  async getAllCarsUser (id:number):Promise<Car[]> {
+    const user = await this.prisma.user.findUnique({where: {id}})
+    if(!user) throw new NotFoundException('Usuario no encontrado')
+    
+    const allCarsUser = await this.prisma.car.findMany({where: {ownerId: id}})
+    return allCarsUser
+    
   }
 }

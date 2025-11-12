@@ -45,4 +45,10 @@ export class CarsController {
     const carDelete = await this.carsService.remove(+id);
     return apiResponse(200, 'Coche eliminado correctamente')
   }
+
+  @Get('carsUser/:id')
+  async getAllCarsUser(@Param('id') id:string):Promise<successfulResponse>{
+    const allCars = await this.carsService.getAllCarsUser(+id)
+    return apiResponse(200, 'Coche obtenidos correctamente', allCars)
+  }
 }
