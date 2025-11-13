@@ -31,6 +31,10 @@ export const routes: Routes = [
         loadComponent:  () => import('../../shared/recover-pass/recover-pass').then(m => m.RecoverPass),
     },
     {
+        path:'appointment',
+        loadComponent:  () => import('../../features/appointment/page/appointment-page/appointment-page').then(m => m.AppointmentPage),
+    },
+    {
         path: '',
         component: MainLayout,
         canActivate: [authGuardGuard],
