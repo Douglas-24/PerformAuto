@@ -1,0 +1,97 @@
+<div class="flex flex-col items-center justify-center font-medium my-5 px-6">
+    <h2 class="text-3xl text-gray-800 dark:text-white text-center mt-5">Seleccion de vehiculo</h2>
+    <p class="mt-4 text-xl text-gray-500 dark:text-gray-400 text-center">
+        Selecciona el vehículo al que quieres aplicar el servicio
+    </p>
+
+
+    @if (showSelected) {
+    <div class="relative w-full my-12 flex items-center justify-center">
+        <div class="absolute inset-0 flex items-center">
+            <div class="w-full border-t dark:border-gray-600"></div>
+        </div>
+        <div class="relative px-6 bg-white dark:bg-gray-800">
+            <span class="text-2xl font-medium text-gray-500 dark:text-gray-400">
+                Vehiculo seleccionado
+            </span>
+        </div>
+    </div>
+    <div>
+        <button
+            (click)="nextSection()"
+            class="middle none center mr-4 rounded-lg bg-blue-500 py-3 px-6 font-sans text-xs font-bold uppercase text-white shadow-md shadow-blue-500/20 transition-all hover:shadow-lg hover:shadow-blue-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+            data-ripple-light="true">Siguiente</button>
+    </div>
+    <div class="grid grid-cols-1 mt-6 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div
+            class="w-full min-w-2xl bg-white rounded-xl shadow-lg dark:bg-gray-800 cursor-pointer transition-all duration-300 transform hover:scale-[1.02] hover:shadow-2xl hover:border hover:border-blue-500">
+            <img class="object-cover w-full h-72 rounded-t-xl" src="assets/imgs/car.jpg" alt="Foto del coche" />
+
+            <div class="p-3">
+                <div>
+                    <span class="text-xs font-medium text-blue-600 uppercase dark:text-blue-400">
+                        {{ showSelected.brand }}
+                    </span>
+                    <h2
+                        class="block mt-2 text-xl font-semibold text-gray-800 transition-colors duration-300 transform dark:text-white hover:text-gray-600">
+                        {{ showSelected.model }}
+                    </h2>
+                    <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Matrícula: {{ showSelected.enrolment }}
+                    </p>
+                    <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Kilometraje: {{
+                        showSelected.current_mileage }} km</p>
+                    <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                        Última revisión: {{ showSelected.last_revision | date }}
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    }
+    <div class="relative w-full my-12 flex items-center justify-center">
+        <div class="absolute inset-0 flex items-center">
+            <div class="w-full border-t dark:border-gray-600"></div>
+        </div>
+        <div class="relative px-6 bg-white dark:bg-gray-800">
+            <span class="text-2xl font-medium text-gray-500 dark:text-gray-400">
+                Tus vehiculos
+            </span>
+        </div>
+    </div>
+
+
+
+    <div class="grid grid-cols-1 mt-6 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+
+        @for (car of allCarsUser; track $index) {
+        <div (click)="viewCarSelected(car)"
+            class="w-full min-w-2xl bg-white rounded-xl shadow-lg dark:bg-gray-800 cursor-pointer transition-all duration-300 transform hover:scale-[1.02] hover:shadow-2xl hover:border hover:border-blue-500">
+            <img class="object-cover w-full h-72 rounded-t-xl" src="assets/imgs/car.jpg" alt="Foto del coche" />
+
+            <div class="p-3">
+                <div>
+                    <span class="text-xs font-medium text-blue-600 uppercase dark:text-blue-400">
+                        {{ car.brand }}
+                    </span>
+                    <h2
+                        class="block mt-2 text-xl font-semibold text-gray-800 transition-colors duration-300 transform dark:text-white hover:text-gray-600">
+                        {{ car.model }}
+                    </h2>
+                    <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Matrícula: {{ car.enrolment }}</p>
+                    <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Kilometraje: {{ car.current_mileage }} km
+                    </p>
+                    <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                        Última revisión: {{ car.last_revision | date }}
+                    </p>
+                </div>
+
+            </div>
+        </div>
+
+        }
+
+
+    </div>
+
+</div>
