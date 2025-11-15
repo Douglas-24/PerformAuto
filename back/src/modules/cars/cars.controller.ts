@@ -36,7 +36,7 @@ export class CarsController {
   @Put(':id')
   async update(@Param('id') id: string, @Body() updateCarDto: UpdateCarDto):Promise<successfulResponse> {
     const carUpdate = await this.carsService.update(+id, updateCarDto);
-    return apiResponse(200, 'Coche actualizado', updateCarDto)
+    return apiResponse(200, 'Coche actualizado', carUpdate)
   }
 
   @UseGuards(new RoleGuard([Role.ADMIN]))

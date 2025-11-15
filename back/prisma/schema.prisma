@@ -67,6 +67,7 @@ model Type_Service {
   frequency_km   Int // Cada cuantos km realizar este servicio
   frequency_time String // Cada cierto tiempo realizar el servicio
   services       Service[]
+  parts          PartsTypeService[]
 }
 
 model Service {
@@ -81,12 +82,42 @@ model Service {
   typeServiceId Int
   mechanic      User         @relation("MechanicRelation", fields: [mechanicId], references: [id])
   mechanicId    Int
+  parts         PartsService[]
 }
 
-// model appointment {
-//   id            Int @id @default(autoincrement())
+model Parts {
+  id            Int @id @default(autoincrement())
+  name          String
+  reference     String
+  price         Int
+  typeServices  PartsTypeService[]
+  services      PartsService[]
+}
 
-// }
+// Este modelo se usa para indicar que piezas se usan en los tipos de servicio
+model PartsTypeService {
+  id            Int @id @default(autoincrement())
+  part          Parts @relation(fields: [partId], references: [id])
+  partId        Int
+  typeService   Type_Service  @relation(fields: [typeServiceId], references: [id])
+  typeServiceId Int
+  quantity      Int // cantidad de piezas que se tienen que cambiar
+  changeRecomended Boolean // para indicar si la pieza es recomendable de cambiar o no dependiendo del tiempo y km del coche
+}
+
+
+
+// Este modelo se usara para las piezas que se deben cambiar y que no estan incluidas en el servicio 
+model PartsService {
+  id            Int @id @default(autoincrement())
+  service       Service @relation(fields: [serviceId], references: [id])
+  serviceId     Int
+  part          Parts @relation(fields: [partId], references: [id])
+  partId        Int
+  quantity      Int   // cantidad de piezas usadas
+  discount      Int // descuento por aplicarle la pieza que no estaba en el servicio
+
+}
 
 // model budget {
 //   id            Int @id @default(autoincrement())

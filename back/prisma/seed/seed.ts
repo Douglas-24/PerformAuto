@@ -2,11 +2,13 @@ import { seedCars } from "./car.seeder";
 import { seedUsers } from "./user.seeder";
 import { seedTypeServices } from "./type-service.seeder";
 import { PrismaClient } from '@prisma/client'
+import { seedParts } from "./part.seeder";
 const prisma = new PrismaClient()
 async function main() {
     await seedUsers()
     await seedCars()
     await seedTypeServices()
+    await seedParts()
 }
 
 main()
