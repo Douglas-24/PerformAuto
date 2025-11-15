@@ -90,6 +90,7 @@ model Parts {
   name          String
   reference     String
   price         Int
+  stock         Int @default(0)
   typeServices  PartsTypeService[]
   services      PartsService[]
 }

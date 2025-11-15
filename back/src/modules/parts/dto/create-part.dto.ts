@@ -9,4 +9,7 @@ export class CreatePartDto {
 
     @IsInt()
     price: number
+
+    @IsInt()
+    stock:number
 }

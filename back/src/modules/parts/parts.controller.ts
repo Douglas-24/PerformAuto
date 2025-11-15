@@ -13,25 +13,25 @@ export class PartsController {
 
   @Post()
   async create(@Body() createPartDto: CreatePartDto):Promise<successfulResponse> {
-    const part =  this.partsService.create(createPartDto);
+    const part = await  this.partsService.create(createPartDto);
     return apiResponse(200, 'Pieza creada', part)
   }
 
   @Get()
   async findAll():Promise<successfulResponse> {
-    const allPart = this.partsService.findAll();
+    const allPart = await this.partsService.findAll();
     return  apiResponse(200, 'Lista de piezas obtenida', allPart)
   }
 
   @Get(':id')
   async findOne(@Param('id') id: string):Promise<successfulResponse> {
-    const part =  this.partsService.findOne(+id);
+    const part = await this.partsService.findOne(+id);
     return apiResponse(200, 'Pieza obtenida', part)
   }
 
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updatePartDto: UpdatePartDto):Promise<successfulResponse> {
-    const part = this.partsService.update(+id, updatePartDto);
+    const part =  await this.partsService.update(+id, updatePartDto);
     return apiResponse(200, 'Pieza actualizada', part)
   }
 
@@ -40,9 +40,4 @@ export class PartsController {
     await this.partsService.remove(+id);
     return apiResponse(200, 'Pieza eliminada')
   }
-
-  // @Get('typePart/allPart')
-  // async getAllPartTypeService(@Param('idTypeService') idTypeService:string){
-  //   const allPart = await this.partsService.getAllPartTypeService(+idTypeService)
-  // }
 }
