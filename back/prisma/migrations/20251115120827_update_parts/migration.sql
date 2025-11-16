@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE `parts` ADD COLUMN `stock` INTEGER NOT NULL DEFAULT 0;
