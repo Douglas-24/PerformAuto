@@ -1,6 +1,6 @@
 import { IsInt, IsString, IsNotEmpty, IsUrl, IsOptional, IsBoolean } from 'class-validator';
 
-export class CreatePartsTypeServiceDto {
+export class CreateServicesPartsDto {
     @IsInt()
     partId: number
 

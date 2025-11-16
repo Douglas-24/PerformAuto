@@ -19,6 +19,7 @@ export async function seedUsers() {
             postal_code: 13001,
             rol: Role.CLIENT,
             account_verified: true,
+            date_register: new Date()
         },
     });
 
@@ -36,6 +37,8 @@ export async function seedUsers() {
             postal_code: 13002,
             rol: Role.ADMIN,
             account_verified: true,
+            date_register: new Date()
+
         },
     });
 
@@ -53,6 +56,8 @@ export async function seedUsers() {
             postal_code: 13003,
             rol: Role.CUSTOMER_SERVICE,
             account_verified: true,
+            date_register: new Date()
+
         },
     });
 
@@ -70,6 +75,8 @@ export async function seedUsers() {
             postal_code: 13004,
             rol: Role.WAREHOUSE_MANAGER,
             account_verified: true,
+            date_register: new Date()
+
         },
     });
 
@@ -87,6 +94,8 @@ export async function seedUsers() {
             postal_code: 13005,
             rol: Role.MECHANIC,
             account_verified: true,
+            date_register: new Date()
+
         },
     });
 
@@ -104,6 +113,8 @@ export async function seedUsers() {
             postal_code: 13006,
             rol: Role.CLIENT,
             account_verified: false,
+            date_register: new Date()
+
         },
     });
 

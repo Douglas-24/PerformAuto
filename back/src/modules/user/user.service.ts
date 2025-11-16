@@ -20,6 +20,7 @@ export class UserService {
         const hash = await bcrypt.hash(pass, 10);
         user.password = hash
         user.account_verified = verified
+        user.date_register = new Date()
         const createUser = await this.prisma.user.create({ data: user })
         if(verified)this.mailService.sendWelcone(user.email,`${user.name} ${user.lastname}`, pass)
         return createUser
@@ -53,7 +54,8 @@ export class UserService {
                 address: true,
                 postal_code: true,
                 rol: true,
-                account_verified: true
+                account_verified: true,
+                date_register: true
             }
         })
         return allUsers

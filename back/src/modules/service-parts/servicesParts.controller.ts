@@ -1,16 +1,16 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { PartsTypeServiceService } from './parts-type-service.service';
-import { CreatePartsTypeServiceDto } from './dto/create-parts-type-service.dto';
+import { ServicesParts } from './serviceParts.service';
+import { CreateServicesPartsDto } from './dto/create-service-parts.dto';
 import { UpdatePartsTypeServiceDto } from './dto/update-parts-type-service.dto';
 import { successfulResponse } from 'src/core/interfaces/successfulResponse.interface';
 import { apiResponse } from 'src/core/utils/apiResponse';
 
-@Controller('parts-type-service')
-export class PartsTypeServiceController {
-  constructor(private readonly partsTypeServiceService: PartsTypeServiceService) {}
+@Controller('parts-service')
+export class ServicePartsController {
+  constructor(private readonly partsTypeServiceService: ServicesParts) {}
 
   @Post()
-  async create(@Body() createPartsTypeServiceDto: CreatePartsTypeServiceDto) :Promise<successfulResponse>{
+  async create(@Body() createPartsTypeServiceDto: CreateServicesPartsDto) :Promise<successfulResponse>{
     const part = await this.partsTypeServiceService.createPartTypeService(createPartsTypeServiceDto);
     return apiResponse(200, 'Pieza añadida al servicio', part)
   }
@@ -19,6 +19,12 @@ export class PartsTypeServiceController {
   async findAll(@Param('id') id:string):Promise<successfulResponse> {
     const allPartTypeService = await this.partsTypeServiceService.getAllPartTypeService(+id);
     return apiResponse(200,'Obtenida piezas del servicio', allPartTypeService)
+  }
+
+  @Get('allPartsAndServices')
+  async getAllTypesServicesWithParts():Promise<successfulResponse> {
+    const allPartTypeService = await this.partsTypeServiceService.getAllTypeServicesWithParts();
+    return apiResponse(200,'Obtenida listaa de servicios con sus piezas', allPartTypeService)
   }
 
   @Get(':id')

@@ -1,16 +1,15 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreatePartsTypeServiceDto } from './dto/create-parts-type-service.dto';
+import { CreateServicesPartsDto } from './dto/create-service-parts.dto';
 import { UpdatePartsTypeServiceDto } from './dto/update-parts-type-service.dto';
-import { PartsTypeService } from '@prisma/client';
+import { PartsService} from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
-
 @Injectable()
-export class PartsTypeServiceService {
+export class ServicesParts {
 
   constructor(private prisma:PrismaService){}
 
-  async findOne(id: number):Promise<PartsTypeService> {
-    const partTypeService =  await this.prisma.partsTypeService.findUnique({where:{id}})
+  async findOne(id: number):Promise<PartsService> {
+    const partTypeService =  await this.prisma.partsService.findUnique({where:{id}})
     if(!partTypeService) throw new NotFoundException("No se a encontrado la pieza en el servicio")
     return partTypeService
   }
@@ -18,9 +17,9 @@ export class PartsTypeServiceService {
   async update(id: number, updatePartsTypeServiceDto: UpdatePartsTypeServiceDto) {
     const part = await this.prisma.parts.findUnique({where: {id: updatePartsTypeServiceDto.partId}})
     if(!part) throw new NotFoundException("Pieza no encontrada")
-    const typeService = await this.prisma.type_Service.findUnique({where: {id: updatePartsTypeServiceDto.typeServiceId}})
+    const typeService = await this.prisma.service.findUnique({where: {id: updatePartsTypeServiceDto.typeServiceId}})
     if(!typeService) throw new NotFoundException('Tipo de servicio no encontrado')
-    const updatePart = await this.prisma.partsTypeService.update({
+    const updatePart = await this.prisma.partsService.update({
       where:{id},
       data: updatePartsTypeServiceDto
     })
@@ -29,26 +28,42 @@ export class PartsTypeServiceService {
 
   async remove(id: number) {
     await this.findOne(id)
-    await this.prisma.partsTypeService.delete({where: { id: id}})
+    await this.prisma.partsService.delete({where: { id: id}})
   }
 
-  async createPartTypeService(createPartTypeService: CreatePartsTypeServiceDto):Promise<PartsTypeService>{
+  async createPartTypeService(createPartTypeService: CreateServicesPartsDto):Promise<PartsService>{
     
     const part = await this.prisma.parts.findUnique({where: {id: createPartTypeService.partId}})
     if(!part) throw new NotFoundException("Pieza no encontrada")
-    const typeService = await this.prisma.type_Service.findUnique({where: {id: createPartTypeService.typeServiceId}})
+    const typeService = await this.prisma.service.findUnique({where: {id: createPartTypeService.typeServiceId}})
     if(!typeService) throw new NotFoundException('Tipo de servicio no encontrado')
-    const partTypeService = await this.prisma.partsTypeService.create({data: createPartTypeService})
+    const partTypeService = await this.prisma.partsService.create({data: createPartTypeService})
     return partTypeService
   }
-
-  async getAllPartTypeService(idTypeService:number){
-    const allPart = await this.prisma.partsTypeService.findMany({
-      where: {typeServiceId: idTypeService},
+  async getAllTypeServicesWithParts(){
+    const allPart = await this.prisma.service.findMany({
       include: {
-        part: true
+        parts: {
+          include: {
+            part: true
+          }
+        }
       }
     })
     return allPart
   }
+
+  async getAllPartTypeService(idTypeService:number){
+    const allPart = await this.prisma.service.findMany({
+      where: {id:idTypeService},
+      include: {
+        parts: {
+          include: {
+            part: true
+          }
+        }
+      }
+    })
+    return allPart
+  }  
 }

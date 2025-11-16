@@ -24,7 +24,14 @@ enum Role {
 enum StateServie {
   STARTED
   PENDING
+  CANCELLED
   FINISH
+}
+
+enum StatePayment {
+  PAID
+  PENDING
+  CANCELLED
 }
 
 model User {
@@ -40,8 +47,9 @@ model User {
   rol                Role      @default(CLIENT)
   account_verified   Boolean   @default(false)
   cars               Car[]
-  servicesAsClient   Service[] @relation("ClientRelation")
-  servicesAsMechanic Service[] @relation("MechanicRelation")
+  date_register      DateTime
+  servicesAsClient   Appoiment[] @relation("ClientRelation")
+  servicesAsMechanic Appoiment[] @relation("MechanicRelation")
 }
 
 model Car {
@@ -56,71 +64,72 @@ model Car {
   engine          String
   owner           User      @relation(fields: [ownerId], references: [id])
   ownerId         Int
-  services        Service[]
+  services        Appoiment[]
 }
 
-model Type_Service {
-  id             Int       @id @default(autoincrement())
+model Service {
+  id             Int                @id @default(autoincrement())
   name           String
   description    String
   price          Int
   frequency_km   Int // Cada cuantos km realizar este servicio
   frequency_time String // Cada cierto tiempo realizar el servicio
-  services       Service[]
-  parts          PartsTypeService[]
+  duration       String // En horas
+  services       AppoimentService[]
+  parts          PartsService[]
 }
 
-model Service {
+model Appoiment {
   id            Int          @id @default(autoincrement())
   state         StateServie
-  total_cost    Int
-  client        User         @relation("ClientRelation",fields: [clientId], references: [id])
+  client        User         @relation("ClientRelation", fields: [clientId], references: [id])
   clientId      Int
   car           Car          @relation(fields: [carId], references: [id])
   carId         Int
-  type_service  Type_Service @relation(fields: [typeServiceId], references: [id])
-  typeServiceId Int
+  services      AppoimentService[]
   mechanic      User         @relation("MechanicRelation", fields: [mechanicId], references: [id])
-  mechanicId    Int
-  parts         PartsService[]
+  mechanicId    Int 
+  appoiment_date DateTime  
+  invoice       Invoice[]                                                                                                              
+}
+
+model AppoimentService {
+  id      Int @id @default(autoincrement())
+  appoiment     Appoiment @relation(fields: [id_appoiment], references: [id])
+  id_appoiment  Int
+  services      Service @relation(fields: [id_service], references: [id])
+  id_service    Int
 }
 
 model Parts {
-  id            Int @id @default(autoincrement())
-  name          String
-  reference     String
-  price         Int
-  stock         Int @default(0)
-  typeServices  PartsTypeService[]
-  services      PartsService[]
+  id             Int                @id @default(autoincrement())
+  name           String
+  reference      String
+  price          Int
+  stock          Int                @default(0)
+  frequency_km   Int?               
+  frequency_time String?
+  typeServices   PartsService[]
 }
 
 // Este modelo se usa para indicar que piezas se usan en los tipos de servicio
-model PartsTypeService {
-  id            Int @id @default(autoincrement())
-  part          Parts @relation(fields: [partId], references: [id])
-  partId        Int
-  typeService   Type_Service  @relation(fields: [typeServiceId], references: [id])
-  typeServiceId Int
-  quantity      Int // cantidad de piezas que se tienen que cambiar
+model PartsService {
+  id               Int          @id @default(autoincrement())
+  part             Parts        @relation(fields: [partId], references: [id])
+  partId           Int
+  typeService      Service @relation(fields: [typeServiceId], references: [id])
+  typeServiceId    Int
+  quantity         Int // cantidad de piezas que se tienen que cambiar
   changeRecomended Boolean // para indicar si la pieza es recomendable de cambiar o no dependiendo del tiempo y km del coche
 }
 
-
-
-// Este modelo se usara para las piezas que se deben cambiar y que no estan incluidas en el servicio 
-model PartsService {
-  id            Int @id @default(autoincrement())
-  service       Service @relation(fields: [serviceId], references: [id])
-  serviceId     Int
-  part          Parts @relation(fields: [partId], references: [id])
-  partId        Int
-  quantity      Int   // cantidad de piezas usadas
-  discount      Int // descuento por aplicarle la pieza que no estaba en el servicio
-
+model Invoice {
+  id               Int @id @default(autoincrement())
+  appoiment         Appoiment @relation(fields: [id_appoiment], references: [id])
+  id_appoiment      Int
+  total_cost        Int
+  date_entered      DateTime
+  departure_date    DateTime
+  state             StatePayment
+  notes             String
 }
-
-// model budget {
-//   id            Int @id @default(autoincrement())
-
-// }
