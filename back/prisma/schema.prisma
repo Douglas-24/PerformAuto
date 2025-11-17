@@ -35,17 +35,17 @@ enum StatePayment {
 }
 
 model User {
-  id                 Int       @id @default(autoincrement())
+  id                 Int         @id @default(autoincrement())
   name               String
   lastname           String
-  dni                String    @unique
-  email              String    @unique
+  dni                String      @unique
+  email              String      @unique
   password           String
-  phone_number       Int       @unique
+  phone_number       Int         @unique
   address            String
   postal_code        Int
-  rol                Role      @default(CLIENT)
-  account_verified   Boolean   @default(false)
+  rol                Role        @default(CLIENT)
+  account_verified   Boolean     @default(false)
   cars               Car[]
   date_register      DateTime
   servicesAsClient   Appoiment[] @relation("ClientRelation")
@@ -53,16 +53,16 @@ model User {
 }
 
 model Car {
-  id              Int       @id @default(autoincrement())
+  id              Int         @id @default(autoincrement())
   photo           String
   brand           String
   model           String
-  enrolment       String    @unique // Matricula
-  chassis_number  String    @unique // Numero de bastidor
+  enrolment       String      @unique // Matricula
+  chassis_number  String      @unique // Numero de bastidor
   last_revision   DateTime
   current_mileage Int
   engine          String
-  owner           User      @relation(fields: [ownerId], references: [id])
+  owner           User        @relation(fields: [ownerId], references: [id])
   ownerId         Int
   services        Appoiment[]
 }
@@ -80,42 +80,45 @@ model Service {
 }
 
 model Appoiment {
-  id            Int          @id @default(autoincrement())
-  state         StateServie
-  client        User         @relation("ClientRelation", fields: [clientId], references: [id])
-  clientId      Int
-  car           Car          @relation(fields: [carId], references: [id])
-  carId         Int
-  services      AppoimentService[]
-  mechanic      User         @relation("MechanicRelation", fields: [mechanicId], references: [id])
-  mechanicId    Int 
-  appoiment_date DateTime  
-  invoice       Invoice[]                                                                                                              
+  id                  Int                @id @default(autoincrement())
+  state               StateServie
+  client              User               @relation("ClientRelation", fields: [clientId], references: [id])
+  clientId            Int
+  car                 Car                @relation(fields: [carId], references: [id])
+  carId               Int
+  services            AppoimentService[]
+  mechanic            User               @relation("MechanicRelation", fields: [mechanicId], references: [id])
+  mechanicId          Int
+  appoiment_date      DateTime
+  mileage_at_delivery Int               @default(0)
+  invoice             Invoice[]
 }
 
 model AppoimentService {
-  id      Int @id @default(autoincrement())
-  appoiment     Appoiment @relation(fields: [id_appoiment], references: [id])
-  id_appoiment  Int
-  services      Service @relation(fields: [id_service], references: [id])
-  id_service    Int
+  id           Int                    @id @default(autoincrement())
+  appoiment    Appoiment              @relation(fields: [id_appoiment], references: [id])
+  id_appoiment Int
+  services     Service                @relation(fields: [id_service], references: [id])
+  id_service   Int
+  parts_used   AppoimentServicePart[]
 }
 
 model Parts {
-  id             Int                @id @default(autoincrement())
+  id             Int                    @id @default(autoincrement())
   name           String
   reference      String
   price          Int
-  stock          Int                @default(0)
-  frequency_km   Int?               
-  frequency_time String?
+  stock          Int                    @default(0)
+  frequency_km   Int  @default(0)
+  frequency_time String @default("")
   typeServices   PartsService[]
+  usedInServices AppoimentServicePart[]
 }
 
 // Este modelo se usa para indicar que piezas se usan en los tipos de servicio
 model PartsService {
-  id               Int          @id @default(autoincrement())
-  part             Parts        @relation(fields: [partId], references: [id])
+  id               Int     @id @default(autoincrement())
+  part             Parts   @relation(fields: [partId], references: [id])
   partId           Int
   typeService      Service @relation(fields: [typeServiceId], references: [id])
   typeServiceId    Int
@@ -123,13 +126,23 @@ model PartsService {
   changeRecomended Boolean // para indicar si la pieza es recomendable de cambiar o no dependiendo del tiempo y km del coche
 }
 
+model AppoimentServicePart {
+  id                 Int              @id @default(autoincrement())
+  appoimentService   AppoimentService @relation(fields: [appoimentServiceId], references: [id])
+  appoimentServiceId Int
+  part               Parts            @relation(fields: [partId], references: [id])
+  partId             Int
+  quantity           Int
+  replaced           Boolean
+}
+
 model Invoice {
-  id               Int @id @default(autoincrement())
-  appoiment         Appoiment @relation(fields: [id_appoiment], references: [id])
-  id_appoiment      Int
-  total_cost        Int
-  date_entered      DateTime
-  departure_date    DateTime
-  state             StatePayment
-  notes             String
+  id             Int          @id @default(autoincrement())
+  appoiment      Appoiment    @relation(fields: [id_appoiment], references: [id])
+  id_appoiment   Int
+  total_cost     Int
+  date_entered   DateTime
+  departure_date DateTime
+  state          StatePayment
+  notes          String
 }

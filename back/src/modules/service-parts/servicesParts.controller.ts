@@ -1,9 +1,10 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { ServicesParts } from './serviceParts.service';
+import { ServicesParts } from './servicesParts.service';
 import { CreateServicesPartsDto } from './dto/create-service-parts.dto';
 import { UpdatePartsTypeServiceDto } from './dto/update-parts-type-service.dto';
 import { successfulResponse } from 'src/core/interfaces/successfulResponse.interface';
 import { apiResponse } from 'src/core/utils/apiResponse';
+import { DataDto } from './dto/TypeServiceParts.dto';
 
 @Controller('parts-service')
 export class ServicePartsController {
@@ -15,9 +16,9 @@ export class ServicePartsController {
     return apiResponse(200, 'Pieza añadida al servicio', part)
   }
 
-  @Get('getAllPartTypeService/:id')
+  @Get('getAllPartService/:id')
   async findAll(@Param('id') id:string):Promise<successfulResponse> {
-    const allPartTypeService = await this.partsTypeServiceService.getAllPartTypeService(+id);
+    const allPartTypeService = await this.partsTypeServiceService.getAllPartService(+id);
     return apiResponse(200,'Obtenida piezas del servicio', allPartTypeService)
   }
 
@@ -43,5 +44,11 @@ export class ServicePartsController {
   async remove(@Param('id') id: string):Promise<successfulResponse> {
     await this.partsTypeServiceService.remove(+id);
     return apiResponse(200, 'Pieza eliminada del servicio')
+  }
+
+  @Post('parts-need-remplaced/:id_service')
+  async partsNeedRemplaced(@Param('id_service') id_service:string,@Body() data:DataDto):Promise<successfulResponse>{
+    const reps = await this.partsTypeServiceService.needChangeParts(+id_service,data)
+    return apiResponse(200, '',reps)
   }
 }

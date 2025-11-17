@@ -13,7 +13,7 @@ import { ServicesOfferedInterface } from '../../../../core/interfaces/servicesOf
 })
 export class AppointmentPage {
 
-  nextSecction:number = 1
+  nextSecction:number = 2
   carSelected:Car | null = null
   servicedSelected:ServicesOfferedInterface[] = []
 
