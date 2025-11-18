@@ -49,6 +49,6 @@ export class ServicePartsController {
   @Post('parts-need-remplaced/:id_service')
   async partsNeedRemplaced(@Param('id_service') id_service:string,@Body() data:DataDto):Promise<successfulResponse>{
     const reps = await this.partsTypeServiceService.needChangeParts(+id_service,data)
-    return apiResponse(200, '',reps)
+    return apiResponse(200, 'Lista de piezas del servicio',reps)
   }
 }
