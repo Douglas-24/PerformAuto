@@ -5,4 +5,5 @@ export interface ServicesOfferedInterface {
     price:          number;
     frequency_km:   number;
     frequency_time: string;
+    duration:       string
 }

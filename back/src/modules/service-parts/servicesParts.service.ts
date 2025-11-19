@@ -138,6 +138,8 @@ export class ServicesParts {
       namePart: part.name,
       price: part.price,
       acctionPart: state,
+      frequency_km: part.frequency_km,
+      frequency_time: part.frequency_time,
       observation
     }
   }

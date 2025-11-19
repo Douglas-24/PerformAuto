@@ -12,7 +12,11 @@
 
         @if (nextSecction == 2) {
         <div>
-            <app-select-service></app-select-service>
+            <app-select-service 
+                [car]="carSelected" 
+                (back)="backSection()"
+                (userServicesSelected)="getAllUserServiceSelected($event)"
+            ></app-select-service>
         </div>
         }
 

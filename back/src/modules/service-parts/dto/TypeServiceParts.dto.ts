@@ -40,5 +40,7 @@ export class DataPartChange{
   namePart: string
   price:number
   acctionPart:StateChangePart
+  frequency_km: number
+  frequency_time: string
   observation: string
 }

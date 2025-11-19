@@ -8,7 +8,7 @@ import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Separator } from "../../../../shared/separator/separator";
 @Component({
   selector: 'app-car-select',
-  imports: [ReactiveFormsModule, CommonModule, Separator],
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './car-select.html',
   styleUrl: './car-select.css'
 })

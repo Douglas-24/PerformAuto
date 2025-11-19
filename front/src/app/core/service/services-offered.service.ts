@@ -9,7 +9,7 @@ import { apiReponse } from '../interfaces/apiResponse.inteface';
 })
 export class ServicesOffered {
   private http = inject(HttpClient)  
-  private url = environments.urlApi + 'type-service/'
+  private url = environments.urlApi + 'service-workshop/'
 
   getAllServices():Observable<apiReponse>{
     return this.http.get<apiReponse>(this.url)

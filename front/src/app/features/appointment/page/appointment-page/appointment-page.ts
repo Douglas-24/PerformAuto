@@ -5,6 +5,7 @@ import { CarSelect } from "../../components/car-select/car-select";
 import { Car } from '../../../../core/interfaces/car.interface';
 import { SelectService } from "../../components/select-service/select-service";
 import { ServicesOfferedInterface } from '../../../../core/interfaces/servicesOffered.interfaces';
+import { DataSelectService } from '../../../../core/interfaces/partTypeService.interface';
 @Component({
   selector: 'app-appointment-page',
   imports: [Header, CarSelect, SelectService],
@@ -13,17 +14,23 @@ import { ServicesOfferedInterface } from '../../../../core/interfaces/servicesOf
 })
 export class AppointmentPage {
 
-  nextSecction:number = 2
+  nextSecction:number = 1
   carSelected:Car | null = null
-  servicedSelected:ServicesOfferedInterface[] = []
+  servicedSelected:DataSelectService[] = []
 
   getUserCarSelected(car:Car){
     this.carSelected = car
     this.nextSecction++
   }
 
-  getAllUserServiceSelected(servicesSelected:ServicesOfferedInterface[]){
+  getAllUserServiceSelected(servicesSelected:DataSelectService[]){
     this.servicedSelected = servicesSelected
+    console.log(servicesSelected);
     this.nextSecction++
+  }
+
+
+  backSection(){
+    this.nextSecction--
   }
 }
