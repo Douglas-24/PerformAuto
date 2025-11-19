@@ -19,6 +19,11 @@
             ></app-select-service>
         </div>
         }
+        @if (nextSecction == 3) {
+        <div>
+            <app-initial-budget [car]="carSelected" [servicesPartsSelected]="servicedSelected"></app-initial-budget>
+        </div>
+        }
 
     </div>
 </div>

@@ -4,11 +4,11 @@ import { Header } from '../../../../shared/header/header';
 import { CarSelect } from "../../components/car-select/car-select";
 import { Car } from '../../../../core/interfaces/car.interface';
 import { SelectService } from "../../components/select-service/select-service";
-import { ServicesOfferedInterface } from '../../../../core/interfaces/servicesOffered.interfaces';
 import { DataSelectService } from '../../../../core/interfaces/partTypeService.interface';
+import { InitialBudget } from "../../components/initial-budget/initial-budget";
 @Component({
   selector: 'app-appointment-page',
-  imports: [Header, CarSelect, SelectService],
+  imports: [Header, CarSelect, SelectService, InitialBudget],
   templateUrl: './appointment-page.html',
   styleUrl: './appointment-page.css'
 })
