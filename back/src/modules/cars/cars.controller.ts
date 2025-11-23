@@ -11,14 +11,14 @@ import { Role } from '@prisma/client';
 export class CarsController {
   constructor(private readonly carsService: CarsService) {}
 
-  @UseGuards(new RoleGuard([Role.ADMIN, Role.CUSTOMER_SERVICE]))
+  @UseGuards(new RoleGuard([Role.ADMIN]))
   @Post()
   async create(@Body() createCarDto: CreateCarDto):Promise<successfulResponse> {
     const newCar = await this.carsService.create(createCarDto);
     return apiResponse(201,'Coche añadido correctamente', newCar)
   }
 
-  @UseGuards(new RoleGuard([Role.ADMIN, Role.CUSTOMER_SERVICE]))
+  @UseGuards(new RoleGuard([Role.ADMIN]))
   @Get()
   async findAll():Promise<successfulResponse> {
     const allCars = await this.carsService.findAll() 
@@ -32,7 +32,7 @@ export class CarsController {
     return apiResponse(200, 'Coche obtenido correctamente',car)
   }
 
-  @UseGuards(new RoleGuard([Role.ADMIN, Role.CUSTOMER_SERVICE]))
+  @UseGuards(new RoleGuard([Role.ADMIN]))
   @Put(':id')
   async update(@Param('id') id: string, @Body() updateCarDto: UpdateCarDto):Promise<successfulResponse> {
     const carUpdate = await this.carsService.update(+id, updateCarDto);

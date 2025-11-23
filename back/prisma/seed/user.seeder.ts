@@ -54,7 +54,7 @@ export async function seedUsers() {
             phone_number: 600333333,
             address: 'Calle Luna 3',
             postal_code: 13003,
-            rol: Role.CUSTOMER_SERVICE,
+            rol: Role.CLIENT,
             account_verified: true,
             date_register: new Date()
 
@@ -73,7 +73,7 @@ export async function seedUsers() {
             phone_number: 600444444,
             address: 'Calle Estrella 4',
             postal_code: 13004,
-            rol: Role.WAREHOUSE_MANAGER,
+            rol: Role.ADMIN,
             account_verified: true,
             date_register: new Date()
 
@@ -92,7 +92,7 @@ export async function seedUsers() {
             phone_number: 600555555,
             address: 'Calle Motor 5',
             postal_code: 13005,
-            rol: Role.MECHANIC,
+            rol: Role.CLIENT,
             account_verified: true,
             date_register: new Date()
 

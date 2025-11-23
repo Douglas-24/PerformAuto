@@ -16,6 +16,9 @@ datasource db {
 enum Role {
   CLIENT
   ADMIN
+}
+
+enum RoleEmployee {
   CUSTOMER_SERVICE // Atencion al cliente
   WAREHOUSE_MANAGER // Encargado de almacen, piezas inventario
   MECHANIC // Mecanico
@@ -35,21 +38,40 @@ enum StatePayment {
 }
 
 model User {
-  id                 Int         @id @default(autoincrement())
-  name               String
-  lastname           String
-  dni                String      @unique
-  email              String      @unique
-  password           String
-  phone_number       Int         @unique
-  address            String
-  postal_code        Int
-  rol                Role        @default(CLIENT)
-  account_verified   Boolean     @default(false)
-  cars               Car[]
-  date_register      DateTime
-  servicesAsClient   Appoiment[] @relation("ClientRelation")
-  servicesAsMechanic Appoiment[] @relation("MechanicRelation")
+  id               Int         @id @default(autoincrement())
+  name             String
+  lastname         String
+  dni              String      @unique
+  email            String      @unique
+  password         String
+  phone_number     Int         @unique
+  address          String
+  postal_code      Int
+  rol              Role        @default(CLIENT)
+  account_verified Boolean     @default(false)
+  cars             Car[]
+  date_register    DateTime
+  servicesAsClient Appoiment[]
+}
+
+model Employee {
+  id          Int                    @id @default(autoincrement())
+  name        String
+  lastname    String
+  email       String
+  password    String
+  rol         RoleEmployee
+  workingHour EmployeeWorkingHours?
+  appoiment   Appoiment[]
+}
+
+model EmployeeWorkingHours {
+  id         Int      @id @default(autoincrement())
+  dayOfWeek  Int
+  startTime  String
+  endTime    String
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  employeeId Int @unique
 }
 
 model Car {
@@ -82,15 +104,15 @@ model Service {
 model Appoiment {
   id                  Int                @id @default(autoincrement())
   state               StateServie
-  client              User               @relation("ClientRelation", fields: [clientId], references: [id])
+  client              User               @relation(fields: [clientId], references: [id])
   clientId            Int
   car                 Car                @relation(fields: [carId], references: [id])
   carId               Int
   services            AppoimentService[]
-  mechanic            User               @relation("MechanicRelation", fields: [mechanicId], references: [id])
+  mechanic            Employee           @relation(fields: [mechanicId], references: [id])
   mechanicId          Int
   appoiment_date      DateTime
-  mileage_at_delivery Int               @default(0)
+  mileage_at_delivery Int                @default(0)
   invoice             Invoice[]
 }
 
@@ -109,8 +131,8 @@ model Parts {
   reference      String
   price          Int
   stock          Int                    @default(0)
-  frequency_km   Int  @default(0)
-  frequency_time String @default("")
+  frequency_km   Int                    @default(0)
+  frequency_time String                 @default("")
   typeServices   PartsService[]
   usedInServices AppoimentServicePart[]
 }

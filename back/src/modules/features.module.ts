@@ -6,8 +6,9 @@ import { MailModule } from './mail/mail.module';
 import { PartsModule } from './parts/parts.module';
 import { ServicePartsModule } from './service-parts/servicesParts.module';
 import { ServiceWorkshopModule } from './service-workshop/service-workshop.module';
+import { EmployeeModule } from './employee/employee.module';
 @Module({
-    imports:[UserModule, AuthModule, CarsModule, MailModule, PartsModule, ServicePartsModule, ServiceWorkshopModule],
+    imports:[UserModule, AuthModule, CarsModule, MailModule, PartsModule, ServicePartsModule, ServiceWorkshopModule, EmployeeModule],
 })
 
 export class FeaturesModule { }

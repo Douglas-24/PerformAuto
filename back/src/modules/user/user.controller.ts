@@ -11,7 +11,7 @@ import { Role } from '@prisma/client';
 export class UserController {
     constructor(private userService:UserService){}
 
-    @UseGuards(new RoleGuard([Role.ADMIN, Role.CUSTOMER_SERVICE]))
+    @UseGuards(new RoleGuard([Role.ADMIN]))
     @Post()
     async postUser(@Body() user: Omit<CreateUserDto, 'password'> ):Promise<successfulResponse>{
         const passGenerate = passwordGenerate()
@@ -20,21 +20,21 @@ export class UserController {
         return apiResponse(201, "Usuario creado correctamente", userCreate)
     }
 
-    @UseGuards(new RoleGuard([Role.ADMIN, Role.CUSTOMER_SERVICE]))
+    @UseGuards(new RoleGuard([Role.ADMIN]))
     @Put(':id')
     async updateUser(@Param('id') id:number, @Body() user: UpdateUserDto):Promise<successfulResponse>{
         const updateUser = await this.userService.updateUser(+id, user)
         return apiResponse(200, "Usuario actualizado", updateUser)
     }
 
-    @UseGuards(new RoleGuard([Role.ADMIN, Role.CUSTOMER_SERVICE]))
+    @UseGuards(new RoleGuard([Role.ADMIN]))
     @Get()
     async getAllUser():Promise<successfulResponse>{
         const allUsers = await this.userService.getAllUser()        
         return apiResponse(200, "Lista de usuarios",allUsers)
     }
 
-    @UseGuards(new RoleGuard([Role.ADMIN, Role.CUSTOMER_SERVICE]))
+    @UseGuards(new RoleGuard([Role.ADMIN]))
     @Get(':id')
     async getUserById(@Param('id') id:string):Promise<successfulResponse>{
         const user = await this.userService.getUser(+id)
