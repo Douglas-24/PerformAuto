@@ -9,13 +9,38 @@ CREATE TABLE `User` (
     `phone_number` INTEGER NOT NULL,
     `address` VARCHAR(191) NOT NULL,
     `postal_code` INTEGER NOT NULL,
-    `rol` ENUM('CLIENT', 'ADMIN', 'CUSTOMER_SERVICE', 'WAREHOUSE_MANAGER', 'MECHANIC') NOT NULL DEFAULT 'CLIENT',
+    `rol` ENUM('CLIENT', 'ADMIN') NOT NULL DEFAULT 'CLIENT',
     `account_verified` BOOLEAN NOT NULL DEFAULT false,
     `date_register` DATETIME(3) NOT NULL,
 
     UNIQUE INDEX `User_dni_key`(`dni`),
     UNIQUE INDEX `User_email_key`(`email`),
     UNIQUE INDEX `User_phone_number_key`(`phone_number`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Employee` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(191) NOT NULL,
+    `lastname` VARCHAR(191) NOT NULL,
+    `email` VARCHAR(191) NOT NULL,
+    `password` VARCHAR(191) NOT NULL,
+    `rol` ENUM('CUSTOMER_SERVICE', 'WAREHOUSE_MANAGER', 'MECHANIC') NOT NULL,
+    `isActive` BOOLEAN NOT NULL DEFAULT true,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `EmployeeWorkingHours` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `dayOfWeek` INTEGER NOT NULL,
+    `startTime` VARCHAR(191) NOT NULL,
+    `endTime` VARCHAR(191) NOT NULL,
+    `employeeId` INTEGER NOT NULL,
+
+    UNIQUE INDEX `EmployeeWorkingHours_employeeId_key`(`employeeId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -27,7 +52,7 @@ CREATE TABLE `Car` (
     `model` VARCHAR(191) NOT NULL,
     `enrolment` VARCHAR(191) NOT NULL,
     `chassis_number` VARCHAR(191) NOT NULL,
-    `last_revision` DATETIME(3) NOT NULL,
+    `last_revision` DATETIME(3) NULL,
     `current_mileage` INTEGER NOT NULL,
     `engine` VARCHAR(191) NOT NULL,
     `ownerId` INTEGER NOT NULL,
@@ -58,7 +83,8 @@ CREATE TABLE `Appoiment` (
     `carId` INTEGER NOT NULL,
     `mechanicId` INTEGER NOT NULL,
     `appoiment_date` DATETIME(3) NOT NULL,
-    `mileage_at_delivery` INTEGER NULL DEFAULT 0,
+    `mileage_at_delivery` INTEGER NOT NULL DEFAULT 0,
+    `duration` VARCHAR(191) NOT NULL DEFAULT '',
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -79,8 +105,8 @@ CREATE TABLE `Parts` (
     `reference` VARCHAR(191) NOT NULL,
     `price` INTEGER NOT NULL,
     `stock` INTEGER NOT NULL DEFAULT 0,
-    `frequency_km` INTEGER NULL,
-    `frequency_time` VARCHAR(191) NULL,
+    `frequency_km` INTEGER NOT NULL DEFAULT 0,
+    `frequency_time` VARCHAR(191) NOT NULL DEFAULT '',
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -92,6 +118,17 @@ CREATE TABLE `PartsService` (
     `typeServiceId` INTEGER NOT NULL,
     `quantity` INTEGER NOT NULL,
     `changeRecomended` BOOLEAN NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `AppoimentServicePart` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `appoimentServiceId` INTEGER NOT NULL,
+    `partId` INTEGER NOT NULL,
+    `quantity` INTEGER NOT NULL,
+    `replaced` BOOLEAN NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -110,6 +147,9 @@ CREATE TABLE `Invoice` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
+ALTER TABLE `EmployeeWorkingHours` ADD CONSTRAINT `EmployeeWorkingHours_employeeId_fkey` FOREIGN KEY (`employeeId`) REFERENCES `Employee`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE `Car` ADD CONSTRAINT `Car_ownerId_fkey` FOREIGN KEY (`ownerId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -119,7 +159,7 @@ ALTER TABLE `Appoiment` ADD CONSTRAINT `Appoiment_clientId_fkey` FOREIGN KEY (`c
 ALTER TABLE `Appoiment` ADD CONSTRAINT `Appoiment_carId_fkey` FOREIGN KEY (`carId`) REFERENCES `Car`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Appoiment` ADD CONSTRAINT `Appoiment_mechanicId_fkey` FOREIGN KEY (`mechanicId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Appoiment` ADD CONSTRAINT `Appoiment_mechanicId_fkey` FOREIGN KEY (`mechanicId`) REFERENCES `Employee`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `AppoimentService` ADD CONSTRAINT `AppoimentService_id_appoiment_fkey` FOREIGN KEY (`id_appoiment`) REFERENCES `Appoiment`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -132,6 +172,12 @@ ALTER TABLE `PartsService` ADD CONSTRAINT `PartsService_partId_fkey` FOREIGN KEY
 
 -- AddForeignKey
 ALTER TABLE `PartsService` ADD CONSTRAINT `PartsService_typeServiceId_fkey` FOREIGN KEY (`typeServiceId`) REFERENCES `Service`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `AppoimentServicePart` ADD CONSTRAINT `AppoimentServicePart_appoimentServiceId_fkey` FOREIGN KEY (`appoimentServiceId`) REFERENCES `AppoimentService`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `AppoimentServicePart` ADD CONSTRAINT `AppoimentServicePart_partId_fkey` FOREIGN KEY (`partId`) REFERENCES `Parts`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Invoice` ADD CONSTRAINT `Invoice_id_appoiment_fkey` FOREIGN KEY (`id_appoiment`) REFERENCES `Appoiment`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

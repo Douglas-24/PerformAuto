@@ -1,32 +1,32 @@
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
-export async function seedTypeServices() {
+export async function seedServices() {
   await prisma.service.createMany({
     data: [
       {
         name: 'Cambio de aceite',
-        description: 'Reemplazo de aceite y filtro de motor',
-        price: 49,
-        frequency_km: 15000,
-        frequency_time: '12 meses',
-        duration: '1 hora'
-      },
-      {
-        name: 'Revisión de frenos',
-        description: 'Inspección y ajuste de frenos, cambio de pastillas si es necesario',
-        price: 59,
-        frequency_km: 20000,
-        frequency_time: '18 meses',
-        duration: '2 horas'
-      },
-      {
-        name: 'Alineación de dirección',
-        description: 'Ajuste de ángulos de dirección y suspensión',
-        price: 39,
+        description: 'Cambio de aceite del motor y revisión general',
+        price: 50,
         frequency_km: 10000,
         frequency_time: '12 meses',
-        duration: '3 horas'
+        duration: '2h',
+      },
+      {
+        name: 'Cambio de frenos',
+        description: 'Sustitución de pastillas y revisión de discos',
+        price: 120,
+        frequency_km: 30000,
+        frequency_time: '24 meses',
+        duration: '3h',
+      },
+      {
+        name: 'Cambio de batería',
+        description: 'Sustitución de batería estándar de 60Ah',
+        price: 100,
+        frequency_km: 0,
+        frequency_time: '48 meses',
+        duration: '1h',
       },
       {
         name: 'Cambio de filtro de aire',
@@ -34,26 +34,10 @@ export async function seedTypeServices() {
         price: 25,
         frequency_km: 15000,
         frequency_time: '12 meses',
-        duration: '20 min'
-      },
-      {
-        name: 'Cambio de batería',
-        description: 'Sustitución de batería por desgaste o fallo',
-        price: 89,
-        frequency_km: 60000,
-        frequency_time: '36 meses',
-        duration: '20 min'
-      },
-      {
-        name: 'Revisión general',
-        description: 'Chequeo completo del vehículo: líquidos, luces, neumáticos, etc.',
-        price: 69,
-        frequency_km: 10000,
-        frequency_time: '6 meses',
-        duration: '5 horas'
+        duration: '1h',
       },
     ],
   });
 
-  console.log('🛠️ Tipos de servicio insertados correctamente');
+  console.log('⚙️ Servicios insertados correctamente');
 }

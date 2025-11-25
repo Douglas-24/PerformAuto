@@ -55,13 +55,14 @@ model User {
 }
 
 model Employee {
-  id          Int                    @id @default(autoincrement())
+  id          Int                   @id @default(autoincrement())
   name        String
   lastname    String
   email       String
   password    String
   rol         RoleEmployee
   workingHour EmployeeWorkingHours?
+  isActive    Boolean               @default(true)
   appoiment   Appoiment[]
 }
 
@@ -71,7 +72,7 @@ model EmployeeWorkingHours {
   startTime  String
   endTime    String
   employee   Employee @relation(fields: [employeeId], references: [id])
-  employeeId Int @unique
+  employeeId Int      @unique
 }
 
 model Car {
@@ -113,6 +114,7 @@ model Appoiment {
   mechanicId          Int
   appoiment_date      DateTime
   mileage_at_delivery Int                @default(0)
+  duration            String             @default("")
   invoice             Invoice[]
 }
 
