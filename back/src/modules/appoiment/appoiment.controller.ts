@@ -1,0 +1,60 @@
+import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { AppoimentService } from './appoiment.service';
+import { CreateAppoimentDto } from './dto/create-appoiment.dto';
+import { UpdateAppoimentDto } from './dto/update-appoiment.dto';
+import { successfulResponse } from 'src/core/interfaces/successfulResponse.interface';
+import { apiResponse } from 'src/core/utils/apiResponse';
+
+@Controller('appoiment')
+export class AppoimentController {
+  constructor(private readonly appoimentService: AppoimentService) { }
+
+  @Post()
+  async create(@Body() createAppoimentDto: CreateAppoimentDto): Promise<successfulResponse> {
+    const appoiment = await this.appoimentService.create(createAppoimentDto)
+    return apiResponse(200, 'Cita creada correctamente', appoiment)
+  }
+
+  @Get()
+  async findAll(): Promise<successfulResponse> {
+    const allAppoiments = await this.appoimentService.findAll()
+    return apiResponse(200, 'Lista de citas', allAppoiments)
+  }
+
+  @Get('appoiment-client/:id')
+  async getAllAppoimentClient(@Param('id') id: string): Promise<successfulResponse> {
+    const appoiment = await this.appoimentService.findAllAppoimentClient(+id)
+    return apiResponse(200, 'Lista de citas obtenidas', appoiment)
+  }
+
+  @Get('appoiment-mechanic/:id')
+  async getAllAppoimentMechanic(@Param('id') id: string): Promise<successfulResponse> {
+    const appoiment = await this.appoimentService.findAllApoimentMechanic(+id)
+    return apiResponse(200, 'Lista de citas obtenidas', appoiment)
+  }
+
+  @Post('dates-available')
+  async getDatesAvailable(@Body() durationStimated: number): Promise<successfulResponse> {
+    const dates = await this.appoimentService.setAppointmentDate(new Date(), durationStimated)
+    return apiResponse(200, 'Lista de fechas posibles', dates)
+
+  }
+
+  @Get(':id')
+  async findOne(@Param('id') id: string): Promise<successfulResponse> {
+    const appoiment = await this.appoimentService.findOne(+id)
+    return apiResponse(200, 'Cita obtenida correctamente', appoiment)
+  }
+
+  @Patch(':id')
+  async update(@Param('id') id: string, @Body() updateAppoimentDto: UpdateAppoimentDto): Promise<successfulResponse> {
+    const updated = await this.appoimentService.update(+id, updateAppoimentDto)
+    return apiResponse(200, 'Cita actualizada correctamente', updated)
+  }
+
+  @Delete(':id')
+  async remove(@Param('id') id: string): Promise<successfulResponse> {
+    await this.appoimentService.remove(+id)
+    return apiResponse(200, 'Cita eliminada correctamente')
+  }
+}

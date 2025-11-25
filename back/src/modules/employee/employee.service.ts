@@ -5,7 +5,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import * as bcrypt from 'bcrypt'
 // import { MailService } from '../mail/mail.service';
 import { passwordGenerate } from 'src/core/utils/generator';
-import { Employee, EmployeeWorkingHours } from '@prisma/client';
+import { Employee, EmployeeWorkingHours, RoleEmployee } from '@prisma/client';
 import { EmployeeData } from './dto/create-employee.dto';
 
 @Injectable()
@@ -74,5 +74,16 @@ export class EmployeeService {
     await this.findOne(id)
     await this.prisma.employeeWorkingHours.delete({where: {employeeId: id}})
     await this.prisma.employee.delete({where: {id:id}})
+  }
+
+  async getAllMecanic():Promise<Employee[]>{
+    const mecanics = await this.prisma.employee.findMany({
+      where: { rol: RoleEmployee.MECHANIC},
+      include: {
+        workingHour: true,
+        appoiment: true
+      }
+    })
+    return mecanics
   }
 }
