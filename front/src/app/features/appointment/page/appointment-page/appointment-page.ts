@@ -7,9 +7,10 @@ import { SelectService } from "../../components/select-service/select-service";
 import { DataSelectService } from '../../../../core/interfaces/partTypeService.interface';
 import { InitialBudget } from "../../components/initial-budget/initial-budget";
 import { SelectDate } from "../../components/select-date/select-date";
+import { ConfirmAppointment } from "../../components/confirm-appointment/confirm-appointment";
 @Component({
   selector: 'app-appointment-page',
-  imports: [Header, CarSelect, SelectService, InitialBudget, SelectDate],
+  imports: [Header, CarSelect, SelectService, InitialBudget, SelectDate, ConfirmAppointment],
   templateUrl: './appointment-page.html',
   styleUrl: './appointment-page.css'
 })
@@ -18,7 +19,7 @@ export class AppointmentPage {
   nextSecction:number = 1
   carSelected:Car | null = null
   servicedSelected:DataSelectService[] = []
-
+  dateAppointment: Date = new Date()
   getUserCarSelected(car:Car){
     this.carSelected = car
     this.nextSectionAction()
@@ -29,7 +30,8 @@ export class AppointmentPage {
     this.nextSectionAction()
   }
 
-  nextSectionAction(){
+  nextSectionAction(dateAppointment?:Date){
+    if(dateAppointment) this.dateAppointment = dateAppointment
     this.nextSecction++
   }  
 

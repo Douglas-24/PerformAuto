@@ -18,6 +18,7 @@ export class SelectDate implements OnInit {
   @Input() servicesPartsSelected: DataSelectService[] = []
   @Input() car: Car | null = null
   @Output() back = new EventEmitter()
+  @Output() dateAppointment = new EventEmitter<Date>()
   private appointmentService = inject(AppointmentService)
   private modal = inject(Dialog)
   duration: number = 0
@@ -88,7 +89,9 @@ export class SelectDate implements OnInit {
 
       this.appointmentService.createAppointment({appoinment:appintmentCreate,servicesSelected: this.servicesPartsSelected}).subscribe({
         next:(resp) =>{
-          console.log(resp);
+          if(resp.statusCode == 200){
+            this.nextSecction()
+          }
         },
         error: (error) => {
           console.log(error);
@@ -96,6 +99,10 @@ export class SelectDate implements OnInit {
       })
 
     }
+  }
+
+  nextSecction(){
+    this.dateAppointment.emit(this.dateAppointmentSelected?.date)
   }
 
   backSection() {
