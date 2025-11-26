@@ -21,8 +21,19 @@
         }
         @if (nextSecction == 3) {
         <div>
-            <app-initial-budget [car]="carSelected" [servicesPartsSelected]="servicedSelected"></app-initial-budget>
+            <app-initial-budget 
+            (back)="backSection()"
+            (next)="nextSectionAction()"
+            [car]="carSelected" 
+            [servicesPartsSelected]="servicedSelected"
+            ></app-initial-budget>
         </div>
+        }
+
+        @if (nextSecction == 4) {
+            <div>
+                <app-select-date [car]="carSelected" [servicesPartsSelected]="servicedSelected"></app-select-date>
+            </div>
         }
 
     </div>

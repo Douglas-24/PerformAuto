@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { DataSelectService } from '../../../../core/interfaces/partTypeService.interface';
 import { Car } from '../../../../core/interfaces/car.interface';
 
@@ -9,15 +9,16 @@ import { Car } from '../../../../core/interfaces/car.interface';
   styleUrl: './initial-budget.css'
 })
 export class InitialBudget implements OnInit {
-  estimatedPrice:number = 0
-  @Input() car:Car | null = null  
-  @Input() servicesPartsSelected:DataSelectService[] = []
-
-  ngOnInit(){
-   if(this.servicesPartsSelected) this.estimatedPrice = this.calculateEstimatePrice() 
+  estimatedPrice: number = 0
+  @Input() car: Car | null = null
+  @Input() servicesPartsSelected: DataSelectService[] = []
+  @Output() back = new EventEmitter()
+  @Output() next = new EventEmitter()
+  ngOnInit() {
+    if (this.servicesPartsSelected) this.estimatedPrice = this.calculateEstimatePrice()
   }
 
- infoPart = {
+  infoPart = {
     SHOULD_CHANGE: {
       nameSpain: "Cambiar",
       showPrice: "",
@@ -39,21 +40,30 @@ export class InitialBudget implements OnInit {
   }
 
 
-  priceSercive(service:DataSelectService):number{
+  priceSercive(service: DataSelectService): number {
     let price = service.service.price
     for (let index = 0; index < service.parts.length; index++) {
-      if(service.parts[index].acctionPart == "SHOULD_CHANGE"){
+      if (service.parts[index].acctionPart == "SHOULD_CHANGE") {
         price += service.parts[index].price
-      }      
+      }
     }
     return price
   }
 
-  calculateEstimatePrice():number{
+  calculateEstimatePrice(): number {
     let price = 0
     for (let index = 0; index < this.servicesPartsSelected.length; index++) {
       price += this.priceSercive(this.servicesPartsSelected[index])
     }
     return price
+  }
+
+
+  backSection() {
+    this.back.emit()
+  }
+
+  nextSection() {
+    this.next.emit()
   }
 }

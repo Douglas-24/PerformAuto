@@ -76,7 +76,6 @@ export class SelectService implements OnInit {
       this.allServices.splice(index, 1)
       this.servicesSelected.push(selectService)
     }
-    console.log(this.servicesSelected);
 
   }
 

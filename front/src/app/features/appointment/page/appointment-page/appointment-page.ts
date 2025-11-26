@@ -6,9 +6,10 @@ import { Car } from '../../../../core/interfaces/car.interface';
 import { SelectService } from "../../components/select-service/select-service";
 import { DataSelectService } from '../../../../core/interfaces/partTypeService.interface';
 import { InitialBudget } from "../../components/initial-budget/initial-budget";
+import { SelectDate } from "../../components/select-date/select-date";
 @Component({
   selector: 'app-appointment-page',
-  imports: [Header, CarSelect, SelectService, InitialBudget],
+  imports: [Header, CarSelect, SelectService, InitialBudget, SelectDate],
   templateUrl: './appointment-page.html',
   styleUrl: './appointment-page.css'
 })
@@ -20,14 +21,17 @@ export class AppointmentPage {
 
   getUserCarSelected(car:Car){
     this.carSelected = car
-    this.nextSecction++
+    this.nextSectionAction()
   }
 
   getAllUserServiceSelected(servicesSelected:DataSelectService[]){
     this.servicedSelected = servicesSelected
-    console.log(servicesSelected);
-    this.nextSecction++
+    this.nextSectionAction()
   }
+
+  nextSectionAction(){
+    this.nextSecction++
+  }  
 
 
   backSection(){
