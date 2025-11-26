@@ -89,6 +89,21 @@ export class AppoimentService {
     return allAppoiments
   }
 
+  async getAllCarWithAppointment(id_car: number) {
+    const appoiment = await this.prisma.appoiment.findFirst({
+      where: {
+        carId: id_car,
+        state: {
+          in: [StateServie.STARTED, StateServie.PENDING]
+        }
+      },
+      include:{
+        car: true
+      }
+    })
+    return appoiment
+  }
+
   async findOne(id: number): Promise<Appoiment> {
     const appoiment = await this.prisma.appoiment.findUnique({
       where: { id: id },
@@ -261,7 +276,7 @@ export class AppoimentService {
     return availableDates
   }
 
-// Filtrar si se esta pidiendo el mismo dia una cita, omitir horas anteriores respecto a la hora en que pedimos la cita
+  // Filtrar si se esta pidiendo el mismo dia una cita, omitir horas anteriores respecto a la hora en que pedimos la cita
   filterPastSlots(slots: Date[], now: Date): Date[] {
     return slots.filter(s => {
       const isSameDay =
@@ -271,7 +286,7 @@ export class AppoimentService {
 
       return !isSameDay || s.getTime() >= now.getTime()
     })
-    
+
   }
 
 
