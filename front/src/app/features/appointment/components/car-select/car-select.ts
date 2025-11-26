@@ -3,9 +3,8 @@ import { CommonModule } from '@angular/common';
 import { CarService } from '../../../../core/service/car.service';
 import { AuthService } from '../../../../core/service/auth.service';
 import { ToastServices } from '../../../../core/service/toast.service';
-import { Car } from '../../../../core/interfaces/car.interface';
-import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Separator } from "../../../../shared/separator/separator";
+import { Car, CarUser } from '../../../../core/interfaces/car.interface';
+import { ReactiveFormsModule } from '@angular/forms';
 @Component({
   selector: 'app-car-select',
   imports: [ReactiveFormsModule, CommonModule],
@@ -18,7 +17,7 @@ export class CarSelect {
   private toastService = inject(ToastServices)
 
   array = Array.from({length: 10})
-  allCarsUser: Car[] = []
+  allCarsUser: CarUser[] = []
   showSelected: Car | null = null
   @Output() userCarSelected = new EventEmitter<Car>()
   ngOnInit(): void {
