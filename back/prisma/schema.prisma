@@ -97,7 +97,7 @@ model Service {
   price          Int
   frequency_km   Int // Cada cuantos km realizar este servicio
   frequency_time String // Cada cierto tiempo realizar el servicio
-  duration       String // En horas
+  duration       Int // En horas
   services       AppoimentService[]
   parts          PartsService[]
 }

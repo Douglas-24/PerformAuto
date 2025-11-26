@@ -17,5 +17,5 @@ export class CreateServiceWorkshopDto {
     frequency_time: string;
 
     @IsString()
-    duration: string;
+    duration: number;
 }

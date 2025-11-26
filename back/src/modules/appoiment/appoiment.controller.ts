@@ -34,8 +34,8 @@ export class AppoimentController {
   }
 
   @Post('dates-available')
-  async getDatesAvailable(@Body() durationStimated: number): Promise<successfulResponse> {
-    const dates = await this.appoimentService.setAppointmentDate(new Date(), durationStimated)
+  async getDatesAvailable(@Body() durationStimated: {duration:number}): Promise<successfulResponse> {
+    const dates = await this.appoimentService.setAppointmentDate(new Date(), durationStimated.duration)
     return apiResponse(200, 'Lista de fechas posibles', dates)
 
   }

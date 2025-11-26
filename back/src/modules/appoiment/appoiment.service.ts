@@ -4,9 +4,22 @@ import { UpdateAppoimentDto } from './dto/update-appoiment.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Appoiment, Employee, StateServie } from '@prisma/client';
 import { EmployeeService } from '../employee/employee.service';
+interface MechanicAppointment{
+  mechanicId: number
+  appointment: Appoiment[]
+}
+interface MechanicSlot {
+  number: number
+  slot: Date[]
+}
+interface AvailableSlot {
+  day: Date
+  slot: MechanicSlot[]
+}
+
 @Injectable()
 export class AppoimentService {
-  rangeDateAppoiment: number = 5
+  rangeDateAppoiment: number = 7
   constructor(
     private prisma: PrismaService,
     private employeeService: EmployeeService
@@ -92,21 +105,15 @@ export class AppoimentService {
   async setAppointmentDate(startDate: Date, durationStimatedAppoiment: number) {
     const allAppoiment = await this.getAllApoimentByDateRange(startDate)
     const allMecanic = await this.employeeService.getAllMecanic()
+    const availableSlots: AvailableSlot[] = []
+    const dateInitial = new Date(startDate)
 
-    const availableSlots: {
-      date: Date;
-      mechanicId: number;
-      slots: Date[];
-    }[] = []
-
-    const date = new Date(startDate.getTime())
-    console.log(date)
     for (let i = 0; i < this.rangeDateAppoiment; i++) {
-      date.setDate(date.getDate() + i)
-
+      const date = new Date(dateInitial)
+      date.setDate(dateInitial.getDate() + i)
       const dayWeek = date.getDay()
 
-      // Comparar que no sea ni domingo ni sabado
+      // // Comparar que no sea ni domingo ni sabado
       if (dayWeek != 6 && dayWeek != 0) {
         // Inicio y final de la jornada del mecanico
         const startDay = new Date(date)
@@ -123,13 +130,10 @@ export class AppoimentService {
 
         //determinar si tiene hueco o no en ese dia teniendo en cuenta la duracion estimada de la cita del cliente
         const slotsMap = this.mechaniclAvailability(durationStimatedAppoiment, appoimentMechanic, startDay, endDay)
-        for (const [mechanicId, slots] of slotsMap.entries()) {
-          availableSlots.push({
-            date,
-            mechanicId,
-            slots
-          })
-        }
+        availableSlots.push({
+          day: date,
+          slot: slotsMap
+        })
       }
     }
 
@@ -138,23 +142,25 @@ export class AppoimentService {
   }
 
   // Citas que tiene el mecanico durante un dia
-  getAppoimentMecanicDay(mechanics: Employee[], appoimentDay: Appoiment[]): Map<number, Appoiment[]> {
-    const mechanicAppoiment = new Map<number, Appoiment[]>()
+  getAppoimentMecanicDay(mechanics: Employee[], appoimentDay: Appoiment[]): MechanicAppointment[] {
+    const mechanicAppoiment:MechanicAppointment[] = []
     for (const mechanic of mechanics) {
-      const appoiment = appoimentDay.filter(a => a.mechanicId === mechanic.id);
-      mechanicAppoiment.set(mechanic.id, appoiment);
+      const appoiment = appoimentDay.filter(a => a.mechanicId === mechanic.id)
+      mechanicAppoiment.push({mechanicId: mechanic.id, appointment: appoiment})
     }
+
+    
     return mechanicAppoiment
   }
 
 
 
   // Horas y fechas libres dependiendo de las citas que tenga el mecanico
-  mechaniclAvailability(durationStimatedAppoiment: number, appoimentMechanic: Map<number, Appoiment[]>, startDay: Date, endDay: Date): Map<number, Date[]> {
-    const availableDates: Map<number, Date[]> = new Map<number, Date[]>()
+  mechaniclAvailability(durationStimatedAppoiment: number, appoimentMechanic: MechanicAppointment[], startDay: Date, endDay: Date): MechanicSlot[] {
+    const availableDates: MechanicSlot[] = []
 
-    for (const [mechanicId, appoiment] of appoimentMechanic.entries()) {
-      const appoimentOrder = appoiment.sort(
+    for (const mechanic of appoimentMechanic) {
+      const appoimentOrder = mechanic.appointment.sort(
         (a, b) => a.appoiment_date.getTime() - b.appoiment_date.getTime()
       )
 
@@ -167,7 +173,7 @@ export class AppoimentService {
           available.push(new Date(slot))
           slot = new Date(slot.getTime() + 3600000)
         }
-        availableDates.set(mechanicId, available)
+        availableDates.push({number: mechanic.mechanicId, slot: available})
         continue
       }
 
@@ -178,7 +184,7 @@ export class AppoimentService {
         if (diffHour >= durationStimatedAppoiment) available.push(new Date(startDay))
       } else {
         available.push(new Date(startDay))
-        availableDates.set(mechanicId, available)
+        availableDates.push({number: mechanic.mechanicId, slot: available})
         continue
       }
 
@@ -199,7 +205,7 @@ export class AppoimentService {
       endAppoiment.setHours(endAppoiment.getHours() + parseFloat(lastAppoiment.duration))
       const diffHourEnd = (endDay.getTime() - endAppoiment.getTime()) / 3600000
       if (diffHourEnd >= durationStimatedAppoiment) available.push(new Date(endAppoiment))
-      availableDates.set(mechanicId, available)
+      availableDates.push({number: mechanic.mechanicId, slot: available})
     }
     return availableDates
   }

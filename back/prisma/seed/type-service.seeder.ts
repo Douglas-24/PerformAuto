@@ -10,7 +10,7 @@ export async function seedServices() {
         price: 50,
         frequency_km: 10000,
         frequency_time: '12 meses',
-        duration: '2h',
+        duration: 2,
       },
       {
         name: 'Cambio de frenos',
@@ -18,7 +18,7 @@ export async function seedServices() {
         price: 120,
         frequency_km: 30000,
         frequency_time: '24 meses',
-        duration: '3h',
+        duration: 3,
       },
       {
         name: 'Cambio de batería',
@@ -26,7 +26,7 @@ export async function seedServices() {
         price: 100,
         frequency_km: 0,
         frequency_time: '48 meses',
-        duration: '1h',
+        duration: 1,
       },
       {
         name: 'Cambio de filtro de aire',
@@ -34,7 +34,7 @@ export async function seedServices() {
         price: 25,
         frequency_km: 15000,
         frequency_time: '12 meses',
-        duration: '1h',
+        duration: 1,
       },
     ],
   });
