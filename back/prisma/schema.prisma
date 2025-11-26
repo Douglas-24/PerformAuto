@@ -37,6 +37,13 @@ enum StatePayment {
   CANCELLED
 }
 
+enum StateChangePart {
+  SHOULD_CHANGE
+  REVIEW
+  NO_CHANGE
+  REVISED
+  CHANGED
+}
 model User {
   id               Int         @id @default(autoincrement())
   name             String
@@ -114,7 +121,7 @@ model Appoiment {
   mechanicId          Int
   appoiment_date      DateTime
   mileage_at_delivery Int                @default(0)
-  duration            String             @default("")
+  duration            Int             @default(0)
   invoice             Invoice[]
 }
 
@@ -158,6 +165,7 @@ model AppoimentServicePart {
   partId             Int
   quantity           Int
   replaced           Boolean
+  statePart          StateChangePart @default(SHOULD_CHANGE)
 }
 
 model Invoice {

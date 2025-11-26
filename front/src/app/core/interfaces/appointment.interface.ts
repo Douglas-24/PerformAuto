@@ -14,11 +14,12 @@ export interface AvailableDay {
 }
 
 export enum StateServie {
-  STARTED,
-  PENDING,
-  CANCELLED,
-  FINISH
+  STARTED = "STARTED",
+  PENDING = "PENDING",
+  CANCELLED = "CANCELLED",
+  FINISH = "FINISH"
 }
+
 
 export interface Appointment {
     state: StateServie;
@@ -27,7 +28,7 @@ export interface Appointment {
     mechanicId: number;
     appoiment_date: Date;
     mileage_at_delivery: number;
-    duration: string
+    duration: number
 }
 
 export interface DataCreateAppointment{

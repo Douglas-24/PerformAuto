@@ -1,6 +1,9 @@
 import { IsString, IsEmail, IsInt, IsEnum, Matches, MinLength, IsDate, IsOptional, IsBoolean } from 'class-validator';
 
 export class CreateServiceWorkshopDto {
+    @IsInt()
+    id?:number
+
     @IsString()
     name: string;
 

@@ -1,4 +1,5 @@
 import { User, Car } from "@prisma/client";
+import { CreateServiceWorkshopDto } from "src/modules/service-workshop/dto/create-service-workshop.dto";
 
 export class PartDto {
   id: number;
@@ -43,4 +44,9 @@ export class DataPartChange{
   frequency_km: number
   frequency_time: string
   observation: string
+}
+
+export class DataServiceSelected {
+  parts: DataPartChange[]
+  service: CreateServiceWorkshopDto
 }

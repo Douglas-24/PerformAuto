@@ -1,5 +1,6 @@
 import { IsInt, IsDateString, IsEnum, Min, ValidateNested, IsString} from 'class-validator';
-import { StateServie } from '@prisma/client';
+import { StateServie, StateChangePart } from '@prisma/client';
+import { DataServiceSelected } from 'src/modules/service-parts/dto/TypeServiceParts.dto';
 
 export class CreateAppoimentDto {
     @IsEnum(StateServie)
@@ -22,5 +23,17 @@ export class CreateAppoimentDto {
     mileage_at_delivery: number;
 
     @IsString()
-    duration: string
+    duration: number
+}
+
+export class CreateAppoimentServicePartDto{
+    appoimentServiceId:number
+    partId:number
+    quantity: number
+    replaced: boolean
+    statePart: StateChangePart
+}
+export class DataAppointmentCreate{
+    appoinment: CreateAppoimentDto
+    servicesSelected: DataServiceSelected[]
 }

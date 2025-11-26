@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { AppoimentService } from './appoiment.service';
-import { CreateAppoimentDto } from './dto/create-appoiment.dto';
+import { CreateAppoimentDto, DataAppointmentCreate } from './dto/create-appoiment.dto';
 import { UpdateAppoimentDto } from './dto/update-appoiment.dto';
 import { successfulResponse } from 'src/core/interfaces/successfulResponse.interface';
 import { apiResponse } from 'src/core/utils/apiResponse';
@@ -10,7 +10,7 @@ export class AppoimentController {
   constructor(private readonly appoimentService: AppoimentService) { }
 
   @Post()
-  async create(@Body() createAppoimentDto: CreateAppoimentDto): Promise<successfulResponse> {
+  async create(@Body() createAppoimentDto: DataAppointmentCreate): Promise<successfulResponse> {
     const appoiment = await this.appoimentService.create(createAppoimentDto)
     return apiResponse(200, 'Cita creada correctamente', appoiment)
   }

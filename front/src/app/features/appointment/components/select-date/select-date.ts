@@ -21,7 +21,7 @@ export class SelectDate implements OnInit {
   private modal = inject(Dialog)
   duration: number = 0
   availablesDates: AvailableDay[] = []
-  dateAppointmentSelected:{date:Date, mechanicId:number} | null= null
+  dateAppointmentSelected: { date: Date, mechanicId: number } | null = null
 
   ngOnInit() {
     for (const service of this.servicesPartsSelected) {
@@ -35,7 +35,7 @@ export class SelectDate implements OnInit {
     this.appointmentService.getDatesAvailable({ duration: this.duration }).subscribe({
       next: (resp) => {
         this.availablesDates = resp.data
-        
+
       },
       error: (error) =>
         console.log(error)
@@ -43,22 +43,22 @@ export class SelectDate implements OnInit {
     })
   }
 
-  async openModalSelectHour(hours:MechanicSlot[], date:string){
-    const dialog = this.modal.open<{date:Date, mechanicId:number}|any>(ModalSelectHour, {
+  async openModalSelectHour(hours: MechanicSlot[], date: string) {
+    const dialog = this.modal.open<{ date: Date, mechanicId: number } | any>(ModalSelectHour, {
       data: {
         mechanicSlot: hours,
-        date:date
+        date: date
       }
     })
     const dialogClose = await dialog.closed.toPromise()
-    if(dialogClose){
+    if (dialogClose) {
       this.dateAppointmentSelected = dialogClose
       console.log(dialogClose);
-      
+
     }
   }
 
-  formatDate(date: Date):string{
+  formatDate(date: Date): string {
     const d = new Date(date)
     let day = d.toLocaleDateString("es-ES", { weekday: "long" })
     day = day.charAt(0).toUpperCase() + day.slice(1)
@@ -71,7 +71,29 @@ export class SelectDate implements OnInit {
     return `${day}, ${legibleDate}`;
   }
 
-  createAppoinmtent(){
-    
+  createAppoinmtent() {
+    if (this.car && this.car.id && this.dateAppointmentSelected) {
+      const appintmentCreate: Appointment = {
+        state: StateServie.PENDING,
+        clientId: this.car?.ownerId,
+        carId: this.car.id,
+        mechanicId: this.dateAppointmentSelected?.mechanicId,
+        appoiment_date: this.dateAppointmentSelected.date,
+        mileage_at_delivery: this.car.current_mileage,
+        duration: this.duration
+      }
+      console.log(appintmentCreate);
+      
+
+      this.appointmentService.createAppointment({appoinment:appintmentCreate,servicesSelected: this.servicesPartsSelected}).subscribe({
+        next:(resp) =>{
+          console.log(resp);
+        },
+        error: (error) => {
+          console.log(error);
+        }
+      })
+
+    }
   }
 }

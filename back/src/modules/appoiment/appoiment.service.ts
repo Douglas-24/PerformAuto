@@ -1,15 +1,20 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateAppoimentDto } from './dto/create-appoiment.dto';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { DataAppointmentCreate, CreateAppoimentServicePartDto } from './dto/create-appoiment.dto';
 import { UpdateAppoimentDto } from './dto/update-appoiment.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Appoiment, Employee, StateServie } from '@prisma/client';
 import { EmployeeService } from '../employee/employee.service';
-interface MechanicAppointment{
-  mechanicId: number
+import { DataPartChange, DataServiceSelected } from '../service-parts/dto/TypeServiceParts.dto';
+interface MechanicData {
+  id: number,
+  fullName: string
+}
+interface MechanicAppointment {
+  mechanic: MechanicData
   appointment: Appoiment[]
 }
 interface MechanicSlot {
-  number: number
+  mechanic: MechanicData
   slot: Date[]
 }
 interface AvailableSlot {
@@ -26,12 +31,50 @@ export class AppoimentService {
 
   ) { }
 
-  async create(createAppoimentDto: CreateAppoimentDto): Promise<Appoiment> {
+  async create(createAppoimentDto: DataAppointmentCreate): Promise<Appoiment> {
+    const appointmentCarActive = await this.prisma.appoiment.findFirst({ where: { carId: createAppoimentDto.appoinment.carId } })
+    if (appointmentCarActive?.state == StateServie.STARTED || appointmentCarActive?.state == StateServie.PENDING) {
+      throw new BadRequestException('Ya existe una cita con este coche')
+    }
     const appoiment = await this.prisma.appoiment.create({
-      data: createAppoimentDto,
+      data: createAppoimentDto.appoinment
     })
+    await this.agregateServicesSelectedAppoinment(appoiment.id, createAppoimentDto.servicesSelected)
+
     return appoiment
   }
+
+  async agregateServicesSelectedAppoinment(id_appoinment: number, servicesSelectedAppoinment: DataServiceSelected[]) {
+    const createAppoinmtentServices: { id_appoiment: number, id_service: number }[] = []
+    for (const selected of servicesSelectedAppoinment) {
+      if (selected.service.id) {
+        createAppoinmtentServices.push({ id_appoiment: id_appoinment, id_service: selected.service.id })
+      }
+    }
+    await this.prisma.appoimentService.createMany({ data: createAppoinmtentServices })
+    await this.aggregatePartsServiceAppointment(id_appoinment, servicesSelectedAppoinment)
+  }
+
+  async aggregatePartsServiceAppointment(id_appoiment: number, partsServices: DataServiceSelected[]) {
+    const appoinmentServices = await this.prisma.appoimentService.findMany({ where: { id_appoiment: id_appoiment } })
+    const partsServicesAppointment: CreateAppoimentServicePartDto[] = []
+    for (const services of partsServices) {
+      const service = appoinmentServices.filter(a => a.id_service == services.service.id)
+      for (const part of services.parts) {
+        partsServicesAppointment.push({
+          appoimentServiceId: service[0].id,
+          partId: part.idPart,
+          quantity: 0,
+          replaced: false,
+          statePart: 'NO_CHANGE'
+        })
+      }
+    }
+
+    await this.prisma.appoimentServicePart.createMany({ data: partsServicesAppointment })
+  }
+
+
 
   async findAll(): Promise<Appoiment[]> {
     const allAppoiments = await this.prisma.appoiment.findMany({
@@ -143,13 +186,18 @@ export class AppoimentService {
 
   // Citas que tiene el mecanico durante un dia
   getAppoimentMecanicDay(mechanics: Employee[], appoimentDay: Appoiment[]): MechanicAppointment[] {
-    const mechanicAppoiment:MechanicAppointment[] = []
+    const mechanicAppoiment: MechanicAppointment[] = []
     for (const mechanic of mechanics) {
       const appoiment = appoimentDay.filter(a => a.mechanicId === mechanic.id)
-      mechanicAppoiment.push({mechanicId: mechanic.id, appointment: appoiment})
+      mechanicAppoiment.push({
+        mechanic: {
+          id: mechanic.id,
+          fullName: mechanic.name + ' ' + mechanic.lastname
+        }, appointment: appoiment
+      })
     }
 
-    
+
     return mechanicAppoiment
   }
 
@@ -158,7 +206,7 @@ export class AppoimentService {
   // Horas y fechas libres dependiendo de las citas que tenga el mecanico
   mechaniclAvailability(durationStimatedAppoiment: number, appoimentMechanic: MechanicAppointment[], startDay: Date, endDay: Date): MechanicSlot[] {
     const availableDates: MechanicSlot[] = []
-
+    const now = new Date()
     for (const mechanic of appoimentMechanic) {
       const appoimentOrder = mechanic.appointment.sort(
         (a, b) => a.appoiment_date.getTime() - b.appoiment_date.getTime()
@@ -173,7 +221,8 @@ export class AppoimentService {
           available.push(new Date(slot))
           slot = new Date(slot.getTime() + 3600000)
         }
-        availableDates.push({number: mechanic.mechanicId, slot: available})
+        const filtered = this.filterPastSlots(available, now)
+        availableDates.push({ mechanic: mechanic.mechanic, slot: filtered })
         continue
       }
 
@@ -184,14 +233,15 @@ export class AppoimentService {
         if (diffHour >= durationStimatedAppoiment) available.push(new Date(startDay))
       } else {
         available.push(new Date(startDay))
-        availableDates.push({number: mechanic.mechanicId, slot: available})
+        const filtered = this.filterPastSlots(available, now)
+        availableDates.push({ mechanic: mechanic.mechanic, slot: filtered })
         continue
       }
 
       // Hueco entre citas
       for (let i = 0; i < appoimentOrder.length - 1; i++) {
         const endAppoiment = new Date(appoimentOrder[i].appoiment_date)
-        endAppoiment.setHours(endAppoiment.getHours() + parseFloat(appoimentOrder[i].duration))
+        endAppoiment.setHours(endAppoiment.getHours() + appoimentOrder[i].duration)
 
         const nextAppoiment = appoimentOrder[i + 1].appoiment_date
         const diffHour = (nextAppoiment.getTime() - endAppoiment.getTime()) / 3600000
@@ -202,14 +252,27 @@ export class AppoimentService {
       // Hueco despues de la ultima cita
       const lastAppoiment = appoimentOrder[appoimentOrder.length - 1]
       const endAppoiment = new Date(lastAppoiment.appoiment_date)
-      endAppoiment.setHours(endAppoiment.getHours() + parseFloat(lastAppoiment.duration))
+      endAppoiment.setHours(endAppoiment.getHours() + lastAppoiment.duration)
       const diffHourEnd = (endDay.getTime() - endAppoiment.getTime()) / 3600000
       if (diffHourEnd >= durationStimatedAppoiment) available.push(new Date(endAppoiment))
-      availableDates.push({number: mechanic.mechanicId, slot: available})
+      const filtered = this.filterPastSlots(available, now)
+      availableDates.push({ mechanic: mechanic.mechanic, slot: filtered })
     }
     return availableDates
   }
 
+// Filtrar si se esta pidiendo el mismo dia una cita, omitir horas anteriores respecto a la hora en que pedimos la cita
+  filterPastSlots(slots: Date[], now: Date): Date[] {
+    return slots.filter(s => {
+      const isSameDay =
+        s.getFullYear() === now.getFullYear() &&
+        s.getMonth() === now.getMonth() &&
+        s.getDate() === now.getDate()
+
+      return !isSameDay || s.getTime() >= now.getTime()
+    })
+    
+  }
 
 
   // Obtener todas las citas en un rango de fechas
