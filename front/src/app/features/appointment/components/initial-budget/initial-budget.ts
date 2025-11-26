@@ -12,7 +12,7 @@ export class InitialBudget implements OnInit {
   estimatedPrice: number = 0
   @Input() car: Car | null = null
   @Input() servicesPartsSelected: DataSelectService[] = []
-  @Output() back = new EventEmitter()
+  @Output() back = new EventEmitter<DataSelectService[]>()
   @Output() next = new EventEmitter()
   ngOnInit() {
     if (this.servicesPartsSelected) this.estimatedPrice = this.calculateEstimatePrice()
@@ -60,7 +60,7 @@ export class InitialBudget implements OnInit {
 
 
   backSection() {
-    this.back.emit()
+    this.back.emit(this.servicesPartsSelected)
   }
 
   nextSection() {

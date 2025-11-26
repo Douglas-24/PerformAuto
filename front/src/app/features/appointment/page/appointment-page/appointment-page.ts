@@ -34,7 +34,8 @@ export class AppointmentPage {
   }  
 
 
-  backSection(){
+  backSection(servicesPartsSelected?:DataSelectService[]){
+    if(servicesPartsSelected) this.servicedSelected = servicesPartsSelected
     this.nextSecction--
   }
 }

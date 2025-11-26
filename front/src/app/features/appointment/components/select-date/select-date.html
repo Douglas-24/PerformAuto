@@ -1,7 +1,23 @@
 <div class="m-5">
-    <p class="text-1xl text-gray-500 dark:text-gray-400 text-center">
-        Selecciona la fecha para llevar a cabo la cita
-    </p>
+
+    <div class="flex items-center w-full">
+        <div>
+            <button
+                (click)="backSection()"
+                class="px-6 py-2 font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-lg hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80">
+                Volver atrás
+            </button>
+        </div>
+        <div class="flex-1 text-center">
+            <p class="text-3xl text-gray-500 dark:text-gray-400">
+                Selecciona la fecha para llevar a cabo la cita
+            </p>
+        </div>
+        <div class="w-[120px]"></div>
+
+    </div>
+
+
 
     @if(dateAppointmentSelected){
     <div class="flex flex-col">
@@ -21,10 +37,9 @@
             <p class="text-3xl my-3 text-emerald-50"> {{formatDate(dateAppointmentSelected.date)}}
                 {{dateAppointmentSelected.date | date:'shortTime'}} </p>
             <div>
-                <button
-                    (click)="createAppoinmtent()"
+                <button (click)="createAppoinmtent()"
                     class="middle none center mr-4 rounded-lg bg-blue-500 py-3 px-6 font-sans text-xs font-bold uppercase text-white shadow-md shadow-blue-500/20 transition-all hover:shadow-lg hover:shadow-blue-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                    data-ripple-light="true">Pedir cita 
+                    data-ripple-light="true">Pedir cita
                 </button>
             </div>
         </div>

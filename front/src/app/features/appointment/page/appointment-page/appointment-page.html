@@ -15,6 +15,7 @@
             <app-select-service 
                 [car]="carSelected" 
                 (back)="backSection()"
+                [servicesPartsSelected]="servicedSelected"
                 (userServicesSelected)="getAllUserServiceSelected($event)"
             ></app-select-service>
         </div>
@@ -22,7 +23,7 @@
         @if (nextSecction == 3) {
         <div>
             <app-initial-budget 
-            (back)="backSection()"
+            (back)="backSection($event)"
             (next)="nextSectionAction()"
             [car]="carSelected" 
             [servicesPartsSelected]="servicedSelected"
@@ -32,7 +33,10 @@
 
         @if (nextSecction == 4) {
             <div>
-                <app-select-date [car]="carSelected" [servicesPartsSelected]="servicedSelected"></app-select-date>
+                <app-select-date 
+                (back)="backSection()"
+                [car]="carSelected" 
+                [servicesPartsSelected]="servicedSelected"></app-select-date>
             </div>
         }
 

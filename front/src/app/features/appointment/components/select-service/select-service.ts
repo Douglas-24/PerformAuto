@@ -24,10 +24,11 @@ export class SelectService implements OnInit {
   servicesSelected: DataSelectService[] = []
   data: postDataPartsService | null = null
 
-
+  @Input() servicesPartsSelected: DataSelectService[] = []
   @Output() userServicesSelected = new EventEmitter<DataSelectService[]>()
   @Output() back = new EventEmitter()
   ngOnInit(): void {
+    if(this.servicesPartsSelected) this.servicesSelected = this.servicesPartsSelected
     if (this.car) {
       this.data = {
         userId: this.car.ownerId,
@@ -43,8 +44,15 @@ export class SelectService implements OnInit {
     this.service.getAllServices().subscribe({
       next: (resp) => {
         this.allServices = resp.data
+        if (this.servicesPartsSelected && this.servicesPartsSelected.length > 0) {;
+            const selectedIds = this.servicesPartsSelected.map(s => s.service.id)
+            this.allServices = this.allServices.filter(
+              service => !selectedIds.includes(service.id)
+            )
+          }
       }
     })
+
   }
 
   getPartServiceSelect(service: ServicesOfferedInterface) {

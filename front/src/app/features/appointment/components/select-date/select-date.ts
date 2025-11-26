@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DataSelectService } from '../../../../core/interfaces/partTypeService.interface';
 import { AppointmentService } from '../../../../core/service/appointment.service';
@@ -17,6 +17,7 @@ import { StateServie } from '../../../../core/interfaces/appointment.interface';
 export class SelectDate implements OnInit {
   @Input() servicesPartsSelected: DataSelectService[] = []
   @Input() car: Car | null = null
+  @Output() back = new EventEmitter()
   private appointmentService = inject(AppointmentService)
   private modal = inject(Dialog)
   duration: number = 0
@@ -95,5 +96,9 @@ export class SelectDate implements OnInit {
       })
 
     }
+  }
+
+  backSection() {
+    this.back.emit()
   }
 }
