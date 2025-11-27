@@ -25,6 +25,9 @@ export class AppointmentService {
     }
     getAllAppointmentMechanic(id_mechanic:number):Observable<apiReponse>{
       return this.http.get<apiReponse>(this.url + 'appoiment-mechanic/' + id_mechanic)
+    }
 
+    getServicesPartsAppointment(id_appoiment:number):Observable<apiReponse>{
+      return this.http.get<apiReponse>(this.url + 'services-appointment/' + id_appoiment)
     }
 }

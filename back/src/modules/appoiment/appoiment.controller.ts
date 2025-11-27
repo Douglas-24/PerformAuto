@@ -33,6 +33,12 @@ export class AppoimentController {
     return apiResponse(200, 'Lista de citas obtenidas', appoiment)
   }
 
+  @Get('services-appointment/:id_appointment')
+  async getAllServicesPartsAppointment(@Param('id_appointment') id:string):Promise<successfulResponse>{
+    const servicesParts = await this.appoimentService.getServicesPartAppointment(+id)
+    return apiResponse(200, 'Servicios y piezas de la cita obtenidas', servicesParts)
+  }
+
   @Post('dates-available')
   async getDatesAvailable(@Body() durationStimated: {duration:number}): Promise<successfulResponse> {
     const dates = await this.appoimentService.setAppointmentDate(new Date(), durationStimated.duration)

@@ -24,6 +24,7 @@ export enum StateServie {
 
 
 export interface Appointment {
+    id?:number
     state: StateServie;
     clientId: number;
     carId: number;
@@ -33,13 +34,17 @@ export interface Appointment {
     duration: number
 }
 
+export interface AppointmentMechanicInterface extends Appointment{
+  id:number
+}
+
 export interface DataCreateAppointment{
   appoinment: Appointment,
   servicesSelected: DataSelectService[]
 }
 
-export interface AppointmentUserInterface extends Appointment{
-  user:User,
+export interface AppointmentUserInterface extends AppointmentMechanicInterface{
+  client:User,
   car:Car,
   mechanic: Employee
 }

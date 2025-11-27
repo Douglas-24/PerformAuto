@@ -1,4 +1,4 @@
-import { Parts } from "./parts.interfaces"
+import { Parts, PartUsed } from "./parts.interfaces"
 import { ServicesOfferedInterface } from "./servicesOffered.interfaces"
 
 export interface ServiceSelectPart extends ServicesOfferedInterface {
@@ -34,8 +34,21 @@ export interface DataPartChange {
     frequency_time: string
     observation: string
 }
+export interface DataServicePartMechanic {
+    id:number
+    appointmentServiceId:number
+    partId:number
+    quatity: number
+    replaced: boolean
+    statePart: StateChangePart
+    part: PartUsed
+}
 
 export interface DataSelectService {
   parts: DataPartChange[]
   service: ServicesOfferedInterface
+}
+export interface ServiceParts {
+  parts_used: DataServicePartMechanic[]
+  services: ServicesOfferedInterface
 }

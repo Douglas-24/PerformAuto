@@ -140,7 +140,6 @@ export class AppoimentService {
         client: true,
         car: true,
         mechanic: true,
-        services: true,
         invoice: true,
       },
     })
@@ -153,9 +152,23 @@ export class AppoimentService {
         client: true,
         car: true,
         mechanic: true,
-        services: true,
         invoice: true,
       },
+    })
+  }
+
+  async getServicesPartAppointment(id_appointment:number){
+    await this.findOne(id_appointment)
+    return await this.prisma.appoimentService.findMany({
+      where: {id_appoiment: id_appointment},
+      include: {
+        services:true,
+        parts_used: {
+          include: {
+            part: true
+          }
+        }
+      }
     })
   }
 

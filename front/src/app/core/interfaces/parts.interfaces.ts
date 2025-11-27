@@ -4,3 +4,7 @@ export interface Parts {
     price: number,
     stock: number
 }
+
+export interface PartUsed extends Parts {
+    id:number
+} 
