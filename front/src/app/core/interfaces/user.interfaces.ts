@@ -18,9 +18,18 @@ export interface UserRegister extends BaseUser {
 }
 
 export enum Role {
-    CLIENT = 'CLIENT',
-    ADMIN = 'ADMIN',
-    CUSTOMER_SERVICE = 'CUSTOMER_SERVICE',
-    WAREHOUSE_MANAGER = 'WAREHOUSE_MANAGER',
-    MECHANIC = 'MECHANIC'
+  CLIENT = 'CLIENT',
+  ADMIN = 'ADMIN',
+}
+
+export enum RoleEmployee {
+  CUSTOMER_SERVICE = 'CUSTOMER_SERVICE',
+  WAREHOUSE_MANAGER = 'WAREHOUSE_MANAGER',
+  MECHANIC = 'MECHANIC'
+}
+export interface Employee {
+  name: string;
+  lastname: string;
+  email: string;
+  rol: RoleEmployee
 }

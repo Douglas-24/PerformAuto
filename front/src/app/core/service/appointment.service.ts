@@ -20,4 +20,11 @@ export class AppointmentService {
       return this.http.post<apiReponse>(this.url + 'dates-available', durationStimated)
     }
 
+    getAllAppointmentUser(id_user:number):Observable<apiReponse>{
+      return this.http.get<apiReponse>(this.url + 'appoiment-client/' + id_user)
+    }
+    getAllAppointmentMechanic(id_mechanic:number):Observable<apiReponse>{
+      return this.http.get<apiReponse>(this.url + 'appoiment-mechanic/' + id_mechanic)
+
+    }
 }

@@ -1,4 +1,6 @@
 import { DataSelectService } from "./partTypeService.interface"
+import { Car } from "./car.interface"
+import { User, Employee } from "./user.interfaces"
 export interface MechanicData{
   id: number,
   fullName: string
@@ -34,4 +36,10 @@ export interface Appointment {
 export interface DataCreateAppointment{
   appoinment: Appointment,
   servicesSelected: DataSelectService[]
+}
+
+export interface AppointmentUserInterface extends Appointment{
+  user:User,
+  car:Car,
+  mechanic: Employee
 }

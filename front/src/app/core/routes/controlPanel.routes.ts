@@ -47,6 +47,12 @@ export const controlPanelRoutes: Routes = [
                     import('../../features/parts/pages/parts-pages/parts-pages').then(m => m.PartsPages),
                 // canActivate: [roleGuard],
                 // data: { roles: [Role.ADMIN] }
+            },
+            {
+                path:'appoinment-user',
+                loadComponent: () =>
+                    import('../../features/appointment/page/appointment-user-page/appointment-user-page').then(m => m.AppointmentUserPage),
+
             }
         ]
     }
