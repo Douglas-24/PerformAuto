@@ -11,7 +11,10 @@
     @for (appointment of allAppointmet; track $index) {
     <div 
     (click)="openModal(appointment.id)"
-    class="max-w-xl overflow-hidden bg-white rounded-lg shadow-md dark:bg-gray-800">
+    class="max-w-xl overflow-hidden bg-white rounded-lg shadow-md dark:bg-gray-800"
+    [class.pointer-events-none]="appointment.state === stateAppointment.FINISH || appointment.state === stateAppointment.CANCELLED"
+    [class.opacity-50]="appointment.state === stateAppointment.FINISH || appointment.state === stateAppointment.CANCELLED"
+    >
         <img class="object-cover w-full h-64"
             src="https://images.unsplash.com/photo-1550439062-609e1531270e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60"
             alt="Article">
@@ -33,8 +36,20 @@
                         {{appointment.client.lastname}} </a>
                 </div>
             </div>
+                    <!-- Overlay para mostrar mensaje -->
+        @if (appointment.state === stateAppointment.FINISH || appointment.state === stateAppointment.CANCELLED) {
+        <div class="mt-3 p-2 bg-gray-500 rounded-lg text-sm">
+            <p class=" text-gray-400 text-lg font-bold">
+                {{ appointment.state === stateAppointment.FINISH ? 'Cita finalizada' : 'Cita cancelada' }}
+            </p>
         </div>
+
+        }
+        </div>
+        
     </div>
+
+    
     }
 </div>
 

@@ -3,7 +3,8 @@ import { inject, Injectable } from '@angular/core';
 import { environments } from '../environments/environments';
 import { apiReponse } from '../interfaces/apiResponse.inteface';
 import { Observable } from 'rxjs';
-import { DataCreateAppointment } from '../interfaces/appointment.interface';
+import { Appointment, DataCreateAppointment } from '../interfaces/appointment.interface';
+import { DataServicePartMechanic } from '../interfaces/partTypeService.interface';
 @Injectable({
   providedIn: 'root'
 })
@@ -29,5 +30,13 @@ export class AppointmentService {
 
     getServicesPartsAppointment(id_appoiment:number):Observable<apiReponse>{
       return this.http.get<apiReponse>(this.url + 'services-appointment/' + id_appoiment)
+    }
+
+    updateAppointment(id:number, dataAppintment:Partial<Appointment>):Observable<apiReponse>{
+      return this.http.patch<apiReponse>(this.url + id, dataAppintment)
+    }
+
+    updateAppointmentPart(id:number,dataPart: DataServicePartMechanic):Observable<apiReponse>{
+      return this.http.patch<apiReponse>(this.url + 'update-part-appointment/' + id, dataPart)
     }
 }

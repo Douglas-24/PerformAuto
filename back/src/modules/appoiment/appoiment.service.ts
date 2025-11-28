@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { DataAppointmentCreate, CreateAppoimentServicePartDto } from './dto/create-appoiment.dto';
-import { UpdateAppoimentDto } from './dto/update-appoiment.dto';
+import { UpdateAppoimentDto, UpdateAppoimentServicePartDto } from './dto/update-appoiment.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Appoiment, Employee, StateServie } from '@prisma/client';
 import { EmployeeService } from '../employee/employee.service';
@@ -66,7 +66,7 @@ export class AppoimentService {
           partId: part.idPart,
           quantity: 0,
           replaced: false,
-          statePart: 'NO_CHANGE'
+          statePart: part.acctionPart
         })
       }
     }
@@ -75,6 +75,23 @@ export class AppoimentService {
   }
 
 
+  async updatePartServiceAppointment(id: number, dataPart: UpdateAppoimentServicePartDto) {
+
+    const part = await this.prisma.parts.findFirst({ where: { id: dataPart.partId } })
+    const appoinmentService = await this.prisma.appoimentService.findFirst({ where: { id: dataPart.appoimentServiceId } })
+    if (!part && !appoinmentService) throw new NotFoundException('No se podido encontrar la pieza de la cita')
+    const partServiceAppointment = await this.prisma.appoimentServicePart.update({
+      where: { id: id },
+      data: {
+        quantity: dataPart.quantity,
+        replaced: dataPart.replaced,
+        statePart: dataPart.statePart,
+        part: { connect: { id: dataPart.partId } },
+        appoimentService: { connect: { id: dataPart.appoimentServiceId } }
+      }
+    })
+    return partServiceAppointment
+  }
 
   async findAll(): Promise<Appoiment[]> {
     const allAppoiments = await this.prisma.appoiment.findMany({
@@ -97,7 +114,7 @@ export class AppoimentService {
           in: [StateServie.STARTED, StateServie.PENDING]
         }
       },
-      include:{
+      include: {
         car: true
       }
     })
@@ -157,12 +174,12 @@ export class AppoimentService {
     })
   }
 
-  async getServicesPartAppointment(id_appointment:number){
+  async getServicesPartAppointment(id_appointment: number) {
     await this.findOne(id_appointment)
     return await this.prisma.appoimentService.findMany({
-      where: {id_appoiment: id_appointment},
+      where: { id_appoiment: id_appointment },
       include: {
-        services:true,
+        services: true,
         parts_used: {
           include: {
             part: true

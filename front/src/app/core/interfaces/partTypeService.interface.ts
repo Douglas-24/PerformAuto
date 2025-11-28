@@ -16,6 +16,8 @@ export interface partTypeService {
 export enum StateChangePart {
     SHOULD_CHANGE = 'SHOULD_CHANGE',
     REVIEW = 'REVIEW',
+    CHANGED = 'CHANGED',
+    REVISED = 'REVISED',
     NO_CHANGE = 'NO_CHANGE'
 }
 
@@ -35,13 +37,13 @@ export interface DataPartChange {
     observation: string
 }
 export interface DataServicePartMechanic {
-    id:number
-    appointmentServiceId:number
+    id?:number
+    appoimentServiceId:number
     partId:number
     quatity: number
     replaced: boolean
     statePart: StateChangePart
-    part: PartUsed
+    part?: PartUsed
 }
 
 export interface DataSelectService {

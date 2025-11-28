@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { AppoimentService } from './appoiment.service';
 import { CreateAppoimentDto, DataAppointmentCreate } from './dto/create-appoiment.dto';
-import { UpdateAppoimentDto } from './dto/update-appoiment.dto';
+import { UpdateAppoimentDto, UpdateAppoimentServicePartDto } from './dto/update-appoiment.dto';
 import { successfulResponse } from 'src/core/interfaces/successfulResponse.interface';
 import { apiResponse } from 'src/core/utils/apiResponse';
 
@@ -56,6 +56,12 @@ export class AppoimentController {
   async update(@Param('id') id: string, @Body() updateAppoimentDto: UpdateAppoimentDto): Promise<successfulResponse> {
     const updated = await this.appoimentService.update(+id, updateAppoimentDto)
     return apiResponse(200, 'Cita actualizada correctamente', updated)
+  }
+
+  @Patch('update-part-appointment/:id')
+  async updateAppointmentPart(@Param('id') id:string, @Body() data:UpdateAppoimentServicePartDto):Promise<successfulResponse>{
+    const resp = await this.appoimentService.updatePartServiceAppointment(+id, data)
+    return apiResponse(200, 'Pieza actualizada', resp)
   }
 
   @Delete(':id')

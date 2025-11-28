@@ -5,6 +5,7 @@ import { AppointmentUserInterface } from '../../../../core/interfaces/appointmen
 import { CommonModule } from '@angular/common';
 import { Dialog } from '@angular/cdk/dialog';
 import { ModalAppointmentInfo } from '../modal-appointment-info/modal-appointment-info';
+import { StateServie } from '../../../../core/interfaces/appointment.interface';
 @Component({
   selector: 'app-appointment-mechanic',
   imports: [CommonModule],
@@ -16,6 +17,7 @@ export class AppointmentMechanic implements OnInit {
   private appointmentService = inject(AppointmentService)
   allAppointmet: AppointmentUserInterface[] = []
   private modal = inject(Dialog)
+  stateAppointment = StateServie
   ngOnInit(){
     this.getAllAppointmentMechanic()
   }
@@ -35,9 +37,14 @@ export class AppointmentMechanic implements OnInit {
     }
   }
 
-  openModal(id_appoiment:number){
-    this.modal.open(ModalAppointmentInfo, {
+  async openModal(id_appoiment:number){
+    const dialogRef = this.modal.open(ModalAppointmentInfo, {
       data: id_appoiment
     })
+
+    const dialogClose = await dialogRef.closed.toPromise() 
+    if(dialogClose){
+      this.getAllAppointmentMechanic()
+    }
   }
 }
