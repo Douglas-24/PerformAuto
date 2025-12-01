@@ -1,0 +1,9 @@
+@if (user) {
+    @if (user.rol == 'CLIENT') {
+        <app-appointment-user [user]="user"></app-appointment-user>
+    }
+
+    @if (user.rol == 'MECHANIC') {
+        <app-appointment-mechanic [user]="user"></app-appointment-mechanic>
+    }
+}

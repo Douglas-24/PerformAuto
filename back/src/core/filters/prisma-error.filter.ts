@@ -19,7 +19,8 @@ export class PrismaErrorFilter<T> implements ExceptionFilter {
 
   instanceErrorPrisma(exception: Prisma.PrismaClientKnownRequestError): string {
     let messageError
-
+    console.log(exception);
+    
     if (exception.code = 'P2002') {
       const fields = exception.meta?.target;
       messageError = `Error: campo(s) duplicado(s): ` + fields

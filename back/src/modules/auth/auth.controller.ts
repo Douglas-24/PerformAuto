@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post,Query,Request, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { apiResponse } from 'src/core/utils/ApiResponse';
+import { apiResponse } from 'src/core/utils/apiResponse';
 import { successfulResponse } from 'src/core/interfaces/successfulResponse.interface';
 import { Public } from 'src/core/decorators/public.decorator';
 import type { User } from '@prisma/client';

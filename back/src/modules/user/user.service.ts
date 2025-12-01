@@ -1,7 +1,7 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { successfulResponse } from 'src/core/interfaces/successfulResponse.interface';
-import { apiResponse } from 'src/core/utils/ApiResponse';
+import { apiResponse } from 'src/core/utils/apiResponse';
 import { CreateUserDto } from './dto/create-user-dto';
 import { UpdateUserDto } from './dto/update-user-dto';
 import { User } from '@prisma/client';
@@ -15,13 +15,17 @@ export class UserService {
         private readonly mailService: MailService
     ) { }
 
-    async createUser(user: CreateUserDto, verified:boolean = false): Promise<User> {
+    async createUser(user: CreateUserDto, verified: boolean = false): Promise<User> {
+        const employee = await this.prisma.employee.findFirst({ where: { email: user.email } })
+        if (employee) throw new BadRequestException('Existe un usuario con el email ingresado')
+
         const pass = user.password
         const hash = await bcrypt.hash(pass, 10);
         user.password = hash
         user.account_verified = verified
+        user.date_register = new Date()
         const createUser = await this.prisma.user.create({ data: user })
-        if(verified)this.mailService.sendWelcone(user.email,`${user.name} ${user.lastname}`, pass)
+        if (verified) this.mailService.sendWelcone(user.email, `${user.name} ${user.lastname}`, pass)
         return createUser
     }
 
@@ -53,7 +57,8 @@ export class UserService {
                 address: true,
                 postal_code: true,
                 rol: true,
-                account_verified: true
+                account_verified: true,
+                date_register: true
             }
         })
         return allUsers
@@ -71,4 +76,5 @@ export class UserService {
         if (!user) throw new NotFoundException('Usuario no encontrado')
         return user
     }
+
 }

@@ -1,8 +1,8 @@
 import { Component, inject } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 @Component({
   selector: 'app-aside-nav',
-  imports: [RouterLink],
+  imports: [RouterLink, RouterLinkActive],
   templateUrl: './aside-nav.html',
   styleUrl: './aside-nav.css'
 })

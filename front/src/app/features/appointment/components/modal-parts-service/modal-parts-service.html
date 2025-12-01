@@ -1,0 +1,59 @@
+<div class="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+    <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true"></span>
+
+    <div
+        class="relative inline-block w-5xl px-10 pt-10 pb-10 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl rtl:text-right dark:bg-gray-900 sm:my-8 sm:align-middle">
+        <div class="flex flex-col h-full justify-between">
+            <div>
+                <div class="flex items-center justify-center">
+                    <h1 class="text-2xl font-medium text-gray-800 capitalize dark:text-white"> {{data.service.name}}
+                    </h1>
+                </div>
+                <div class="flex items-center mt-4 justify-center">
+                    <p class="text-xl text-gray-500">Realizar servicio cada: {{ data.service.frequency_km }} Km o cada
+                        {{data.service.frequency_time}} </p>
+
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-5">
+                @for (part of data.parts; track $index) {
+                <div (click)="changeActionPart(part)"
+                    class="relative border-2 {{classPartsLabel[part.acctionPart].classBorder}} rounded-xl p-2 mt-4 cursor-pointer">
+                    <div
+                        class="absolute -top-3 left-1/2 -translate-x-1/2 {{classPartsLabel[part.acctionPart].classMessage}} rounded font-semibold text-sm">
+                        {{classPartsLabel[part.acctionPart].message}}
+                    </div>
+                    <div class="bg-white rounded-lg shadow-lg p-3 dark:bg-gray-800">
+                        <h3 class="text-lg font-semibold text-blue-600 dark:text-blue-400">{{ part.namePart }}</h3>
+                        <p class="text-sm text-gray-500">Precio: {{ part.price }}</p>
+                        @if (part.frequency_km > 0) {<p class="text-sm text-gray-500">Reemplazo por km: cada {{
+                            part.frequency_km }}</p>}
+                        @if (part.frequency_time != '.') {<p class="text-sm text-gray-500">Reemplazo por tiempo: cada {{
+                            part.frequency_time}}</p>}
+
+                    </div>
+                </div>
+
+                }
+            </div>
+            <div class="mt-7 sm:flex sm:items-center sm:justify-end">
+                <div class="sm:flex sm:items-center ">
+                    <button 
+                        (click)="confirm()"
+                        class="w-full px-4 py-2 mt-2 text-lg font-medium tracking-wide text-gray-700 capitalize transition-colors duration-300 transform border border-gray-200 rounded-lg sm:mt-0 sm:w-auto sm:mx-2 dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-800 hover:bg-gray-100 focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-40">
+                        Seleccionar
+                    </button>
+
+                </div>
+                <div class="sm:flex sm:items-center ">
+                    <button (click)="cancel()"
+                        class="w-full px-4 py-2 mt-2 text-lg font-medium tracking-wide text-gray-700 capitalize transition-colors duration-300 transform border border-gray-200 rounded-lg sm:mt-0 sm:w-auto sm:mx-2 dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-800 hover:bg-gray-100 focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-40">
+                        Cancelar
+                    </button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

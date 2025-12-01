@@ -35,4 +35,7 @@ export class CreateUserDto {
   @IsOptional()
   @IsBoolean()
   account_verified: boolean 
+
+  @IsDate()
+  date_register: Date
 }

@@ -31,4 +31,8 @@ export class CarService {
   deleteCar(id:number):Observable<apiReponse>{
     return this.http.delete<apiReponse>(this.url + id)
   }
+  
+  getAllUserCars(id:number):Observable<apiReponse>{
+    return this.http.get<apiReponse>(this.url + "carsUser/" + id)
+  }
 }

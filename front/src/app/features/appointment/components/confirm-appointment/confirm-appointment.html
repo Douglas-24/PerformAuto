@@ -1,0 +1,28 @@
+<div class="m-5">
+    <div class="flex flex-col items-center justify-center  ">
+
+        <div class="bg-green-100 text-green-600 rounded-full p-4 mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+        </div>
+
+        <h1 class="text-2xl font-semibold text-gray-800 dark:text-white mb-3 text-center">
+            ¡Cita confirmada con éxito!
+        </h1>
+
+        <p class="text-lg text-gray-600 dark:text-gray-300 mb-6 text-center">
+            Te esperamos el <span class="font-bold text-blue-600">{{ formatDate(dateAppointment) }}</span> a las
+            <span class="font-bold text-blue-600">{{ dateAppointment | date:'shortTime' }}</span>.
+        </p>
+
+        <button
+            [routerLink]="['/profile']"
+            class="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white font-medium rounded-lg transition-all duration-300 shadow-md">
+            Volver al inicio
+        </button>
+
+    </div>
+
+</div>
