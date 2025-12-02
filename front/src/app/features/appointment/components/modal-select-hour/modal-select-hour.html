@@ -17,10 +17,21 @@
         @if (slots.slot.length !=0) {
         <div class="grid grid-cols-6 sm:grid-cols-8 md:grid-cols-5 gap-4 mt-5">
             @for (slot of slots.slot; track $index) {
-            <div (click)="selectHour(slot, slots.mechanic.id)"
+            @if (slot.reservedDateClient) {
+                <div class="rounded-xl shadow-inner p-3 cursor-not-allowed bg-red-800/60 transition-all duration-300 transform border border-red-500 relative">
+                        <div class="absolute inset-0 flex items-center justify-center bg-gray-900/50 rounded-xl">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v3h8z"></path>
+                            </svg>
+                        </div>
+                        <p class="text-white opacity-50">{{ slot.date | date:'shortTime'}}</p>
+                    </div>
+            }@else{
+            <div (click)="selectHour(slot.date , slots.mechanic.id)"
                 class="bg-white rounded-xl shadow-lg p-3 dark:bg-gray-800 cursor-pointer transition-all duration-300 transform hover:scale-[1.02] hover:shadow-2xl hover:border hover:border-blue-500">
-                <p class="text-amber-50">{{ slot | date:'shortTime'}}</p>
+                <p class="text-amber-50">{{ slot.date | date:'shortTime'}}</p>
             </div>
+            }
             }
         </div>
         }

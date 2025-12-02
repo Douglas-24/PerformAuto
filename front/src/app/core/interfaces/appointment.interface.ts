@@ -5,9 +5,14 @@ export interface MechanicData{
   id: number,
   fullName: string
 }
+
+export interface DateReserved {
+  date: Date,
+  reservedDateClient: boolean
+}
 export interface MechanicSlot {
   mechanic: MechanicData
-  slot: Date[]
+  slot: DateReserved[]
 }
 
 export interface AvailableDay {
