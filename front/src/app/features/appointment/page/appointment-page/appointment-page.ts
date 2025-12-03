@@ -20,6 +20,7 @@ export class AppointmentPage {
   carSelected:Car | null = null
   servicedSelected:DataSelectService[] = []
   dateAppointment: Date = new Date()
+  
   getUserCarSelected(car:Car){
     this.carSelected = car
     this.nextSectionAction()

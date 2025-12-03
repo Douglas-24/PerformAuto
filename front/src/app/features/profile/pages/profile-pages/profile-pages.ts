@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { AuthService } from '../../../../core/service/auth.service';
-import { User } from '../../../../core/interfaces/user.interfaces';
+import { Employee, Role, User } from '../../../../core/interfaces/user.interfaces';
 @Component({
   selector: 'app-profile-pages',
   imports: [],
@@ -10,7 +10,7 @@ import { User } from '../../../../core/interfaces/user.interfaces';
 export class ProfilePage {
   private authService = inject(AuthService)
   user:User | null = null
-
+  employee:Employee |null = null
   ngOnInit(){
     this.getProfile()
   }
@@ -18,7 +18,9 @@ export class ProfilePage {
   getProfile(){
     this.authService.getProfile().subscribe({
       next:(resp) =>{
-        this.user = resp.user
+        if(resp.user.rol == Role.CLIENT){
+          this.user = resp.user
+        }
       },
       error: (error) => {
         console.log(error);

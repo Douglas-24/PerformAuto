@@ -15,6 +15,10 @@ export class UserService {
     return this.http.get<apiReponse>(this.url)
   }
 
+  getAllClient():Observable<apiReponse>{
+    return this.http.get<apiReponse>(this.url + 'getClient')
+  }
+
   postUser(user:User):Observable<apiReponse>{
     return this.http.post<apiReponse>(this.url,user)
   }

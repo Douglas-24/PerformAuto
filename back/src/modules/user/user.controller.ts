@@ -34,6 +34,14 @@ export class UserController {
         return apiResponse(200, "Lista de usuarios",allUsers)
     }
 
+    // @UseGuards(new RoleGuard([Role.ADMIN]))
+    @Get('getClient')
+    async getAllClient():Promise<successfulResponse>{
+        const allUsers = await this.userService.getAllClient()        
+        return apiResponse(200, "Lista de clientes",allUsers)
+    }
+
+
     @UseGuards(new RoleGuard([Role.ADMIN]))
     @Get(':id')
     async getUserById(@Param('id') id:string):Promise<successfulResponse>{

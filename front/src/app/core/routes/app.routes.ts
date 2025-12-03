@@ -33,6 +33,7 @@ export const routes: Routes = [
     {
         path:'appointment',
         loadComponent:  () => import('../../features/appointment/page/appointment-page/appointment-page').then(m => m.AppointmentPage),
+        canActivate: [authGuardGuard]
     },
     {
         path: '',

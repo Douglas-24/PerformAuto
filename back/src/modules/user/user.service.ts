@@ -4,7 +4,7 @@ import { successfulResponse } from 'src/core/interfaces/successfulResponse.inter
 import { apiResponse } from 'src/core/utils/apiResponse';
 import { CreateUserDto } from './dto/create-user-dto';
 import { UpdateUserDto } from './dto/update-user-dto';
-import { User } from '@prisma/client';
+import { Role, User } from '@prisma/client';
 import * as bcrypt from 'bcrypt'
 import { MailService } from '../mail/mail.service';
 @Injectable()
@@ -62,6 +62,28 @@ export class UserService {
             }
         })
         return allUsers
+    }
+
+    async getAllClient():Promise<Omit<User, 'password'>[]>{
+        return await this.prisma.user.findMany({
+            where: {
+                rol: Role.CLIENT
+            },
+            select: {
+                id: true,
+                name: true,
+                lastname: true,
+                dni: true,
+                email: true,
+                phone_number: true,
+                address: true,
+                postal_code: true,
+                rol: true,
+                account_verified: true,
+                date_register: true
+            }
+            
+        })
     }
 
     async deleteUser(id: number): Promise<successfulResponse> {
