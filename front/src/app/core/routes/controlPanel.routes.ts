@@ -52,8 +52,12 @@ export const controlPanelRoutes: Routes = [
                 path:'appoinment-user',
                 loadComponent: () =>
                     import('../../features/appointment/page/appointment-user-page/appointment-user-page').then(m => m.AppointmentUserPage),
-
-            }
+            },
+            {
+                path:'services-panel',
+                loadComponent: () =>
+                    import('../../features/services-offered/pages/services-page/services-page').then(m => m.ServicesPage),
+            },
         ]
     }
 ]
