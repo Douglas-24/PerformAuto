@@ -1,14 +1,20 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-
+import { ShearchInput } from "../shearch-input/shearch-input";
+import { FilterPipe } from '../../core/pipes/filter.pipe';
+import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-dinamic-table',
-  imports: [],
+  imports: [ShearchInput, CommonModule, FilterPipe],
   templateUrl: './dinamic-table.html',
   styleUrl: './dinamic-table.css'
 })
 export class DinamicTable implements OnInit{
   @Input() columns: { key: string; label: string }[] = [];
   @Input() dataTable:any
+
+
+  @Input() searchableKeys: string[] = []; 
+  searchTerm: string = '';
 
   @Output() edit = new EventEmitter<any>()
   @Output() delete = new EventEmitter<any>()
@@ -20,6 +26,11 @@ export class DinamicTable implements OnInit{
     
     
   }
+
+  onSearch(term: string): void {
+    this.searchTerm = term;
+  }
+
   onEdit(row: any) {
     this.edit.emit(row);
   }

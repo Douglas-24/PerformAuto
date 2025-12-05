@@ -12,6 +12,7 @@
     <app-dinamic-table 
         [dataTable]="allUsers" 
         [columns]="configField"
+        [searchableKeys]="['name', 'lastname', 'dni', 'email', 'phone_number']"
         (edit)="openModal($event)"
         (delete)="openModal($event, true)"
         ></app-dinamic-table>
