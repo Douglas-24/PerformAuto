@@ -58,6 +58,11 @@ export const controlPanelRoutes: Routes = [
                 loadComponent: () =>
                     import('../../features/services-offered/pages/services-page/services-page').then(m => m.ServicesPage),
             },
+            {
+                path:'employee-panel',
+                loadComponent: () =>
+                    import('../../features/user/pages/employee-pages/employee-pages').then(m => m.EmployeePages),
+            },
         ]
     }
 ]

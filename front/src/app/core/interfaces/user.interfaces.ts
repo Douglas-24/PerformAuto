@@ -22,6 +22,15 @@ export enum Role {
   ADMIN = 'ADMIN',
 }
 
+
+export interface EmployeeWorkingHours {
+  dayOfWeek: number
+  startTime: string
+  endTime: string
+  employeeId: number
+}
+
+
 export enum RoleEmployee {
   CUSTOMER_SERVICE = 'CUSTOMER_SERVICE',
   WAREHOUSE_MANAGER = 'WAREHOUSE_MANAGER',
@@ -33,4 +42,10 @@ export interface Employee {
   lastname: string;
   email: string;
   rol: RoleEmployee
+
+}
+
+export interface EmployeeData {
+  employee: Employee
+  timeTableEmployee: EmployeeWorkingHours
 }
