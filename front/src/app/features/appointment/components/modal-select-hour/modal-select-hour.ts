@@ -3,7 +3,7 @@ import { Component, Inject } from '@angular/core';
 import { DateReserved, MechanicSlot } from '../../../../core/interfaces/appointment.interface';
 import { CommonModule } from '@angular/common';
 import { Separator } from "../../../../shared/separator/separator";
-import { SocketService } from '../../../../core/service/socket.service';
+import { AppointmentSocketService } from '../../../../core/service/appointmentSocket.service';
 interface ReservedSlotData {
   day: string;
   mechanicId: number;
@@ -19,7 +19,7 @@ export class ModalSelectHour {
   constructor(
     @Inject(DIALOG_DATA) public data: { mechanicSlot: MechanicSlot[], date: string },
     private dialogRef: DialogRef<{ date: Date, mechanicId: number } | null>,
-    private socket: SocketService
+    private socket: AppointmentSocketService
   ) {
     // Mapear Data para incluir el campo reservedDateClient
     this.mappingDataSlots()

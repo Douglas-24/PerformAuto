@@ -38,6 +38,7 @@ export class CarSelect {
       next: (resp) => {
         if (resp.user.rol == Role.CLIENT && resp.user.id) {
           this.getAllCars(resp.user.id)
+          this.showCars = true
         }
         if (resp.user.rol == RoleEmployee.CUSTOMER_SERVICE) {
           this.showCars = false

@@ -44,33 +44,36 @@ enum StateChangePart {
   REVISED
   CHANGED
 }
+
 model User {
-  id               Int         @id @default(autoincrement())
+  id               Int             @id @default(autoincrement())
   name             String
   lastname         String
-  dni              String      @unique
-  email            String      @unique
+  dni              String          @unique
+  email            String          @unique
   password         String
-  phone_number     Int         @unique
+  phone_number     Int             @unique
   address          String
   postal_code      Int
-  rol              Role        @default(CLIENT)
-  account_verified Boolean     @default(false)
+  rol              Role            @default(CLIENT)
+  account_verified Boolean         @default(false)
   cars             Car[]
   date_register    DateTime
   servicesAsClient Appoiment[]
+  notifications    Notifications[]
 }
 
 model Employee {
-  id          Int                   @id @default(autoincrement())
-  name        String
-  lastname    String
-  email       String
-  password    String
-  rol         RoleEmployee
-  workingHour EmployeeWorkingHours?
-  isActive    Boolean               @default(true)
-  appoiment   Appoiment[]
+  id            Int                   @id @default(autoincrement())
+  name          String
+  lastname      String
+  email         String
+  password      String
+  rol           RoleEmployee
+  workingHour   EmployeeWorkingHours?
+  isActive      Boolean               @default(true)
+  appoiment     Appoiment[]
+  notifications Notifications[]
 }
 
 model EmployeeWorkingHours {
@@ -121,8 +124,9 @@ model Appoiment {
   mechanicId          Int
   appoiment_date      DateTime
   mileage_at_delivery Int                @default(0)
-  duration            Int             @default(0)
+  duration            Int                @default(0)
   invoice             Invoice[]
+  notifications       Notifications[]
 }
 
 model AppoimentService {
@@ -165,7 +169,7 @@ model AppoimentServicePart {
   partId             Int
   quantity           Int
   replaced           Boolean
-  statePart          StateChangePart @default(SHOULD_CHANGE)
+  statePart          StateChangePart  @default(SHOULD_CHANGE)
 }
 
 model Invoice {
@@ -177,4 +181,43 @@ model Invoice {
   departure_date DateTime
   state          StatePayment
   notes          String
+}
+
+enum TypeNotification {
+  APPOINTMENT_CREATED
+  APPOINTMENT_FINISHED
+  INVOICE
+  URGENT_CHANGE
+  URGENT_CHANGE_RESPONSE
+}
+
+model Notifications {
+  id          Int              @id @default(autoincrement())
+  type        TypeNotification
+  message     String
+  read        Boolean          @default(false)
+  createdAt   DateTime         @default(now())
+  user        User?            @relation(fields: [id_user], references: [id])
+  id_user     Int?
+  employee    Employee?        @relation(fields: [id_employee], references: [id])
+  id_employee Int?
+  confirmed   Boolean?
+  appoimentId Int?
+  appointment Appoiment?       @relation(fields: [appoimentId], references: [id])
+  file        File[]
+}
+
+enum TypeFile {
+  PDF
+  VIDEO
+  IMG
+  UNKNOW
+}
+
+model File {
+  id             Int           @id @default(autoincrement())
+  type           TypeFile
+  url            String
+  notificationId Int
+  notification   Notifications @relation(fields: [notificationId], references: [id])
 }
