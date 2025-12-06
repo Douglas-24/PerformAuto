@@ -70,7 +70,7 @@ CREATE TABLE `Service` (
     `price` INTEGER NOT NULL,
     `frequency_km` INTEGER NOT NULL,
     `frequency_time` VARCHAR(191) NOT NULL,
-    `duration` VARCHAR(191) NOT NULL,
+    `duration` INTEGER NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -84,7 +84,7 @@ CREATE TABLE `Appoiment` (
     `mechanicId` INTEGER NOT NULL,
     `appoiment_date` DATETIME(3) NOT NULL,
     `mileage_at_delivery` INTEGER NOT NULL DEFAULT 0,
-    `duration` VARCHAR(191) NOT NULL DEFAULT '',
+    `duration` INTEGER NOT NULL DEFAULT 0,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -129,6 +129,7 @@ CREATE TABLE `AppoimentServicePart` (
     `partId` INTEGER NOT NULL,
     `quantity` INTEGER NOT NULL,
     `replaced` BOOLEAN NOT NULL,
+    `statePart` ENUM('SHOULD_CHANGE', 'REVIEW', 'NO_CHANGE', 'REVISED', 'CHANGED') NOT NULL DEFAULT 'SHOULD_CHANGE',
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -142,6 +143,31 @@ CREATE TABLE `Invoice` (
     `departure_date` DATETIME(3) NOT NULL,
     `state` ENUM('PAID', 'PENDING', 'CANCELLED') NOT NULL,
     `notes` VARCHAR(191) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Notifications` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `type` ENUM('APPOINTMENT_CREATED', 'APPOINTMENT_FINISHED', 'INVOICE', 'URGENT_CHANGE', 'URGENT_CHANGE_RESPONSE') NOT NULL,
+    `message` VARCHAR(191) NOT NULL,
+    `read` BOOLEAN NOT NULL DEFAULT false,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `id_user` INTEGER NULL,
+    `id_employee` INTEGER NULL,
+    `confirmed` BOOLEAN NULL,
+    `appoimentId` INTEGER NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `File` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `type` ENUM('PDF', 'VIDEO', 'IMG', 'UNKNOW') NOT NULL,
+    `url` VARCHAR(191) NOT NULL,
+    `notificationId` INTEGER NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -181,3 +207,15 @@ ALTER TABLE `AppoimentServicePart` ADD CONSTRAINT `AppoimentServicePart_partId_f
 
 -- AddForeignKey
 ALTER TABLE `Invoice` ADD CONSTRAINT `Invoice_id_appoiment_fkey` FOREIGN KEY (`id_appoiment`) REFERENCES `Appoiment`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Notifications` ADD CONSTRAINT `Notifications_id_user_fkey` FOREIGN KEY (`id_user`) REFERENCES `User`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Notifications` ADD CONSTRAINT `Notifications_id_employee_fkey` FOREIGN KEY (`id_employee`) REFERENCES `Employee`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Notifications` ADD CONSTRAINT `Notifications_appoimentId_fkey` FOREIGN KEY (`appoimentId`) REFERENCES `Appoiment`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `File` ADD CONSTRAINT `File_notificationId_fkey` FOREIGN KEY (`notificationId`) REFERENCES `Notifications`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

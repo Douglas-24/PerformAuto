@@ -11,7 +11,7 @@ export class AwsS3Service {
         },
     });
 
-    async uploadFile(file: Express.Multer.File): Promise<{url: string, typeFile:string}> {
+    async uploadFile(file: Express.Multer.File): Promise<{ url: string, typeFile: string }> {
         const originalName = file.originalname;
         const key = originalName.replace(/\s+/g, '-')
         const command = new PutObjectCommand({
@@ -24,11 +24,15 @@ export class AwsS3Service {
         try {
             await this.s3.send(command);
             const url = `https://${process.env.AWS_S3_BUCKET}.s3.${process.env.AWS_BUCKET_REGION}.amazonaws.com/${key}`;
-            return {url: url, typeFile:file.mimetype}
+            return { url: url, typeFile: file.mimetype }
         } catch (error) {
             console.error('Error al subir a S3:', error);
             throw new InternalServerErrorException('No se pudo subir el archivo a S3.');
         }
+    }
+
+    async uploadFiles(files: Express.Multer.File[]): Promise<{ url: string; typeFile: string }[]> {
+        return Promise.all(files.map(file => this.uploadFile(file)));
     }
 
 

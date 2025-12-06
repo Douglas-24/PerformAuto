@@ -126,7 +126,6 @@ model Appoiment {
   mileage_at_delivery Int                @default(0)
   duration            Int                @default(0)
   invoice             Invoice[]
-  notifications       Notifications[]
 }
 
 model AppoimentService {
@@ -162,14 +161,36 @@ model PartsService {
 }
 
 model AppoimentServicePart {
-  id                 Int              @id @default(autoincrement())
-  appoimentService   AppoimentService @relation(fields: [appoimentServiceId], references: [id])
+  id                 Int                      @id @default(autoincrement())
+  appoimentService   AppoimentService         @relation(fields: [appoimentServiceId], references: [id])
   appoimentServiceId Int
-  part               Parts            @relation(fields: [partId], references: [id])
+  part               Parts                    @relation(fields: [partId], references: [id])
   partId             Int
   quantity           Int
   replaced           Boolean
-  statePart          StateChangePart  @default(SHOULD_CHANGE)
+  statePart          StateChangePart          @default(SHOULD_CHANGE)
+  urgentChangePart   PartChangeConfirmation[]
+}
+
+model PartChangeConfirmation {
+  id                     Int                  @id @default(autoincrement())
+  appoimentServicePart   AppoimentServicePart @relation(fields: [appoimentServicePartId], references: [id])
+  appoimentServicePartId Int
+  mechanicMessage        String
+  clientConfirmed        Boolean?
+  confirmedAt            DateTime?
+  createdAt              DateTime             @default(now())
+  partChangeImages       PartChangeImage[]
+}
+
+model PartChangeImage {
+  id             Int                    @id @default(autoincrement())
+  confirmation   PartChangeConfirmation @relation(fields: [confirmationId], references: [id])
+  confirmationId Int
+  url            String
+  type           String?
+  description    String?
+  uploadedAt     DateTime               @default(now())
 }
 
 model Invoice {
@@ -183,41 +204,32 @@ model Invoice {
   notes          String
 }
 
-enum TypeNotification {
-  APPOINTMENT_CREATED
-  APPOINTMENT_FINISHED
-  INVOICE
-  URGENT_CHANGE
-  URGENT_CHANGE_RESPONSE
+enum NotificationType {
+  INFO
+  WARNING
+  URGENT
+  CONFIRMATION
 }
 
 model Notifications {
-  id          Int              @id @default(autoincrement())
-  type        TypeNotification
-  message     String
-  read        Boolean          @default(false)
-  createdAt   DateTime         @default(now())
-  user        User?            @relation(fields: [id_user], references: [id])
-  id_user     Int?
-  employee    Employee?        @relation(fields: [id_employee], references: [id])
-  id_employee Int?
-  confirmed   Boolean?
-  appoimentId Int?
-  appointment Appoiment?       @relation(fields: [appoimentId], references: [id])
-  file        File[]
+  id               Int                @id @default(autoincrement())
+  typeNotifycation NotificationType   @default(INFO)
+  title            String
+  message          String
+  read             Boolean            @default(false)
+  createdAt        DateTime           @default(now())
+  user             User?              @relation(fields: [id_user], references: [id])
+  id_user          Int?
+  employeeId       Int?
+  employee         Employee?          @relation(fields: [employeeId], references: [id])
+  files            NotificationFile[]
 }
 
-enum TypeFile {
-  PDF
-  VIDEO
-  IMG
-  UNKNOW
-}
-
-model File {
+model NotificationFile {
   id             Int           @id @default(autoincrement())
-  type           TypeFile
-  url            String
-  notificationId Int
   notification   Notifications @relation(fields: [notificationId], references: [id])
+  notificationId Int
+  url            String
+  type           String
+  uploadedAt     DateTime      @default(now())
 }

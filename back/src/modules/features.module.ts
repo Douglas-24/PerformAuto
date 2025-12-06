@@ -8,9 +8,10 @@ import { ServicePartsModule } from './service-parts/servicesParts.module';
 import { ServiceWorkshopModule } from './service-workshop/service-workshop.module';
 import { EmployeeModule } from './employee/employee.module';
 import { AppoimentModule } from './appoiment/appoiment.module';
-import { AppointmentSocketGateway } from './appointment-socket/appointment-socket.gateway';
+import { AppointmentSocketGateway } from './sockets/appointment-socket.gateway';
+import { NotificationModule } from './notification/notification.module';
 @Module({
-    imports:[UserModule, AuthModule, CarsModule, MailModule, PartsModule, ServicePartsModule, ServiceWorkshopModule, EmployeeModule, AppoimentModule],
+    imports:[UserModule, AuthModule, CarsModule, MailModule, PartsModule, ServicePartsModule, ServiceWorkshopModule, EmployeeModule, AppoimentModule, NotificationModule],
     providers: [AppointmentSocketGateway],
 })
 
