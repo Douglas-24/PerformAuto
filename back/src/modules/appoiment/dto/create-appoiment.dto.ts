@@ -41,6 +41,14 @@ export class CreateAppoimentServicePartDto{
 
     @IsEnum(StateChangePart)
     statePart: StateChangePart
+
+
+    @IsString()
+    mechanicMessage?:string
+
+    @IsString()
+    urlImg?:string
+
 }
 export class DataAppointmentCreate{
     appoinment: CreateAppoimentDto

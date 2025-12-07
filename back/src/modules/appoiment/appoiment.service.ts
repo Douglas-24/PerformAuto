@@ -5,6 +5,9 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { Appoiment, Employee, StateServie } from '@prisma/client';
 import { EmployeeService } from '../employee/employee.service';
 import { DataPartChange, DataServiceSelected } from '../service-parts/dto/TypeServiceParts.dto';
+import { NotificationService } from '../notification/notification.service';
+import { NotificationSocketGateWay } from '../sockets/notifications-socket.gateway';
+import { NotificationType } from '../notification/dto/create-notification.dto';
 interface MechanicData {
   id: number,
   fullName: string
@@ -27,7 +30,8 @@ export class AppoimentService {
   rangeDateAppoiment: number = 7
   constructor(
     private prisma: PrismaService,
-    private employeeService: EmployeeService
+    private employeeService: EmployeeService,
+    private notificationService: NotificationService
 
   ) { }
 
@@ -41,6 +45,22 @@ export class AppoimentService {
     })
     await this.agregateServicesSelectedAppoinment(appoiment.id, createAppoimentDto.servicesSelected)
 
+    await this.notificationService.createNotificationForUser({
+      notification: {
+        typeNotifycation: NotificationType.INFO,
+        title: 'Cita solicitada correctamente',
+        message: 'Gracias por confiar en nosotros, la cita la podras ver en el apartado de citas',
+        id_user: appoiment.clientId
+      }
+    })
+    await this.notificationService.createNotificationForUser({
+      notification: {
+        typeNotifycation: NotificationType.INFO,
+        title: 'Nueva cita asignada',
+        message: 'Se te a asignado una nueva cita, cosultarlo en el partado de citas',
+        employeeId: appoiment.mechanicId
+      }
+    })
     return appoiment
   }
 
@@ -76,7 +96,9 @@ export class AppoimentService {
 
 
   async updatePartServiceAppointment(id: number, dataPart: UpdateAppoimentServicePartDto) {
-
+    console.log(dataPart);
+    if(dataPart.mechanicMessage && dataPart.urlImg)
+        await this.uploadImgPartChangeUrgent(id,dataPart.mechanicMessage,dataPart.urlImg)
     const part = await this.prisma.parts.findFirst({ where: { id: dataPart.partId } })
     const appoinmentService = await this.prisma.appoimentService.findFirst({ where: { id: dataPart.appoimentServiceId } })
     if (!part && !appoinmentService) throw new NotFoundException('No se podido encontrar la pieza de la cita')
@@ -91,6 +113,54 @@ export class AppoimentService {
       }
     })
     return partServiceAppointment
+  }
+
+
+  // Metodo para subir la imagen y descripcion del porque deberia cambiar el cliente la pieza
+  async uploadImgPartChangeUrgent(id_appoimentServicePart:number, mechanicMessage:string, urlImg:string){
+    const partDetail = await this.prisma.appoimentServicePart.findUnique({
+        where: { id: id_appoimentServicePart },
+        select: {
+            appoimentService: {
+                select: {
+                    appoiment: {
+                        select: {
+                            client: {
+                                select: {
+                                    id: true,
+                                    email: true,
+                                    name: true,
+                                }
+                            },
+                            mechanic: {
+                              select:{
+                                id: true,
+                                name: true,
+                                lastname: true
+                              }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    })
+    const changePart = await this.prisma.partChangeUrgent.create({
+      data: {
+        appoimentServicePartId: id_appoimentServicePart,
+        mechanicMessage: mechanicMessage,
+        urlImg: urlImg
+      }
+    })
+    const mecanic = partDetail?.appoimentService.appoiment.mechanic
+     await this.notificationService.createNotificationForUser({
+      notification: {
+        typeNotifycation: NotificationType.INFO,
+        title: `El mecanico ${mecanic?.name} ${mecanic?.lastname} te a enviado un mensaje`,
+        message: 'Parece ser que el mecanico a visto un cambio de pieza urgente miralo',
+        id_user: partDetail?.appoimentService.appoiment.client.id
+      }
+    })
   }
 
   async findAll(): Promise<Appoiment[]> {

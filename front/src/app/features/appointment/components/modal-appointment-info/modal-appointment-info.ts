@@ -48,6 +48,11 @@ export class ModalAppointmentInfo {
       classBorder: "border-purple-500",
       classMessage: "bg-purple-300 px-3 text-purple-600",
       message: "Revisado"
+    },
+    CHANGE_URGENT: {
+      classBorder: "border-orange-600",
+      classMessage: "bg-orange-300 px-3 text-orange-700 font-bold",
+      message: "Cambio urgente"
     }
   }
 

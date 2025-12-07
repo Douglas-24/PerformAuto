@@ -14,7 +14,7 @@ export class NotificationService {
     private readonly awsService: AwsS3Service,
     private readonly notificationSocket: NotificationSocketGateWay,
   ) { }
-  async createNotificationForUser(dataNotification: { notification: CreateNotificationDto, files?: Express.Multer.File[] }) {
+  async createNotificationForUser(dataNotification: { notification: CreateNotificationDto}) {
    
       const notification = await this.prisma.notifications.create({
         data: {
@@ -26,17 +26,7 @@ export class NotificationService {
         }
       })
 
-      let uploadedFiles: { url: string; typeFile: string }[] = [];
-      if (dataNotification.files && dataNotification.files.length > 0) {
-        uploadedFiles = await this.awsService.uploadFiles(dataNotification.files)
-        await this.prisma.notificationFile.createMany({
-          data: uploadedFiles.map(file => ({
-            notificationId: notification.id,
-            url: file.url,
-            type: file.typeFile,
-          })),
-        });
-      }
+      
       if(dataNotification.notification.id_user)
       this.notificationSocket.sendNotificationToUser(dataNotification.notification.id_user, notification)
     

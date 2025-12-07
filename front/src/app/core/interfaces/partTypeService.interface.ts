@@ -18,7 +18,8 @@ export enum StateChangePart {
     REVIEW = 'REVIEW',
     CHANGED = 'CHANGED',
     REVISED = 'REVISED',
-    NO_CHANGE = 'NO_CHANGE'
+    NO_CHANGE = 'NO_CHANGE',
+    CHANGE_URGENT = 'CHANGE_URGENT'
 }
 
 export interface postDataPartsService {
@@ -44,6 +45,8 @@ export interface DataServicePartMechanic {
     replaced: boolean
     statePart: StateChangePart
     part?: PartUsed
+    mechanicMessage?:string | null
+    urlImg?:string | null
 }
 
 export interface DataSelectService {

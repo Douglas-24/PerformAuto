@@ -11,15 +11,17 @@
             </div>
         </div>
 
-        
+
         @for (service of serviceParts; track $index) {
         <app-separator [message]="service.services.name"></app-separator>
         <div class="grid grid-cols-6 sm:grid-cols-8 md:grid-cols-5 gap-4 mt-5">
             @for (partUsed of serviceParts; track $index) {
             @for (part of partUsed.parts_used; track $index) {
-            <div
-                (click)="openModalChangeInfo(part)"
+            <div (click)="part.statePart !== 'CHANGE_URGENT' && openModalChangeInfo(part)"
+                [class.cursor-not-allowed]="part.statePart === 'CHANGE_URGENT'"
+                [class.opacity-50]="part.statePart === 'CHANGE_URGENT'"
                 class="relative border-2 {{classPartsLabel[part.statePart].classBorder}} rounded-xl p-2 mt-4 cursor-pointer">
+
                 <div
                     class="absolute -top-3 left-1/2 -translate-x-1/2 {{classPartsLabel[part.statePart].classMessage}} rounded font-semibold text-sm">
                     {{classPartsLabel[part.statePart].message}}
@@ -35,13 +37,11 @@
         </div>
         }
         <div class="mt-7 sm:flex sm:items-center sm:justify-end ">
-            <button
-                (click)="onCancel()"
+            <button (click)="onCancel()"
                 class="w-full px-4 py-2 mt-2 text-lg font-medium tracking-wide text-gray-700 capitalize transition-colors duration-300 transform border border-gray-200 rounded-lg sm:mt-0 sm:w-auto sm:mx-2 dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-800 hover:bg-gray-100 focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-40">
                 Cancelar
             </button>
-            <button
-                (click)="endAppointment()"
+            <button (click)="endAppointment()"
                 class="w-full px-4 py-2 mt-2 text-lg font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-md sm:w-auto sm:mt-0 hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40">
                 Finalizar cita
             </button>

@@ -1,6 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from "@angular/router";
 import { AuthService } from '../../core/service/auth.service';
+import { NotificationSocket } from '../../core/service/notificationSocket.service';
 @Component({
   selector: 'app-header',
   imports: [RouterLink],
@@ -9,11 +10,15 @@ import { AuthService } from '../../core/service/auth.service';
 })
 export class Header implements OnInit{
   private authService = inject(AuthService)
+  private notificationSocket = inject(NotificationSocket)
   logged:boolean = false
   ngOnInit(): void {
-    this.logged =localStorage.getItem('token') ? true : false 
-    this.getProfile()
-    
+    const token = localStorage.getItem('token')
+    this.logged = token ? true : false 
+    if(this.logged && token){
+      this.getProfile()
+      this.notificationSocket.connect(token)
+    }
   }
 
   getProfile(){

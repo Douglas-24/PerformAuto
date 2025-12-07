@@ -43,6 +43,7 @@ enum StateChangePart {
   NO_CHANGE
   REVISED
   CHANGED
+  CHANGE_URGENT
 }
 
 model User {
@@ -161,18 +162,18 @@ model PartsService {
 }
 
 model AppoimentServicePart {
-  id                 Int                      @id @default(autoincrement())
-  appoimentService   AppoimentService         @relation(fields: [appoimentServiceId], references: [id])
+  id                 Int                @id @default(autoincrement())
+  appoimentService   AppoimentService   @relation(fields: [appoimentServiceId], references: [id])
   appoimentServiceId Int
-  part               Parts                    @relation(fields: [partId], references: [id])
+  part               Parts              @relation(fields: [partId], references: [id])
   partId             Int
   quantity           Int
   replaced           Boolean
-  statePart          StateChangePart          @default(SHOULD_CHANGE)
-  urgentChangePart   PartChangeConfirmation[]
+  statePart          StateChangePart    @default(SHOULD_CHANGE)
+  urgentChangePart   PartChangeUrgent[]
 }
 
-model PartChangeConfirmation {
+model PartChangeUrgent {
   id                     Int                  @id @default(autoincrement())
   appoimentServicePart   AppoimentServicePart @relation(fields: [appoimentServicePartId], references: [id])
   appoimentServicePartId Int
@@ -180,17 +181,7 @@ model PartChangeConfirmation {
   clientConfirmed        Boolean?
   confirmedAt            DateTime?
   createdAt              DateTime             @default(now())
-  partChangeImages       PartChangeImage[]
-}
-
-model PartChangeImage {
-  id             Int                    @id @default(autoincrement())
-  confirmation   PartChangeConfirmation @relation(fields: [confirmationId], references: [id])
-  confirmationId Int
-  url            String
-  type           String?
-  description    String?
-  uploadedAt     DateTime               @default(now())
+  urlImg                 String
 }
 
 model Invoice {
@@ -212,24 +203,14 @@ enum NotificationType {
 }
 
 model Notifications {
-  id               Int                @id @default(autoincrement())
-  typeNotifycation NotificationType   @default(INFO)
+  id               Int              @id @default(autoincrement())
+  typeNotifycation NotificationType @default(INFO)
   title            String
   message          String
-  read             Boolean            @default(false)
-  createdAt        DateTime           @default(now())
-  user             User?              @relation(fields: [id_user], references: [id])
+  read             Boolean          @default(false)
+  createdAt        DateTime         @default(now())
+  user             User?            @relation(fields: [id_user], references: [id])
   id_user          Int?
   employeeId       Int?
-  employee         Employee?          @relation(fields: [employeeId], references: [id])
-  files            NotificationFile[]
-}
-
-model NotificationFile {
-  id             Int           @id @default(autoincrement())
-  notification   Notifications @relation(fields: [notificationId], references: [id])
-  notificationId Int
-  url            String
-  type           String
-  uploadedAt     DateTime      @default(now())
+  employee         Employee?        @relation(fields: [employeeId], references: [id])
 }
