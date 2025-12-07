@@ -37,6 +37,11 @@ export class ModalPartsService {
       classBorder: "border-purple-500",
       classMessage: "bg-purple-300 px-3 text-purple-600",
       message: "Revisado"
+    },
+    CHANGE_URGENT: {
+      classBorder: "border-purple-500",
+      classMessage: "bg-purple-300 px-3 text-purple-600",
+      message: "Revisado"
     }
   }
 
