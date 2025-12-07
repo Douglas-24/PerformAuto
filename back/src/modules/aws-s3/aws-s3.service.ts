@@ -23,7 +23,7 @@ export class AwsS3Service {
 
         try {
             await this.s3.send(command);
-            const url = `https://${process.env.AWS_S3_BUCKET}.s3.${process.env.AWS_BUCKET_REGION}.amazonaws.com/${key}`;
+            const url = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_BUCKET_REGION}.amazonaws.com/${key}`;
             return { url: url, typeFile: file.mimetype }
         } catch (error) {
             console.error('Error al subir a S3:', error);
