@@ -7,6 +7,7 @@ import { EmployeeService } from '../employee/employee.service';
 import { DataServiceSelected, StateChangePart } from '../service-parts/dto/TypeServiceParts.dto';
 import { NotificationService } from '../notification/notification.service';
 import { NotificationType } from '../notification/dto/create-notification.dto';
+import { NotificationSocketGateWay } from '../sockets/notifications-socket.gateway';
 interface MechanicData {
   id: number,
   fullName: string
@@ -30,7 +31,8 @@ export class AppoimentService {
   constructor(
     private prisma: PrismaService,
     private employeeService: EmployeeService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private socketService: NotificationSocketGateWay
 
   ) { }
 
@@ -93,6 +95,7 @@ export class AppoimentService {
     await this.prisma.appoimentServicePart.createMany({ data: partsServicesAppointment })
   }
 
+  // Cliente confirma si se cambia o no la pieza
   async confirmUrgentChangePart(id:number, data:{confirmChange:boolean, mechanicId:number}){
     const confirmChangeAcction = await this.prisma.partChangeUrgent.update({
       where: {id},
@@ -106,8 +109,7 @@ export class AppoimentService {
     })
     const appoimentServicePartId = confirmChangeAcction.appoimentServicePartId;
     const newState = data.confirmChange ? StateChangePart.SHOULD_CHANGE : StateChangePart.NO_CHANGE;
-    console.log(newState);
-    
+
     const updateState = await this.prisma.appoimentServicePart.update({
       where: {id: appoimentServicePartId},
       data: {
@@ -124,6 +126,7 @@ export class AppoimentService {
         employeeId: data.mechanicId
       }
     })
+    this.socketService.refreshDataEmployee(data.mechanicId)
     return confirmChangeAcction
   }
 
@@ -187,12 +190,13 @@ export class AppoimentService {
       }
     })
     const mecanic = partDetail?.appoimentService.appoiment.mechanic
+    const client = partDetail?.appoimentService.appoiment.client.id
     await this.notificationService.createNotificationForUser({
       notification: {
         typeNotifycation: NotificationType.INFO,
         title: `El mecanico ${mecanic?.name} ${mecanic?.lastname} te a enviado un mensaje`,
         message: 'Parece ser que el mecanico a visto un cambio de pieza urgente miralo',
-        id_user: partDetail?.appoimentService.appoiment.client.id
+        id_user: client
       }
     })
   }

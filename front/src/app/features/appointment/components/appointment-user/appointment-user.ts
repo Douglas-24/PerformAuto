@@ -7,6 +7,7 @@ import { RouterLink } from '@angular/router';
 import { Employee, User } from '../../../../core/interfaces/user.interfaces';
 import { Dialog } from '@angular/cdk/dialog';
 import { ModalConfirmChangePart } from '../modal-confirm-change-part/modal-confirm-change-part';
+import { NotificationSocket } from '../../../../core/service/notificationSocket.service';
 interface ModalDataUrgentChange {
   pendingParts: any[];
   appointmentId: number;
@@ -23,18 +24,30 @@ export class AppointmentUser implements OnInit {
   @Input() user!: User
   private appointmentService = inject(AppointmentService)
   private dialog = inject(Dialog)
+  private notificationSocket = inject(NotificationSocket)
   allAppointmet: AppointmentUserInterface[] = []
 
   ngOnInit(): void {
-    if (this.user && this.user.id) this.getAllApointment(this.user.id)
+    if (this.user && this.user.id){
+      this.getAllApointment(this.user.id)
+      this.listenForRefresh(this.user.id)
+    } 
+    
   }
 
+  listenForRefresh(id_user:number) {
+        this.notificationSocket.onRefreshData().subscribe(() => {
+            console.log(`[SOCKET] Recepción de 'refreshData'. Refrescando citas...`);
+            this.getAllApointment(id_user);
+        }, (error) => {
+          console.error("[SOCKET ERROR] Error en la suscripción a 'refreshData':", error);
+        });
+    }
 
   getAllApointment(id_user: number) {
     this.appointmentService.getAllAppointmentUser(id_user).subscribe({
       next: (resp) => {
         this.allAppointmet = resp.data
-        console.log(resp.data);
       },
       error: (error) => {
         console.log(error);

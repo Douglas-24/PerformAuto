@@ -6,6 +6,7 @@ import { StateServie } from '../../../../core/interfaces/appointment.interface';
 import { Separator } from "../../../../shared/separator/separator";
 import { ModalChangeInfoPart } from '../modal-change-info-part/modal-change-info-part';
 import { DinamicModal } from '../../../../shared/dinamic-modal/dinamic-modal';
+import { NotificationSocket } from '../../../../core/service/notificationSocket.service';
 @Component({
   selector: 'app-modal-appointment-info',
   imports: [Separator],
@@ -16,11 +17,13 @@ export class ModalAppointmentInfo {
   private appointmentService = inject(AppointmentService)
   serviceParts: ServiceParts[] = []
   private modal = inject(Dialog)
+  private notificationSocket = inject(NotificationSocket);
   constructor(
     @Inject(DIALOG_DATA) public data: number,
     private dialogRef: DialogRef
   ) {
     this.getServicePart()
+    this.listenForRefresh();
   }
 
   classPartsLabel = {
@@ -67,6 +70,12 @@ export class ModalAppointmentInfo {
       }
     })
   }
+
+  listenForRefresh() {
+        this.notificationSocket.onRefreshData().subscribe(() => {
+            this.getServicePart(); 
+        });
+    }
 
   async openModalChangeInfo(partService: DataServicePartMechanic) {
     const dialog = this.modal.open(ModalChangeInfoPart, {

@@ -47,7 +47,7 @@ export class NotificationSocketGateWay {
     public refreshDataUser(userId:number){
         this.server.to(`user_${userId}`).emit('refresData', true)
     }
-    public refreshDataEmployee(employeeId){
+    public refreshDataEmployee(employeeId:number){
         this.server.to(`employee_${employeeId}`).emit('refreshData', true)
     }
 

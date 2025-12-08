@@ -23,4 +23,18 @@ private socket?: Socket;
       this.socket?.on('newNotification', (data) => observer.next(data));
     });
   }
+
+  public onRefreshData(): Observable<any> {
+    return new Observable(observer => {
+      this.socket?.on('refreshData', (data) => observer.next(data));
+    });
+  }
+
+  emit(event: string, data: any) {
+    this.socket?.emit(event, data);
+  }
+
+  on(event: string, callback: (data: any) => void) {
+    this.socket?.on(event, callback);
+  }
 }
