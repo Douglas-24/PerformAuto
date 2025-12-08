@@ -34,19 +34,34 @@ export class NotificationService {
       this.notificationSocket.sendNotificationToEmployee(dataNotification.notification.employeeId, notification)
   }
 
-  findAll() {
-    return `This action returns all notification`;
+  async findAllNotificationUser(id:number) {
+    return await this.prisma.notifications.findMany({
+      where: {
+        id_user: id
+      }
+    })    
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} notification`;
+  async findAllNotificationEmployee(id: number) {
+    return await this.prisma.notifications.findMany({
+      where:{
+        employeeId: id
+      }
+    })
   }
 
-  update(id: number, updateNotificationDto: UpdateNotificationDto) {
-    return `This action updates a #${id} notification`;
+  async markAsRead(id:number){
+    return await this.prisma.notifications.update({
+      where: {id},
+      data: {
+        read: true
+      }
+    })
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} notification`;
+  async remove(id: number) {
+    return await this.prisma.notifications.delete({
+      where: {id: id}
+    }) ;
   }
 }

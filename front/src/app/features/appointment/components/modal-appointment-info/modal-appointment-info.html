@@ -15,8 +15,8 @@
         @for (service of serviceParts; track $index) {
         <app-separator [message]="service.services.name"></app-separator>
         <div class="grid grid-cols-6 sm:grid-cols-8 md:grid-cols-5 gap-4 mt-5">
-            @for (partUsed of serviceParts; track $index) {
-            @for (part of partUsed.parts_used; track $index) {
+            
+            @for (part of service.parts_used; track $index) {
             <div (click)="part.statePart !== 'CHANGE_URGENT' && openModalChangeInfo(part)"
                 [class.cursor-not-allowed]="part.statePart === 'CHANGE_URGENT'"
                 [class.opacity-50]="part.statePart === 'CHANGE_URGENT'"
@@ -33,8 +33,7 @@
                 </div>
             </div>
             }
-            }
-        </div>
+            </div>
         }
         <div class="mt-7 sm:flex sm:items-center sm:justify-end ">
             <button (click)="onCancel()"

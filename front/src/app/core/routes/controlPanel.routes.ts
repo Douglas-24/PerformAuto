@@ -63,6 +63,11 @@ export const controlPanelRoutes: Routes = [
                 loadComponent: () =>
                     import('../../features/user/pages/employee-pages/employee-pages').then(m => m.EmployeePages),
             },
+            {
+                path:'notification-user/:rol/:id',
+                loadComponent: () =>
+                    import('../../features/notifications/pages/notification-page/notification-page').then(m => m.NotificationPage),
+            },
         ]
     }
 ]
