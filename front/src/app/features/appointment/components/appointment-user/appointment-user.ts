@@ -5,7 +5,14 @@ import { AppointmentUserInterface } from '../../../../core/interfaces/appointmen
 import { CommonModule } from "@angular/common"
 import { RouterLink } from '@angular/router';
 import { Employee, User } from '../../../../core/interfaces/user.interfaces';
-
+import { Dialog } from '@angular/cdk/dialog';
+import { ModalConfirmChangePart } from '../modal-confirm-change-part/modal-confirm-change-part';
+interface ModalDataUrgentChange {
+  pendingParts: any[];
+  appointmentId: number;
+  carInfo: string;
+  mechanicId: number
+}
 @Component({
   selector: 'app-appointment-user',
   imports: [CommonModule, RouterLink],
@@ -13,15 +20,16 @@ import { Employee, User } from '../../../../core/interfaces/user.interfaces';
   styleUrl: './appointment-user.css'
 })
 export class AppointmentUser implements OnInit {
-  @Input() user!:User
+  @Input() user!: User
   private appointmentService = inject(AppointmentService)
+  private dialog = inject(Dialog)
   allAppointmet: AppointmentUserInterface[] = []
 
   ngOnInit(): void {
-    if(this.user && this.user.id) this.getAllApointment(this.user.id)
+    if (this.user && this.user.id) this.getAllApointment(this.user.id)
   }
 
-  
+
   getAllApointment(id_user: number) {
     this.appointmentService.getAllAppointmentUser(id_user).subscribe({
       next: (resp) => {
@@ -33,5 +41,66 @@ export class AppointmentUser implements OnInit {
 
       }
     })
+  }
+  getUrgentPartsCount(appointment: AppointmentUserInterface): number {
+    let count = 0;
+
+    if (appointment.services) {
+      for (const service of appointment.services) {
+        if (service.parts_used) {
+          for (const part of service.parts_used) {
+            if (part.urgentChangePart && part.urgentChangePart.length > 0) {
+              const latestUrgentChange = part.urgentChangePart[0]
+              if (part.statePart === 'CHANGE_URGENT' && latestUrgentChange.clientConfirmed === null) {
+                count++;
+              }
+            }
+          }
+        }
+      }
+    }
+    return count;
+  }
+  collectAllPendingUrgentParts(appointment: AppointmentUserInterface): any[] {
+    const pendingParts: any[] = [];
+
+    for (const service of appointment.services) {
+      for (const part of service.parts_used) {
+        if (part.statePart === 'CHANGE_URGENT' &&
+          part.urgentChangePart &&
+          part.urgentChangePart.length > 0
+        ) {
+          const urgentRecord = part.urgentChangePart[0];
+          if (urgentRecord.clientConfirmed === null) {
+            pendingParts.push({
+              partName: part.part?.name || 'Pieza Desconocida',
+              partReference: part.part?.reference,
+              serviceName: service.services.name,
+              urgentChange: urgentRecord,
+              appoimentServicePartId: part.id
+            });
+          }
+        }
+      }
+    }
+    return pendingParts;
+  }
+  openUrgentChangeModal(appointment: AppointmentUserInterface) {
+    const pendingUrgentParts = this.collectAllPendingUrgentParts(appointment);
+    const modalData: ModalDataUrgentChange = {
+      pendingParts: pendingUrgentParts,
+      appointmentId: appointment.id,
+      carInfo: `${appointment.car.brand} ${appointment.car.model}`,
+      mechanicId: appointment.mechanicId
+    };
+
+    this.dialog.open(ModalConfirmChangePart, {
+      width: '750px',
+      data: modalData,
+    }).closed.subscribe(result => {
+      if (result && this.user.id) {
+        this.getAllApointment(this.user.id);
+      }
+    });
   }
 }

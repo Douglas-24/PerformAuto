@@ -1,6 +1,6 @@
 @if (allAppointmet.length > 0 ) {
 <div class="flex flex-col items-center justify-center mb-5">
-  <h1 class="text-4xl font-medium text-gray-800  dark:text-white">Tus citas y reservas</h1>
+  <h1 class="text-4xl font-medium text-gray-800  dark:text-white">Tus citas y reservas</h1>
   <p class="mt-2 text-xl text-gray-500 dark:text-gray-400">Se mostraran todas las citas que has realizado o vas a
     realizar </p>
 </div>
@@ -10,10 +10,26 @@
 <div class="grid grid-cols-1 mt-6 sm:grid-cols-2 lg:grid-cols-5 gap-8">
 
   @for (appointment of allAppointmet; track $index) {
-  <div class="max-w-xl overflow-hidden bg-white rounded-lg shadow-md dark:bg-gray-800">
-    <img class="object-cover w-full h-64"
-      src="https://images.unsplash.com/photo-1550439062-609e1531270e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60"
-      alt="Article">
+  @let urgentCount = getUrgentPartsCount(appointment);
+
+  <div class="relative max-w-xl overflow-hidden bg-white rounded-lg shadow-md dark:bg-gray-800">
+
+    @if (urgentCount > 0) {
+    <div
+      (click)="openUrgentChangeModal(appointment)"
+      class="absolute top-0 right-0 m-3 p-2 rounded-full bg-red-600 text-white font-bold text-lg shadow-xl cursor-pointer transition duration-300 transform hover:scale-110"
+      title="Tienes {{ urgentCount }} piezas con cambio urgente pendiente de tu confirmación.">
+
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd"
+          d="M10 2a8 8 0 018 8c0 2.275-.824 4.38-2.188 6.002a.75.75 0 00.103.882l.858.858a.75.75 0 01-1.06 1.06l-.858-.858a.75.75 0 00-.882-.103C14.38 18.176 12.275 19 10 19a8 8 0 01-8-8c0-2.275.824-4.38 2.188-6.002a.75.75 0 00-.103-.882l-.858-.858a.75.75 0 011.06-1.06l.858.858a.75.75 0 00.882.103C5.62 3.824 7.725 3 10 3zM9 11a1 1 0 102 0V7a1 1 0 10-2 0v4z"
+          clip-rule="evenodd" />
+      </svg>
+      <span class="ml-1">{{ urgentCount }}</span>
+    </div>
+    }
+
+    <img class="object-cover w-full h-64" src="{{appointment.car.photo}}" alt="Article">
 
     <div class="p-6">
       <div>
@@ -21,7 +37,7 @@
         </span>
         <p class="mt-1 text-amber-50 font-bold">{{appointment.appoiment_date | date:'shortDate'}}
           {{appointment.appoiment_date | date:'shortTime'}}</p>
-        <p class="block mt-2 text-xl font-semibold text-gray-800  dark:text-white" tabindex="0" role="link">
+        <p class="block mt-2 text-xl font-semibold text-gray-800  dark:text-white" tabindex="0" role="link">
           {{appointment.car.brand}} {{appointment.car.model}}</p>
       </div>
 
@@ -29,7 +45,7 @@
         <div class="flex">
           <div class="flex items-center">
             <p class="text-amber-50 font-bold">Mecanico:</p>
-            <a href="#" class="mx-2  text-gray-700 dark:text-gray-200" tabindex="0"
+            <a href="#" class="mx-2  text-gray-700 dark:text-gray-200" tabindex="0"
               role="link">{{appointment.mechanic.name}} {{appointment.mechanic.lastname}} </a>
           </div>
 

@@ -4,9 +4,8 @@ import { UpdateAppoimentDto, UpdateAppoimentServicePartDto } from './dto/update-
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Appoiment, Employee, StateServie } from '@prisma/client';
 import { EmployeeService } from '../employee/employee.service';
-import { DataPartChange, DataServiceSelected } from '../service-parts/dto/TypeServiceParts.dto';
+import { DataServiceSelected, StateChangePart } from '../service-parts/dto/TypeServiceParts.dto';
 import { NotificationService } from '../notification/notification.service';
-import { NotificationSocketGateWay } from '../sockets/notifications-socket.gateway';
 import { NotificationType } from '../notification/dto/create-notification.dto';
 interface MechanicData {
   id: number,
@@ -94,11 +93,48 @@ export class AppoimentService {
     await this.prisma.appoimentServicePart.createMany({ data: partsServicesAppointment })
   }
 
+  async confirmUrgentChangePart(id:number, data:{confirmChange:boolean, mechanicId:number}){
+    const confirmChangeAcction = await this.prisma.partChangeUrgent.update({
+      where: {id},
+      data: {
+        clientConfirmed: data.confirmChange, 
+        confirmedAt: new Date()
+      },
+      include: {
+            appoimentServicePart: true
+        }
+    })
+    const appoimentServicePartId = confirmChangeAcction.appoimentServicePartId;
+    const newState = data.confirmChange ? StateChangePart.SHOULD_CHANGE : StateChangePart.NO_CHANGE;
+    console.log(newState);
+    
+    const updateState = await this.prisma.appoimentServicePart.update({
+      where: {id: appoimentServicePartId},
+      data: {
+        statePart: newState,
+      }
+    })
+    console.log(updateState);
+    
+    const messageAction = data.confirmChange ? 'aceptado' : 'rechazado';
+    const actionState = data.confirmChange ? 'proceder con' : 'ignorar';
+    this.notificationService.createNotificationForUser({
+       notification: {
+        typeNotifycation: NotificationType.INFO,
+        title: `El usuario a decidio si realizar o no el cambio de la pieza`,
+        message: `El cliente a decido ${messageAction} el cambio de la pieza. Puede ${actionState} el cambio. `,
+        employeeId: data.mechanicId
+      }
+    })
+    return confirmChangeAcction
+  }
+
+  // Que es lo que pas cuando se confirma el cambio
 
   async updatePartServiceAppointment(id: number, dataPart: UpdateAppoimentServicePartDto) {
     console.log(dataPart);
-    if(dataPart.mechanicMessage && dataPart.urlImg)
-        await this.uploadImgPartChangeUrgent(id,dataPart.mechanicMessage,dataPart.urlImg)
+    if (dataPart.mechanicMessage && dataPart.urlImg)
+      await this.uploadImgPartChangeUrgent(id, dataPart.mechanicMessage, dataPart.urlImg)
     const part = await this.prisma.parts.findFirst({ where: { id: dataPart.partId } })
     const appoinmentService = await this.prisma.appoimentService.findFirst({ where: { id: dataPart.appoimentServiceId } })
     if (!part && !appoinmentService) throw new NotFoundException('No se podido encontrar la pieza de la cita')
@@ -117,33 +153,33 @@ export class AppoimentService {
 
 
   // Metodo para subir la imagen y descripcion del porque deberia cambiar el cliente la pieza
-  async uploadImgPartChangeUrgent(id_appoimentServicePart:number, mechanicMessage:string, urlImg:string){
+  async uploadImgPartChangeUrgent(id_appoimentServicePart: number, mechanicMessage: string, urlImg: string) {
     const partDetail = await this.prisma.appoimentServicePart.findUnique({
-        where: { id: id_appoimentServicePart },
-        select: {
-            appoimentService: {
-                select: {
-                    appoiment: {
-                        select: {
-                            client: {
-                                select: {
-                                    id: true,
-                                    email: true,
-                                    name: true,
-                                }
-                            },
-                            mechanic: {
-                              select:{
-                                id: true,
-                                name: true,
-                                lastname: true
-                              }
-                            }
-                        }
-                    }
+      where: { id: id_appoimentServicePart },
+      select: {
+        appoimentService: {
+          select: {
+            appoiment: {
+              select: {
+                client: {
+                  select: {
+                    id: true,
+                    email: true,
+                    name: true,
+                  }
+                },
+                mechanic: {
+                  select: {
+                    id: true,
+                    name: true,
+                    lastname: true
+                  }
                 }
+              }
             }
+          }
         }
+      }
     })
     const changePart = await this.prisma.partChangeUrgent.create({
       data: {
@@ -153,7 +189,7 @@ export class AppoimentService {
       }
     })
     const mecanic = partDetail?.appoimentService.appoiment.mechanic
-     await this.notificationService.createNotificationForUser({
+    await this.notificationService.createNotificationForUser({
       notification: {
         typeNotifycation: NotificationType.INFO,
         title: `El mecanico ${mecanic?.name} ${mecanic?.lastname} te a enviado un mensaje`,
@@ -228,7 +264,22 @@ export class AppoimentService {
         car: true,
         mechanic: true,
         invoice: true,
-      },
+        services: { 
+          include: {
+            services: true,
+            parts_used: {
+              include: {
+                part: true,
+                urgentChangePart: {
+                  orderBy: {
+                    createdAt: 'desc',
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     })
   }
 

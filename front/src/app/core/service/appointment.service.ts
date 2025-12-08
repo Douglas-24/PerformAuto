@@ -39,4 +39,8 @@ export class AppointmentService {
     updateAppointmentPart(id:number,dataPart: DataServicePartMechanic):Observable<apiReponse>{
       return this.http.patch<apiReponse>(this.url + 'update-part-appointment/' + id, dataPart)
     }
+    
+    confirmChangePart(id:number, data:{confirmChange:boolean, mechanicId:number}):Observable<apiReponse>{
+      return this.http.patch<apiReponse>(this.url + 'confirm-change/' + id, data)
+    }
 }

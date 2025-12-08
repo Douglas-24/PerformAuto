@@ -38,22 +38,41 @@ export interface DataPartChange {
     observation: string
 }
 export interface DataServicePartMechanic {
-    id?:number
-    appoimentServiceId:number
-    partId:number
+    id?: number
+    appoimentServiceId: number
+    partId: number
     quatity: number
     replaced: boolean
     statePart: StateChangePart
     part?: PartUsed
-    mechanicMessage?:string | null
-    urlImg?:string | null
+    mechanicMessage?: string | null
+    urlImg?: string | null
+}
+export interface DataServicePartUser {
+    id?: number
+    appoimentServiceId: number
+    partId: number
+    quatity: number
+    replaced: boolean
+    statePart: StateChangePart
+    part?: PartUsed
+    urgentChangePart: UrgentChangePart[]
 }
 
+export interface UrgentChangePart {
+    appoimentServicePartId: number
+    clientConfirmed: boolean | null
+    confirmedAt: string | null
+    createdAt: string
+    id: number
+    mechanicMessage: string
+    urlImg: string
+}
 export interface DataSelectService {
-  parts: DataPartChange[]
-  service: ServicesOfferedInterface
+    parts: DataPartChange[]
+    service: ServicesOfferedInterface
 }
 export interface ServiceParts {
-  parts_used: DataServicePartMechanic[]
-  services: ServicesOfferedInterface
+    parts_used: DataServicePartMechanic[]
+    services: ServicesOfferedInterface
 }

@@ -63,6 +63,11 @@ export class AppoimentController {
     const resp = await this.appoimentService.updatePartServiceAppointment(+id, data)
     return apiResponse(200, 'Pieza actualizada', resp)
   }
+  @Patch('confirm-change/:id')
+  async confirmChangePart(@Param('id') id:string, @Body() data:{confirmChange:boolean, mechanicId:number}):Promise<successfulResponse>{
+    const resp = await this.appoimentService.confirmUrgentChangePart(+id, data)
+    return apiResponse(200, 'Cambio decidido', resp)
+  }
 
   @Delete(':id')
   async remove(@Param('id') id: string): Promise<successfulResponse> {
