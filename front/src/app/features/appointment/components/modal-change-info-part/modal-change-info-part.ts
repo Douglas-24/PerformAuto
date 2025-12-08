@@ -1,6 +1,6 @@
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { Component, inject, Inject } from '@angular/core';
-import { DataServicePartMechanic, StateChangePart } from '../../../../core/interfaces/partTypeService.interface';
+import { DataServicePartMechanic, DataServicePartUser, StateChangePart } from '../../../../core/interfaces/partTypeService.interface';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { AppointmentService } from '../../../../core/service/appointment.service';
 import { AwsS3Service } from '../../../../core/service/aws-s3.service';
@@ -32,12 +32,29 @@ export class ModalChangeInfoPart {
     { key: StateChangePart.CHANGE_URGENT, label: 'CAMBIO URGENTE' }
   ];
 
-
+  isUrgentChangeResolved: boolean = false;
   stateSelect: StateChangePart | null = null;
   constructor(
-    @Inject(DIALOG_DATA) public data: DataServicePartMechanic,
+    @Inject(DIALOG_DATA) public data: DataServicePartUser,
     private dialogRef: DialogRef<boolean>
   ) {
+    console.log(data);
+    if (this.data.urgentChangePart && this.data.urgentChangePart.length > 0) {
+      const latestUrgentChange = this.data.urgentChangePart[0];
+
+      if (latestUrgentChange.clientConfirmed !== null) {
+        this.isUrgentChangeResolved = true;
+      }
+    }
+
+    this.stateChange = [
+      { key: StateChangePart.CHANGED, label: 'CAMBIADO' },
+      { key: StateChangePart.REVISED, label: 'REVISADO' },
+      { key: StateChangePart.NO_CHANGE, label: 'NO CAMBIADO' },
+    ];
+    if (!this.isUrgentChangeResolved) {
+      this.stateChange.push({ key: StateChangePart.CHANGE_URGENT, label: 'CAMBIO URGENTE' });
+    }
     this.formChangePart.get('statePart')?.valueChanges.subscribe(value => {
       this.selectState(value);
     });
@@ -70,7 +87,7 @@ export class ModalChangeInfoPart {
   updatePartAppointment() {
     const formValue = this.formChangePart.value
     console.log(formValue);
-    
+
     const data: DataServicePartMechanic = {
       appoimentServiceId: this.data.appoimentServiceId,
       partId: this.data.partId,

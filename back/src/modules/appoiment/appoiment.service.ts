@@ -114,14 +114,12 @@ export class AppoimentService {
         statePart: newState,
       }
     })
-    console.log(updateState);
-    
-    const messageAction = data.confirmChange ? 'aceptado' : 'rechazado';
+    const messageAction = data.confirmChange ? 'aceptar' : 'rechazar';
     const actionState = data.confirmChange ? 'proceder con' : 'ignorar';
     this.notificationService.createNotificationForUser({
        notification: {
         typeNotifycation: NotificationType.INFO,
-        title: `El usuario a decidio si realizar o no el cambio de la pieza`,
+        title: `El cliente ya a decidio si realizar o no el cambio de la pieza`,
         message: `El cliente a decido ${messageAction} el cambio de la pieza. Puede ${actionState} el cambio. `,
         employeeId: data.mechanicId
       }
@@ -303,7 +301,8 @@ export class AppoimentService {
         services: true,
         parts_used: {
           include: {
-            part: true
+            part: true,
+            urgentChangePart:true
           }
         }
       }

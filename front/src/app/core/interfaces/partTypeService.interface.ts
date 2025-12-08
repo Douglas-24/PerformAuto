@@ -73,6 +73,6 @@ export interface DataSelectService {
     service: ServicesOfferedInterface
 }
 export interface ServiceParts {
-    parts_used: DataServicePartMechanic[]
+    parts_used: DataServicePartUser[]
     services: ServicesOfferedInterface
 }

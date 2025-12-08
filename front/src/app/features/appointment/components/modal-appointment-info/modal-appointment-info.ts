@@ -59,9 +59,7 @@ export class ModalAppointmentInfo {
   getServicePart() {
     this.appointmentService.getServicesPartsAppointment(this.data).subscribe({
       next: (resp) => {
-        this.serviceParts = resp.data
-        console.log(resp.data);
-
+        this.serviceParts = resp.data        
       },
       error: (error) => {
         console.log(error);

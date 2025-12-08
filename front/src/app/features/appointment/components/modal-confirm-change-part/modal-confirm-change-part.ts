@@ -31,7 +31,6 @@ export class ModalConfirmChangePart {
     this.carInfo = data.carInfo;
   }
 
-  // Confirma o rechaza un ítem de cambio urgente específico
   async handleConfirmation(partItem: any, confirmed: boolean) {
     const dialogConfirm = this.modal.open(DinamicModal, {
       data: {
@@ -52,9 +51,12 @@ export class ModalConfirmChangePart {
       };
       this.appointmentService.confirmChangePart(urgentChangeRecord.id, payload).subscribe({
         next: () => {
-          if (this.pendingParts.every(p => p.urgentChange.clientConfirmed !== null)) {
-            this.dialogRef.close(true);
-          }
+          this.pendingParts = this.pendingParts.filter(
+            (item: any) => item.urgentChange.id !== urgentChangeRecord.id
+          );
+          if (this.pendingParts.length === 0) {
+                this.dialogRef.close(true)
+            }
         },
         error: (error) => {
           console.error('Error al actualizar el estado de urgencia:', error);
