@@ -68,6 +68,11 @@ export const controlPanelRoutes: Routes = [
                 loadComponent: () =>
                     import('../../features/notifications/pages/notification-page/notification-page').then(m => m.NotificationPage),
             },
+            {
+                path:'invoice-appointment/:id',
+                loadComponent: () =>
+                    import('../../features/invoice/components/invoice-appointment-user/invoice-appointment-user').then(m => m.InvoiceAppointmentUser),
+            },
         ]
     }
 ]

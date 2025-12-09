@@ -20,62 +20,58 @@ export class InvoicesService {
 
   async findAllUserInvoice(userId: number) {
     const allInvoices = await this.prisma.invoice.findMany({
-        where: { userId: userId },
-        select: {
-            appoiment: {
-                select: {
-                  mechanic: {
-                    select: {
-                      name: true,
-                      lastname: true,
-                    },
-                  },
-                  appoiment_date: true
-                },
-                include: {
-                  car: true
-                }
+      where: { userId: userId },
+      select: {
+        appoiment: {
+          select: {
+            mechanic: {
+              select: {
+                name: true,
+                lastname: true,
+              },
             },
-            total_cost: true,
-            date_invoice_issuance: true
-        }
+            appoiment_date: true
+          },
+          include: {
+            car: true
+          }
+        },
+        total_cost: true,
+        date_invoice_issuance: true
+      }
     });
 
     return allInvoices;
-}
+  }
 
   async findOneInvoice(id: number) {
     return await this.prisma.invoice.findFirst({
-        where: { id: id }, 
-        include: {
-            appoiment: { 
-                include: {
-                    services: {
-                        include: {
-                            services: {
-                                select: {
-                                    id: true,
-                                }
-                            },
-                            parts_used: {
-                                include: {
-                                    part: true,
-                                    urgentChangePart: {
-                                        select: {
-                                            mechanicMessage: true,
-                                            clientConfirmed: true,
-                                            confirmedAt: true,
-                                            createdAt: true,
-                                            urlImg: true,
-                                        }
-                                    }
-                                }
-                            }
-                        }
+      where: { id_appoiment: id },
+      include: {
+        appoiment: {
+          include: {
+            services: {
+              include: {
+                services: true,
+                parts_used: {
+                  include: {
+                    part: true,
+                    urgentChangePart: {
+                      select: {
+                        mechanicMessage: true,
+                        clientConfirmed: true,
+                        confirmedAt: true,
+                        createdAt: true,
+                        urlImg: true,
+                      }
                     }
+                  }
                 }
+              }
             }
+          }
         }
+      }
     });
   }
 

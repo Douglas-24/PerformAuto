@@ -63,6 +63,7 @@
       <div class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
         @if (appointment.state === 'FINISH') {
         <button
+          [routerLink]="['/invoice-appointment', appointment.id]"
           class="w-full px-4 py-2 text-base font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-green-400 rounded-lg hover:bg-green-500 focus:outline-none focus:ring focus:ring-green-300">
           Ver Factura 
         </button>
