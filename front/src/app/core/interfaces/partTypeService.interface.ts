@@ -76,3 +76,9 @@ export interface ServiceParts {
     parts_used: DataServicePartUser[]
     services: ServicesOfferedInterface
 }
+
+export interface PartDataForService {
+  partId: number;
+  quantity: number;
+  changeRecomended: boolean;
+}
