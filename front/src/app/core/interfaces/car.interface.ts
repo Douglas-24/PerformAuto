@@ -1,4 +1,5 @@
 import { Appointment } from "./appointment.interface";
+import { User } from "./user.interfaces";
 export interface Car {
   id?: number;
   photo?: string;
@@ -10,6 +11,7 @@ export interface Car {
   current_mileage: number;
   engine: string;
   ownerId: number;
+  owner?:User
 }
 
 export interface CarUser extends Car{

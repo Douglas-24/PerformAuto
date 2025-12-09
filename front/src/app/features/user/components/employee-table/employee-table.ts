@@ -3,7 +3,7 @@ import { ToastServices } from '../../../../core/service/toast.service';
 import { Dialog } from '@angular/cdk/dialog';
 import { DinamicTable } from '../../../../shared/dinamic-table/dinamic-table';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ConfigFieldsForm } from '../../../../core/interfaces/configFiledsForm';
+import { ConfigFieldsForm, OptionSelect } from '../../../../core/interfaces/configFiledsForm';
 import { Employee, EmployeeWorkingHours, RoleEmployee } from '../../../../core/interfaces/user.interfaces';
 import { EmployeeService } from '../../../../core/service/employee.service';
 import { DinamicModal } from '../../../../shared/dinamic-modal/dinamic-modal';
@@ -27,11 +27,15 @@ export class EmployeeTable implements OnInit {
     rol: new FormControl('', [Validators.required]),
   })
 
+   roleOptions: OptionSelect[] = environments.rolesEmployee.map(rol => ({
+      value: rol, 
+      label: rol 
+  }));
   configFields: ConfigFieldsForm[] = [
     { key: 'name', label: 'Nombre', type: 'text' },
     { key: 'lastname', label: 'Apellido', type: 'text' },
     { key: 'email', label: 'Email', type: 'text' },
-    { key: 'rol', label: 'Rol', type: 'select', options: environments.rolesEmployee },
+    { key: 'rol', label: 'Rol', type: 'select', options: this.roleOptions },
   ]
 
   ngOnInit(): void {

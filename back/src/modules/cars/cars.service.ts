@@ -19,7 +19,11 @@ export class CarsService {
   }
 
   async findAll(): Promise<Car[]> {
-    const allCars = await this.prisma.car.findMany()
+    const allCars = await this.prisma.car.findMany({
+      include: {
+        owner:true
+      }
+    })
     return allCars
   }
 

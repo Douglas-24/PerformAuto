@@ -17,7 +17,11 @@
         updateFilteredCount.bind(this); track row.id) {
         <tr>
             @for (col of columns; track col.key) {
-            <td class="px-4 py-4 text-sm text-gray-700 dark:text-gray-300">{{ row[col.key] }}</td>
+                @if (row[col.key].email) {
+                    <td class="px-4 py-4 text-sm text-gray-700 dark:text-gray-300">{{ row[col.key].email }}</td>
+                }@else {
+                    <td class="px-4 py-4 text-sm text-gray-700 dark:text-gray-300">{{ row[col.key] }}</td>
+                }
             }
 
             <td class="px-4 py-4 text-sm text-gray-700 dark:text-gray-300">

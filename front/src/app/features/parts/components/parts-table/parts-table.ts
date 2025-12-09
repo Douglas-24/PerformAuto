@@ -21,14 +21,14 @@ export class PartsTable implements OnInit {
   allParts: PartUsed[] = []
   partsForm = new FormGroup({
     name: new FormControl('', [Validators.required]),
-    references: new FormControl('', [Validators.required]),
+    reference: new FormControl('', [Validators.required]),
     price: new FormControl('', [Validators.required]),
     stock: new FormControl('', [Validators.required]),
   })
 
   configFields: ConfigFieldsForm[] = [
     { key: 'name', label: 'Nombre', type: 'text' },
-    { key: 'references', label: 'Nº referencia', type: 'text' },
+    { key: 'reference', label: 'Nº referencia', type: 'text' },
     { key: 'price', label: 'Precio', type: 'text' },
     { key: 'stock', label: 'Stock', type: 'text' },
   ]
@@ -80,7 +80,7 @@ export class PartsTable implements OnInit {
     const formValue = this.partsForm.value
     const partData: Parts = {
       name: formValue.name!,
-      reference: formValue.references!,
+      reference: formValue.reference!,
       price: parseInt(formValue.price!),
       stock: parseInt(formValue.stock!)
     }
@@ -99,7 +99,7 @@ export class PartsTable implements OnInit {
     const formValue = this.partsForm.value
     const partData: Parts = {
       name: formValue.name!,
-      reference: formValue.references!,
+      reference: formValue.reference!,
       price: parseInt(formValue.price!),
       stock: parseInt(formValue.stock!)
     }

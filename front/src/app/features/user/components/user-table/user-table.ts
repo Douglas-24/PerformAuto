@@ -5,7 +5,7 @@ import { Role, User } from '../../../../core/interfaces/user.interfaces';
 import { Dialog } from '@angular/cdk/dialog';
 import { DinamicModal } from '../../../../shared/dinamic-modal/dinamic-modal';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ConfigFieldsForm } from '../../../../core/interfaces/configFiledsForm';
+import { ConfigFieldsForm, OptionSelect } from '../../../../core/interfaces/configFiledsForm';
 import { environments } from '../../../../core/environments/environments';
 import { DinamicTable } from '../../../../shared/dinamic-table/dinamic-table';
 @Component({
@@ -30,6 +30,11 @@ export class UserTable {
     rol: new FormControl('')
   });
 
+  roleOptions: OptionSelect[] = environments.roles.map(rol => ({
+    value: rol,
+    label: rol
+  }));
+
   configField: ConfigFieldsForm[] = [
     { key: 'name', label: 'Nombre', type: 'text' },
     { key: 'lastname', label: 'Apellidos', type: 'text' },
@@ -38,7 +43,7 @@ export class UserTable {
     { key: 'phone_number', label: 'Numero de telefono', type: 'text' },
     { key: 'address', label: 'Direccion', type: 'text' },
     { key: 'postal_code', label: 'Codigo postal', type: 'text' },
-    { key: 'rol', label: 'Rol', type: 'select', options: environments.roles },
+    { key: 'rol', label: 'Rol', type: 'select', options: this.roleOptions },
   ]
 
   allUsers: User[] = []
@@ -73,26 +78,26 @@ export class UserTable {
     return user
   }
 
-  async openModal(user?: User, deleteAccion?:boolean) {
+  async openModal(user?: User, deleteAccion?: boolean) {
     const title = !user ? 'Crear nuevo usuario' : user.name + ' ' + user.lastname
     const typeModal = !user ? 'Crear' : 'Actualizar'
-    const messageCreateUpdate = user ? 'Actualizar al usuario ' +user.name + ' ' + user.lastname : 'Crear nuevo usuario'
+    const messageCreateUpdate = user ? 'Actualizar al usuario ' + user.name + ' ' + user.lastname : 'Crear nuevo usuario'
     const modalRef = this.modal.open(DinamicModal, {
       data: {
         title: !deleteAccion ? title : 'Eliminar usuario ',
-        message: deleteAccion && user ? 'Estas seguro de que quieres eliminar al usuario ' + user.name + ' ' + user.lastname: messageCreateUpdate,
+        message: deleteAccion && user ? 'Estas seguro de que quieres eliminar al usuario ' + user.name + ' ' + user.lastname : messageCreateUpdate,
         formGroup: !deleteAccion ? this.userForm : null,
-        configFields:!deleteAccion ? this.configField : null,
+        configFields: !deleteAccion ? this.configField : null,
         typeModal: !deleteAccion ? typeModal : 'Confirmar',
-        updateDataForm: user  ? user : null
+        updateDataForm: user ? user : null
       }
 
     })
     const confirmed = await modalRef.closed.toPromise();
     if (confirmed) {
-      if(deleteAccion && user){
+      if (deleteAccion && user) {
         this.deleteUser(user)
-      }else{
+      } else {
         user ? this.createOrUpdateUser(user) : this.createOrUpdateUser()
       }
 
