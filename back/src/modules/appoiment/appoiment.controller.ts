@@ -52,9 +52,9 @@ export class AppoimentController {
     return apiResponse(200, 'Cita obtenida correctamente', appoiment)
   }
 
-  @Patch(':id')
+  @Patch('finish-appointment/:id')
   async update(@Param('id') id: string, @Body() updateAppoimentDto: UpdateAppoimentDto): Promise<successfulResponse> {
-    const updated = await this.appoimentService.update(+id, updateAppoimentDto)
+    const updated = await this.appoimentService.finishAppointment(+id, updateAppoimentDto)
     return apiResponse(200, 'Cita actualizada correctamente', updated)
   }
 

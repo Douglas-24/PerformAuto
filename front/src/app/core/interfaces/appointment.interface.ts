@@ -38,6 +38,7 @@ export interface Appointment {
   appoiment_date: Date;
   mileage_at_delivery: number;
   duration: number
+  notes?:string | null
 }
 
 export interface AppointmentMechanicInterface extends Appointment {

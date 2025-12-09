@@ -16,7 +16,7 @@ interface ModalDataUrgentChange {
 }
 @Component({
   selector: 'app-appointment-user',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule],
   templateUrl: './appointment-user.html',
   styleUrl: './appointment-user.css'
 })

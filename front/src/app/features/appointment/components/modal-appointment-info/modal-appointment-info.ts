@@ -7,6 +7,7 @@ import { Separator } from "../../../../shared/separator/separator";
 import { ModalChangeInfoPart } from '../modal-change-info-part/modal-change-info-part';
 import { DinamicModal } from '../../../../shared/dinamic-modal/dinamic-modal';
 import { NotificationSocket } from '../../../../core/service/notificationSocket.service';
+import { InvoiceModal } from '../../../invoice/components/invoice-modal/invoice-modal';
 @Component({
   selector: 'app-modal-appointment-info',
   imports: [Separator],
@@ -88,25 +89,20 @@ export class ModalAppointmentInfo {
   }
 
   async endAppointment() {
-    const dialog = this.modal.open(DinamicModal, {
-      data: {
-        title: 'Estas seguro de terminar la cita',
-        message: 'Una vez terminada la cita, no se podran realizar modificaciones ',
-        typeModal: 'Confirmar'
-      }
-
+    const dialog = this.modal.open(InvoiceModal,{
+      data: this.data
     })
     const dialogClose = await dialog.closed.toPromise()
     if (dialogClose) {
-      this.appointmentService.updateAppointment(this.data, { state: StateServie.FINISH }).subscribe({
-        next: (resp) => {
-          this.dialogRef.close(true)
-        },
-        error: (error) => {
-          console.log(error);
+      this.dialogRef.close(true)
+      // this.appointmentService.updateAppointment(this.data, { state: StateServie.FINISH }).subscribe({
+      //   next: (resp) => {
+      //   },
+      //   error: (error) => {
+      //     console.log(error);
 
-        }
-      })
+      //   }
+      // })
     }
   }
 

@@ -8,6 +8,8 @@ import { DataServiceSelected, StateChangePart } from '../service-parts/dto/TypeS
 import { NotificationService } from '../notification/notification.service';
 import { NotificationType } from '../notification/dto/create-notification.dto';
 import { NotificationSocketGateWay } from '../sockets/notifications-socket.gateway';
+import { InvoicesService } from '../invoices/invoices.service';
+import { CreateInvoiceDto } from '../invoices/dto/create-invoice.dto';
 interface MechanicData {
   id: number,
   fullName: string
@@ -32,7 +34,8 @@ export class AppoimentService {
     private prisma: PrismaService,
     private employeeService: EmployeeService,
     private notificationService: NotificationService,
-    private socketService: NotificationSocketGateWay
+    private socketService: NotificationSocketGateWay,
+    private invoiceService: InvoicesService
 
   ) { }
 
@@ -244,12 +247,41 @@ export class AppoimentService {
     return appoiment;
   }
 
-  async update(id: number, updateAppoimentDto: UpdateAppoimentDto): Promise<Appoiment> {
+  async finishAppointment(id: number, updateAppoimentDto: UpdateAppoimentDto): Promise<Appoiment> {
     await this.findOne(id)
     const updated = await this.prisma.appoiment.update({
       where: { id },
-      data: updateAppoimentDto,
+      data: {
+        state: updateAppoimentDto.state
+      },
     });
+
+    if(updateAppoimentDto.state == StateServie.FINISH){
+      await this.notificationService.createNotificationForUser({
+        notification: {
+          title: 'Su cita acaba de finalizar',
+          message: 'Su coche ya esta disponible para la recogida',
+          typeNotifycation:NotificationType.INFO,
+          id_user:updated.clientId 
+        }
+      })
+      const invoice:CreateInvoiceDto = {
+        id_appoiment: id,
+        userId: updated.clientId,
+        total_cost: 0,
+        notes: updateAppoimentDto.notes ? updateAppoimentDto.notes : ''
+      }
+      await this.invoiceService.create(invoice)
+      await this.notificationService.createNotificationForUser({
+        notification: {
+          title: 'Tu factura esta lista',
+          message: 'Puedes ver la factura de la cita en la seccion de citas',
+          typeNotifycation:NotificationType.INFO,
+          id_user:updated.clientId 
+        }
+      })
+
+    }
     return updated;
   }
 

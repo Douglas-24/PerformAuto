@@ -15,12 +15,10 @@ export class App implements OnInit {
   private notificationService = inject(NotificationSocket);
   private toastService = inject(ToastServices)
   ngOnInit(): void {
-    console.log('entra app component');
     const token = localStorage.getItem('token')
     if (token){
       this.notificationService.connect(token)
       this.notificationService.onNotification().subscribe(payload => {
-        console.log('Notificación recibida:', payload);
         this.toastService.show(payload.title, payload.message, 'info')
       });
     } 

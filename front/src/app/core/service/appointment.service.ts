@@ -33,7 +33,7 @@ export class AppointmentService {
     }
 
     updateAppointment(id:number, dataAppintment:Partial<Appointment>):Observable<apiReponse>{
-      return this.http.patch<apiReponse>(this.url + id, dataAppintment)
+      return this.http.patch<apiReponse>(this.url + 'finish-appointment/'+ id, dataAppintment)
     }
 
     updateAppointmentPart(id:number,dataPart: DataServicePartMechanic):Observable<apiReponse>{

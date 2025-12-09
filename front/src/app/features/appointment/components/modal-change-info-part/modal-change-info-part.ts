@@ -86,8 +86,6 @@ export class ModalChangeInfoPart {
 
   updatePartAppointment() {
     const formValue = this.formChangePart.value
-    console.log(formValue);
-
     const data: DataServicePartMechanic = {
       appoimentServiceId: this.data.appoimentServiceId,
       partId: this.data.partId,
