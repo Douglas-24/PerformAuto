@@ -22,7 +22,7 @@ export class CreateEmployeeWorkingHoursDto {
   endTime: string;
 
   @IsInt()
-  employeeId: number;
+  employeeId?: number;
 }
 
 export class CreateEmployeeDto {

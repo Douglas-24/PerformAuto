@@ -27,7 +27,7 @@ export interface EmployeeWorkingHours {
   dayOfWeek: number
   startTime: string
   endTime: string
-  employeeId: number
+  employeeId?: number
 }
 
 

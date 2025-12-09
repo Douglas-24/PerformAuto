@@ -12,7 +12,7 @@ import { PaginatorPipe } from '../../core/pipes/paginator.pipe';
 export class DinamicTable{
   @Input() columns: { key: string; label: string }[] = [];
   @Input() dataTable:any
-
+  @Input() otherAcctionButon:boolean = false
 
   @Input() searchableKeys: string[] = [];
   searchTerm: string = ''

@@ -41,7 +41,8 @@
                         </svg>
                     </button>
 
-                    <button (click)="onOtherAcction(row)"
+                    @if (otherAcctionButon) {
+                        <button (click)="onOtherAcction(row)"
                         class="px-4 py-2 font-medium text-gray-600 transition-colors duration-200 sm:px-6 dark:hover:bg-gray-800 dark:text-gray-300 hover:bg-gray-100">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="w-5 h-5 sm:w-6 sm:h-6">
@@ -49,6 +50,7 @@
                                 d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </button>
+                    }
                 </div>
             </td>
         </tr>
