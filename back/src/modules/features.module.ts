@@ -10,8 +10,9 @@ import { EmployeeModule } from './employee/employee.module';
 import { AppoimentModule } from './appoiment/appoiment.module';
 import { AppointmentSocketGateway } from './sockets/appointment-socket.gateway';
 import { NotificationModule } from './notification/notification.module';
+import { InvoicesModule } from './invoices/invoices.module';
 @Module({
-    imports:[UserModule, AuthModule, CarsModule, MailModule, PartsModule, ServicePartsModule, ServiceWorkshopModule, EmployeeModule, AppoimentModule, NotificationModule],
+    imports:[UserModule, AuthModule, CarsModule, MailModule, PartsModule, ServicePartsModule, ServiceWorkshopModule, EmployeeModule, AppoimentModule, NotificationModule, InvoicesModule],
     providers: [AppointmentSocketGateway],
 })
 

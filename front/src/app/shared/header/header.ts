@@ -36,8 +36,6 @@ export class Header implements OnInit {
   getProfile() {
     this.authService.getProfile().subscribe({
       next: (resp) => {
-        console.log(resp.user);
-
         if (resp.user) {
           this.user = resp.user
           this.logged = true

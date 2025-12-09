@@ -31,12 +31,6 @@ enum StateServie {
   FINISH
 }
 
-enum StatePayment {
-  PAID
-  PENDING
-  CANCELLED
-}
-
 enum StateChangePart {
   SHOULD_CHANGE
   REVIEW
@@ -62,6 +56,7 @@ model User {
   date_register    DateTime
   servicesAsClient Appoiment[]
   notifications    Notifications[]
+  invoices         Invoice[]
 }
 
 model Employee {
@@ -185,14 +180,14 @@ model PartChangeUrgent {
 }
 
 model Invoice {
-  id             Int          @id @default(autoincrement())
-  appoiment      Appoiment    @relation(fields: [id_appoiment], references: [id])
-  id_appoiment   Int
-  total_cost     Int
-  date_entered   DateTime
-  departure_date DateTime
-  state          StatePayment
-  notes          String
+  id                    Int       @id @default(autoincrement())
+  appoiment             Appoiment @relation(fields: [id_appoiment], references: [id])
+  id_appoiment          Int
+  userId                Int
+  user                  User      @relation(fields: [userId], references: [id])
+  total_cost            Int
+  notes                 String
+  date_invoice_issuance DateTime  @default(now())
 }
 
 enum NotificationType {
