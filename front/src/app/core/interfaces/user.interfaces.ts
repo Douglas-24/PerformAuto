@@ -30,6 +30,13 @@ export interface EmployeeWorkingHours {
   employeeId?: number
 }
 
+export enum RolesGuards {
+  CLIENT = 'CLIENT',
+  ADMIN = 'ADMIN',
+  CUSTOMER_SERVICE = 'CUSTOMER_SERVICE',
+  WAREHOUSE_MANAGER = 'WAREHOUSE_MANAGER',
+  MECHANIC = 'MECHANIC'
+}
 
 export enum RoleEmployee {
   CUSTOMER_SERVICE = 'CUSTOMER_SERVICE',

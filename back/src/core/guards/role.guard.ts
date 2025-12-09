@@ -1,7 +1,6 @@
 
 import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';;
-import { Role } from '@prisma/client';
-
+import { RoleGuard as Role } from '@prisma/client';
 @Injectable()
 export class RoleGuard implements CanActivate {
     constructor(private allowedRoles: Role[]) { }

@@ -1,44 +1,52 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete,UseGuards } from '@nestjs/common';
 import { AppoimentService } from './appoiment.service';
 import { CreateAppoimentDto, DataAppointmentCreate } from './dto/create-appoiment.dto';
 import { UpdateAppoimentDto, UpdateAppoimentServicePartDto } from './dto/update-appoiment.dto';
 import { successfulResponse } from 'src/core/interfaces/successfulResponse.interface';
 import { apiResponse } from 'src/core/utils/apiResponse';
+import { RoleGuard } from 'src/core/guards/role.guard';
+import { RoleGuard as Role } from '@prisma/client';
 
 @Controller('appoiment')
 export class AppoimentController {
   constructor(private readonly appoimentService: AppoimentService) { }
 
+  @UseGuards(new RoleGuard([Role.ADMIN, Role.CLIENT, Role.CUSTOMER_SERVICE]))
   @Post()
   async create(@Body() createAppoimentDto: DataAppointmentCreate): Promise<successfulResponse> {
     const appoiment = await this.appoimentService.create(createAppoimentDto)
     return apiResponse(200, 'Cita creada correctamente', appoiment)
   }
 
+  @UseGuards(new RoleGuard([Role.ADMIN, Role.CLIENT, Role.CUSTOMER_SERVICE]))
   @Get()
   async findAll(): Promise<successfulResponse> {
     const allAppoiments = await this.appoimentService.findAll()
     return apiResponse(200, 'Lista de citas', allAppoiments)
   }
 
+  @UseGuards(new RoleGuard([Role.CLIENT]))
   @Get('appoiment-client/:id')
   async getAllAppoimentClient(@Param('id') id: string): Promise<successfulResponse> {
     const appoiment = await this.appoimentService.findAllAppoimentClient(+id)
     return apiResponse(200, 'Lista de citas obtenidas', appoiment)
   }
 
+  @UseGuards(new RoleGuard([Role.MECHANIC]))
   @Get('appoiment-mechanic/:id')
   async getAllAppoimentMechanic(@Param('id') id: string): Promise<successfulResponse> {
     const appoiment = await this.appoimentService.findAllApoimentMechanic(+id)
     return apiResponse(200, 'Lista de citas obtenidas', appoiment)
   }
 
+  @UseGuards(new RoleGuard([Role.MECHANIC, Role.CLIENT, Role.CUSTOMER_SERVICE]))
   @Get('services-appointment/:id_appointment')
   async getAllServicesPartsAppointment(@Param('id_appointment') id:string):Promise<successfulResponse>{
     const servicesParts = await this.appoimentService.getServicesPartAppointment(+id)
     return apiResponse(200, 'Servicios y piezas de la cita obtenidas', servicesParts)
   }
 
+  @UseGuards(new RoleGuard([Role.ADMIN, Role.CLIENT, Role.CUSTOMER_SERVICE]))
   @Post('dates-available')
   async getDatesAvailable(@Body() durationStimated: {duration:number}): Promise<successfulResponse> {
     const dates = await this.appoimentService.setAppointmentDate(new Date(), durationStimated.duration)
@@ -46,6 +54,7 @@ export class AppoimentController {
 
   }
 
+  
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<successfulResponse> {
     const appoiment = await this.appoimentService.findOne(+id)

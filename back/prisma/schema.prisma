@@ -18,6 +18,14 @@ enum Role {
   ADMIN
 }
 
+enum RoleGuard {
+  CLIENT
+  ADMIN
+  CUSTOMER_SERVICE // Atencion al cliente
+  WAREHOUSE_MANAGER // Encargado de almacen, piezas inventario
+  MECHANIC // Mecanico
+}
+
 enum RoleEmployee {
   CUSTOMER_SERVICE // Atencion al cliente
   WAREHOUSE_MANAGER // Encargado de almacen, piezas inventario
