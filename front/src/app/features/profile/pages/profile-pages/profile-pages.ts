@@ -18,8 +18,11 @@ export class ProfilePage {
   getProfile(){
     this.authService.getProfile().subscribe({
       next:(resp) =>{
-        if(resp.user.rol == Role.CLIENT){
-          this.user = resp.user
+        const profileData = resp.user
+        if(profileData.rol == Role.CLIENT){
+          this.user = profileData as User 
+        }else{
+          this.employee = profileData as Employee
         }
       },
       error: (error) => {

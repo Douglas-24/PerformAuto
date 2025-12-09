@@ -26,7 +26,7 @@ export class AuthService {
   }
 
   getProfile():Observable<{user: User | Employee}>{
-    return this.http.get<{user: User}>(this.url+'profile')
+    return this.http.get<{user: User | Employee}>(this.url+'profile')
   }
 
   verifyAccount(token:string):Observable<apiReponse>{

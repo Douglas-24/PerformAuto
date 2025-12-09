@@ -1,42 +1,173 @@
-<section class=" py-10 px-6">
-  <div class="max-w-3xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-md p-8">
+@if (user) {
+  <section class="bg-gray-100 dark:bg-gray-900 max-h-screen py-10 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-full mx-auto">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl overflow-hidden p-6 sm:p-10">
 
-    <div class="flex items-center justify-between mb-6">
-      <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Perfil</h2>
-      <span class="px-3 py-1 text-sm font-semibold rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
-        {{ user?.rol }}
-      </span>
-    </div>
+            <div class="flex flex-col md:flex-row items-center justify-between mb-8 pb-6 border-b border-gray-200 dark:border-gray-700">
+                
+                <div class="flex items-center space-x-6">
+                    <div class="w-24 h-24 rounded-full overflow-hidden border-4 border-blue-500 dark:border-blue-400 shadow-lg">
+                        <img src="assets/icons/perfilIcon.webp" alt="Avatar de usuario" class="object-cover w-full h-full">
+                    </div>
+                    
+                    <div>
+                        <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">
+                            {{ user.name }} {{ user.lastname }}
+                        </h2>
+                        <p class="text-gray-500 dark:text-gray-400 mt-1">Miembro desde [Fecha de registro]</p>
+                    </div>
+                </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-700 dark:text-gray-300">
-      <div>
-        <p class="font-semibold">Nombre:</p>
-        <p>{{ user?.name }} {{ user?.lastname }}</p>
-      </div>
-      <div>
-        <p class="font-semibold">DNI:</p>
-        <p>{{ user?.dni }}</p>
-      </div>
-      <div>
-        <p class="font-semibold">Email:</p>
-        <p>{{ user?.email }}</p>
-      </div>
-      <div>
-        <p class="font-semibold">Teléfono:</p>
-        <p>{{ user?.phone_number }}</p>
-      </div>
-      <div>
-        <p class="font-semibold">Dirección:</p>
-        <p>{{ user?.address }}</p>
-      </div>
-      <div>
-        <p class="font-semibold">Código Postal:</p>
-        <p>{{ user?.postal_code }}</p>
-      </div>
-    </div>
+                <span class="mt-4 md:mt-0 px-4 py-1 text-base font-bold rounded-full 
+                             bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-300">
+                    {{ user.rol }}
+                </span>
+            </div>
 
-    <div class="mt-8 flex justify-end gap-4">
-      <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition">Editar</button>
+            <div class="space-y-8">
+                <h3 class="text-xl font-bold text-gray-800 dark:text-white border-b-2 border-blue-500 pb-2">
+                    Información de Contacto
+                </h3>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                    <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg shadow-inner">
+                        <p class="font-semibold text-blue-600 dark:text-blue-400 flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8m-2 4v4a2 2 0 01-2 2H7a2 2 0 01-2-2v-4"></path></svg>
+                            Email:
+                        </p>
+                        <p class="text-gray-700 dark:text-gray-300 truncate mt-1">{{ user.email }}</p>
+                    </div>
+
+                    <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg shadow-inner">
+                        <p class="font-semibold text-blue-600 dark:text-blue-400 flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                            Teléfono:
+                        </p>
+                        <p class="text-gray-700 dark:text-gray-300 mt-1">{{ user.phone_number }}</p>
+                    </div>
+
+                    <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg shadow-inner">
+                        <p class="font-semibold text-blue-600 dark:text-blue-400 flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0h4m-4 4h4m-4 4h4"></path></svg>
+                            DNI:
+                        </p>
+                        <p class="text-gray-700 dark:text-gray-300 mt-1">{{ user.dni }}</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="mt-8 space-y-8">
+                <h3 class="text-xl font-bold text-gray-800 dark:text-white border-b-2 border-blue-500 pb-2">
+                    Ubicación
+                </h3>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+
+                    <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg shadow-inner">
+                        <p class="font-semibold text-blue-600 dark:text-blue-400 flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.828 0l-4.243-4.243m10.606-10.607a7 7 0 11-9.9-9.9 7 7 0 019.9 9.9z"></path></svg>
+                            Dirección:
+                        </p>
+                        <p class="text-gray-700 dark:text-gray-300 mt-1">{{ user.address }}</p>
+                    </div>
+
+                    <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg shadow-inner">
+                        <p class="font-semibold text-blue-600 dark:text-blue-400 flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                            C. Postal:
+                        </p>
+                        <p class="text-gray-700 dark:text-gray-300 mt-1">{{ user.postal_code }}</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="mt-10 pt-6 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-4">
+                <button 
+                    class="px-6 py-2 font-medium bg-blue-600 text-white rounded-lg shadow-md transition duration-300 
+                           hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800">
+                    Modificar Perfil
+                </button>
+                <button 
+                    class="px-6 py-2 font-medium border border-gray-300 text-gray-700 rounded-lg shadow-sm transition duration-300 
+                           hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">
+                    Cambiar Contraseña
+                </button>
+            </div>
+        </div>
     </div>
-  </div>
 </section>
+}
+
+@if (employee) {
+  <section class="bg-gray-100 dark:bg-gray-900 max-h-screen py-10 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-full mx-auto">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl overflow-hidden p-6 sm:p-10">
+
+            <div class="flex flex-col md:flex-row items-center justify-between mb-8 pb-6 border-b border-gray-200 dark:border-gray-700">
+                
+                <div class="flex items-center space-x-6">
+                    <div class="w-24 h-24 rounded-full overflow-hidden border-4 border-amber-500 dark:border-amber-400 shadow-lg">
+                        <img src="assets/icons/perfilIcon.webp" alt="Avatar de empleado" class="object-cover w-full h-full">
+                    </div>
+                    
+                    <div>
+                        <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">
+                            {{ employee.name }} {{ employee.lastname }}
+                        </h2>
+                        <p class="text-gray-500 dark:text-gray-400 mt-1">ID Empleado: {{ employee.id }}</p>
+                    </div>
+                </div>
+
+                <span class="mt-4 md:mt-0 px-4 py-1 text-base font-bold rounded-full 
+                             bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
+                    {{ employee.rol }} </span>
+            </div>
+
+            <div class="space-y-8">
+                <h3 class="text-xl font-bold text-gray-800 dark:text-white border-b-2 border-amber-500 pb-2">
+                    Detalles del Puesto
+                </h3>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                    <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg shadow-inner">
+                        <p class="font-semibold text-amber-600 dark:text-amber-400 flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.25L13.25 21L3 10.75L10.75 3L21 13.25z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 11H13V13H11V11z"></path></svg>
+                            Puesto:
+                        </p>
+                        <p class="text-gray-700 dark:text-gray-300 mt-1">{{ employee.rol }}</p>
+                    </div>
+
+                    <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg shadow-inner">
+                        <p class="font-semibold text-amber-600 dark:text-amber-400 flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8m-2 4v4a2 2 0 01-2 2H7a2 2 0 01-2-2v-4"></path></svg>
+                            Email:
+                        </p>
+                        <p class="text-gray-700 dark:text-gray-300 truncate mt-1">{{ employee.email }}</p>
+                    </div>
+
+                    <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg shadow-inner">
+                        <p class="font-semibold text-amber-600 dark:text-amber-400 flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.828 0l-4.243-4.243m10.606-10.607a7 7 0 11-9.9-9.9 7 7 0 019.9 9.9z"></path></svg>
+                            Taller/Sede:
+                        </p>
+                        <p class="text-gray-700 dark:text-gray-300 mt-1">Taller Principal - Sede Central</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="mt-10 pt-6 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-4">
+                <button 
+                    class="px-6 py-2 font-medium border border-gray-300 text-gray-700 rounded-lg shadow-sm transition duration-300 
+                           hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">
+                    Cambiar Contraseña
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+}
