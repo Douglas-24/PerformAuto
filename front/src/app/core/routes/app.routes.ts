@@ -1,0 +1,44 @@
+import { Routes } from '@angular/router';
+import { HomeComponent } from '../../features/main/pages/home-component/home-component';
+import { authGuardGuard } from '../guards/auth-guard-guard';
+import { MainLayout } from '../../features/main/pages/main-layout/main-layout';
+import { controlPanelRoutes } from './controlPanel.routes';
+export const routes: Routes = [
+    {
+        path: '',
+        component: HomeComponent
+    },
+    {
+        path: 'auth',
+        loadComponent: () => import('../../features/auth/page/auth-page/auth-page').then(m => m.AuthPage)
+        
+    },
+    {
+        path:'unauthorized',
+        loadComponent: () => import('../../shared/unauthorized-page/unauthorized-page').then(m => m.UnauthorizedPage)
+    },
+    {
+        path: 'verifyAccout',
+        loadComponent:  () => import('../../shared/verify-account-page/verify-account-page').then(m => m.VerifyAccountPage),
+        canActivate:[authGuardGuard]
+    },
+    {
+        path:'forgotPass',
+        loadComponent:  () => import('../../shared/forgot-pass/forgot-pass').then(m => m.ForgotPass),
+    },
+    {
+        path:'recoverPass',
+        loadComponent:  () => import('../../shared/recover-pass/recover-pass').then(m => m.RecoverPass),
+    },
+    {
+        path:'appointment',
+        loadComponent:  () => import('../../features/appointment/page/appointment-page/appointment-page').then(m => m.AppointmentPage),
+        canActivate: [authGuardGuard]
+    },
+    {
+        path: '',
+        component: MainLayout,
+        canActivate: [authGuardGuard],
+        children: controlPanelRoutes
+    }
+];

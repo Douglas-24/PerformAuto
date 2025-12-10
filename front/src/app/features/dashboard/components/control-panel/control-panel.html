@@ -1,0 +1,89 @@
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 p-4 gap-9">
+    <div class="max-w-xl overflow-hidden bg-white rounded-lg shadow-md dark:bg-gray-800">
+        <img class="object-cover w-full h-64 "
+            src="assets/imgs/usuarios.png"
+            alt="Article">
+
+        <div class="p-6">
+            <div>
+                <span class="text-xs font-medium text-blue-600 uppercase dark:text-blue-400">Usuarios</span>
+                <button [routerLink]="['/users']"
+                    class="block mt-2 text-xl font-semibold text-gray-800 transition-colors duration-300 transform dark:text-white hover:text-gray-600 hover:underline"
+                    tabindex="0" role="link">Panel de administracion de usuarios</button>
+                <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Controla todos los usuarios registrados en la
+                    empresa</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-xl overflow-hidden bg-white rounded-lg shadow-md dark:bg-gray-800">
+        <img class="object-cover w-full h-64"
+            src="assets/imgs/empleados.png"
+            alt="Article">
+
+        <div class="p-6">
+            <div>
+                <span class="text-xs font-medium text-blue-600 uppercase dark:text-blue-400">Empleados</span>
+                <a [routerLink]="['/employee-panel']"
+                    class="block mt-2 text-xl font-semibold text-gray-800 transition-colors duration-300 transform dark:text-white hover:text-gray-600 hover:underline"
+                    tabindex="0" role="link">Panel de control de empleados</a>
+                <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Gestiona los empleados del taller, altas,
+                    bajas, etc
+
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-xl overflow-hidden bg-white rounded-lg shadow-md dark:bg-gray-800">
+        <img class="object-cover w-full h-64"
+            src="assets/imgs/vehiculos.png">
+
+        <div class="p-6">
+            <div>
+                <span class="text-xs font-medium text-blue-600 uppercase dark:text-blue-400">Product</span>
+                <a [routerLink]="['/cars']"
+                    class="block mt-2 text-xl font-semibold text-gray-800 transition-colors duration-300 transform dark:text-white hover:text-gray-600 hover:underline"
+                    tabindex="0" role="link">Panel de control de vehiculos</a>
+                <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Gestiona los vehiculo registrados en la
+                    empresa, asi como sus dueños, y todo lo relacionado con el vehiculo
+
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="max-w-xl overflow-hidden bg-white rounded-lg shadow-md dark:bg-gray-800">
+        <img class="object-cover w-full h-64"
+            src="assets/imgs/piezas.png">
+
+        <div class="p-6">
+            <div>
+                <span class="text-xs font-medium text-blue-600 uppercase dark:text-blue-400">Product</span>
+                <a [routerLink]="['/parts']"
+                    class="block mt-2 text-xl font-semibold text-gray-800 transition-colors duration-300 transform dark:text-white hover:text-gray-600 hover:underline"
+                    tabindex="0" role="link">Panel de control de piezas</a>
+                <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Gestiona las piezas que tiene el taller,
+                    administrar si hay piezas disponibles, que piezas no se tienen, cuales hay que pedir etc
+
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="max-w-xl overflow-hidden bg-white rounded-lg shadow-md dark:bg-gray-800">
+        <img class="object-cover w-full h-64"
+            src="assets/imgs/servicio.png">
+
+        <div class="p-6">
+            <div>
+                <span class="text-xs font-medium text-blue-600 uppercase dark:text-blue-400">Servicios</span>
+                <a [routerLink]="['/services-panel']"
+                    class="block mt-2 text-xl font-semibold text-gray-800 transition-colors duration-300 transform dark:text-white hover:text-gray-600 hover:underline"
+                    tabindex="0" role="link">Panel de control de servicios</a>
+                <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Gestiona los servicios que ofrece el taller a
+                    los clientes
+
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

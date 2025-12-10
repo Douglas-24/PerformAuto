@@ -1,0 +1,20 @@
+@if (visible) {
+<div
+    class="fixed bottom-4 right-4 bg-gray-800 text-white px-4 py-2 w-3/12 rounded-lg borde shadow-lg {{toastStyles[type].container}}">
+    <div class="flex items-start gap-4">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+            class="size-6 {{toastStyles[type].icon}}">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+
+        <div class="flex-1">
+            <strong class="font-medium text-gray-900 dark:text-white"> {{title}} </strong>
+
+            <p class="mt-0.5 text-sm text-gray-700 dark:text-gray-200">
+                {{message}}
+            </p>
+        </div>
+    </div>
+</div>
+}

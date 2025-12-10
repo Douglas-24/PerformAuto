@@ -1,0 +1,97 @@
+<div class="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+    <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+    <div
+        class=" max-h-[90vh] overflow-y-auto relative inline-block px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl rtl:text-right dark:bg-gray-900 sm:my-8 sm:align-middle max-w-4xl w-4xl sm:p-6 border border-blue-700">
+        <div>
+            <div class="flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-gray-700 dark:text-gray-300" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                </svg>
+            </div>
+
+            <div class="mt-2 text-center">
+                <h3 class="text-lg font-medium leading-6 text-gray-800 capitalize dark:text-white" id="modal-title">
+                    Pieza revisada</h3>
+                <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                    Indica que es lo que has hecho con la pieza.
+                </p>
+
+                <form [formGroup]="formChangePart" class="mt-5">
+                    <div class="space-y-4">
+                        <div class="mt-3">
+                            <span class="text-lg font-medium text-gray-700 dark:text-white"> Estado pieza </span>
+
+                            <select formControlName="statePart"
+                                class="block w-full px-3 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40">
+                                <option [ngValue]="null">Selecciona el estado de la pieza</option>
+                                @for (state of stateChange; track $index) {
+                                <option [ngValue]="state.key">{{state.label}} </option>
+                                }
+                            </select>
+                        </div>
+
+                        @if (stateSelect === StateChangePart.CHANGED) {
+                        <div class="mt-2">
+                            <label class=" text-lg font-medium text-gray-700 dark:text-white">
+                                Nº/Litros aplicados
+                            </label>
+
+                            <input formControlName="quantity" type="number" placeholder="1"
+                                class="block mt-2 w-full placeholder-gray-400/70 dark:placeholder-gray-500 rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-gray-700 focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-blue-300" />
+                        </div>
+                        }
+                    </div>
+
+                    @if (stateSelect === StateChangePart.CHANGE_URGENT) {
+                    <div
+                        class="mt-8 space-y-6 p-6 border border-red-500 rounded-lg bg-red-50 dark:bg-gray-800 dark:border-red-700">
+                        <h2 class="text-xl font-bold text-red-600 dark:text-red-400">Detalle de Urgencia</h2>
+
+                        <div>
+                            <label for="urgent-reason"
+                                class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                Razón del cambio urgente (<span class="text-red-500">*Requerido</span>):
+                            </label>
+                            <textarea id="urgent-reason" rows="4" formControlName="urgentReason"
+                                placeholder="Describe el fallo o la condición que requiere un cambio inmediato."
+                                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm dark:bg-gray-900 dark:border-gray-600 dark:text-gray-200">
+                        </textarea>
+                            @if (formChangePart.get('urgentReason')?.invalid &&
+                            formChangePart.get('urgentReason')?.touched) {
+                            <p class="mt-1 text-sm text-red-600">La razón de urgencia es obligatoria.</p>
+                            }
+                        </div>
+
+                        <div>
+                            <label for="images" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                Evidencia fotográfica (Máx. 1 imágen):
+                            </label>
+                            <input type="file" id="images" (change)="onFileSelected($event)" multiple accept="image/*"
+                                class="mt-1 block w-full text-sm text-gray-500 dark:text-gray-400
+                                file:mr-4 file:py-2 file:px-4
+                                file:rounded-md file:border-0
+                                file:text-sm file:font-semibold
+                                file:bg-red-50 file:text-red-700
+                                hover:file:bg-red-100 dark:file:bg-red-900 dark:file:text-red-200" />
+                        </div>
+                    </div>
+                    }
+                    <div class="mt-7 sm:flex sm:items-center sm:justify-end ">
+                        <button (click)="onCancel()" type="button"
+                            class="w-full px-4 py-2 mt-2 text-lg font-medium tracking-wide text-gray-700 capitalize transition-colors duration-300 transform border border-gray-200 rounded-lg sm:mt-0 sm:w-auto sm:mx-2 dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-800 hover:bg-gray-100 focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-40">
+                            Cancelar
+                        </button>
+                        <button (click)="updatePartAppointment()" [disabled]="formChangePart.invalid" type="submit"
+                            class="w-full px-4 py-2 mt-2 text-lg font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-md sm:w-auto sm:mt-0 hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 disabled:opacity-50 disabled:cursor-not-allowed">
+                            Guardar y Cerrar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>

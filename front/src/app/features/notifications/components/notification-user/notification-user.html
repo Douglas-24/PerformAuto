@@ -1,0 +1,56 @@
+@if (notifications.length == 0) {
+<div class="text-center p-5 text-gray-500 dark:text-gray-400">
+    No tienes notificaciones pendientes.
+</div>
+}@else {
+@for (notification of notifications; track notification.id) {
+
+<div class="px-8 mt-4 py-4 rounded-lg shadow-md transition-all duration-300" [class.bg-white]="notification.read"
+    [class.dark:bg-gray-800]="notification.read" [class.bg-slate-900]="!notification.read"
+    [class.dark:bg-slate-900]="!notification.read">
+
+    <div class="flex items-center justify-between">
+        <span class="text-sm font-light text-gray-600 dark:text-gray-400">
+            {{ notification.createdAt | date:'MMM dd, yyyy' }}
+        </span>
+
+        <span class="px-3 py-1 text-sm font-bold text-gray-100 transition-colors duration-300 transform rounded"
+            tabindex="0" role="button" [class.bg-green-600]="notification.typeNotifycation === 'SUCCESS'"
+            [class.hover:bg-green-500]="notification.typeNotifycation === 'SUCCESS'"
+            [class.bg-red-600]="notification.typeNotifycation === 'ERROR'"
+            [class.hover:bg-red-500]="notification.typeNotifycation === 'ERROR'"
+            [class.bg-blue-600]="notification.typeNotifycation === 'INFO'"
+            [class.hover:bg-blue-500]="notification.typeNotifycation === 'INFO'">
+            {{ notification.typeNotifycation }}
+        </span>
+    </div>
+
+    <div class="mt-2">
+        <a class="text-xl font-bold text-gray-700 dark:text-white hover:text-gray-600 dark:hover:text-gray-200 hover:underline cursor-default"
+            tabindex="0" role="link">
+            {{ notification.title }}
+        </a>
+        <p class="mt-2 text-gray-600 dark:text-gray-300">
+            {{ notification.message }}
+        </p>
+    </div>
+
+    <div class="flex items-center justify-between mt-4">
+        @if (!notification.read) {
+            <a  
+            (click)="markRead(notification.id)"
+            class="text-blue-600 dark:text-blue-400 hover:underline cursor-pointer"
+                tabindex="0" role="link">
+                Marcar como leído
+            </a>
+        }
+        <button
+            (click)="deleteNotification(notification.id)"
+            class="px-6 py-2 font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-lg hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80">
+            Eliminar
+        </button>
+    </div>
+</div>
+}
+
+}

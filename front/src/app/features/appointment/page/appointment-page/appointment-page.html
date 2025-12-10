@@ -1,0 +1,42 @@
+<div class="flex flex-col min-h-screen bg-neutral-900">
+    <header>
+        <app-header></app-header>
+    </header>
+    <div class="mt-6 ">
+        @if (nextSecction !=5) {
+            <h1 class="text-5xl text-gray-800 dark:text-white text-center">Pide tu cita ahora</h1>
+        }
+        @if (nextSecction == 1) {
+        <div>
+            <app-car-select (userCarSelected)="getUserCarSelected($event)"></app-car-select>
+        </div>
+        }
+
+        @if (nextSecction == 2) {
+        <div>
+            <app-select-service [car]="carSelected" (back)="backSection()" [servicesPartsSelected]="servicedSelected"
+                (userServicesSelected)="getAllUserServiceSelected($event)"></app-select-service>
+        </div>
+        }
+        @if (nextSecction == 3) {
+        <div>
+            <app-initial-budget (back)="backSection($event)" (next)="nextSectionAction()" [car]="carSelected"
+                [servicesPartsSelected]="servicedSelected"></app-initial-budget>
+        </div>
+        }
+
+        @if (nextSecction == 4) {
+        <div>
+            <app-select-date (back)="backSection()" [car]="carSelected" (dateAppointment)="nextSectionAction($event)"
+                [servicesPartsSelected]="servicedSelected"></app-select-date>
+        </div>
+        }
+
+        @if (nextSecction == 5) {
+        <div>
+            <app-confirm-appointment [dateAppointment]="dateAppointment"></app-confirm-appointment>
+        </div>
+        }
+
+    </div>
+</div>

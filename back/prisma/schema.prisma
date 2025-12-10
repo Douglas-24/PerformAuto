@@ -1,0 +1,219 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CLIENT
+  ADMIN
+}
+
+enum RoleGuard {
+  CLIENT
+  ADMIN
+  CUSTOMER_SERVICE // Atencion al cliente
+  WAREHOUSE_MANAGER // Encargado de almacen, piezas inventario
+  MECHANIC // Mecanico
+}
+
+enum RoleEmployee {
+  CUSTOMER_SERVICE // Atencion al cliente
+  WAREHOUSE_MANAGER // Encargado de almacen, piezas inventario
+  MECHANIC // Mecanico
+}
+
+enum StateServie {
+  STARTED
+  PENDING
+  CANCELLED
+  FINISH
+}
+
+enum StateChangePart {
+  SHOULD_CHANGE
+  REVIEW
+  NO_CHANGE
+  REVISED
+  CHANGED
+  CHANGE_URGENT
+}
+
+model User {
+  id               Int             @id @default(autoincrement())
+  name             String
+  lastname         String
+  dni              String          @unique
+  email            String          @unique
+  password         String
+  phone_number     Int             @unique
+  address          String
+  postal_code      Int
+  rol              Role            @default(CLIENT)
+  account_verified Boolean         @default(false)
+  cars             Car[]
+  date_register    DateTime
+  servicesAsClient Appoiment[]
+  notifications    Notifications[]
+  invoices         Invoice[]
+}
+
+model Employee {
+  id            Int                   @id @default(autoincrement())
+  name          String
+  lastname      String
+  email         String
+  password      String
+  rol           RoleEmployee
+  workingHour   EmployeeWorkingHours?
+  isActive      Boolean               @default(true)
+  appoiment     Appoiment[]
+  notifications Notifications[]
+}
+
+model EmployeeWorkingHours {
+  id         Int      @id @default(autoincrement())
+  dayOfWeek  Int
+  startTime  String
+  endTime    String
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  employeeId Int      @unique
+}
+
+model Car {
+  id              Int         @id @default(autoincrement())
+  photo           String
+  brand           String
+  model           String
+  enrolment       String      @unique // Matricula
+  chassis_number  String      @unique // Numero de bastidor
+  last_revision   DateTime?
+  current_mileage Int
+  engine          String
+  owner           User        @relation(fields: [ownerId], references: [id])
+  ownerId         Int
+  services        Appoiment[]
+}
+
+model Service {
+  id             Int                @id @default(autoincrement())
+  name           String
+  description    String
+  price          Int
+  frequency_km   Int // Cada cuantos km realizar este servicio
+  frequency_time String // Cada cierto tiempo realizar el servicio
+  duration       Int // En horas
+  services       AppoimentService[]
+  parts          PartsService[]
+}
+
+model Appoiment {
+  id                  Int                @id @default(autoincrement())
+  state               StateServie
+  client              User               @relation(fields: [clientId], references: [id])
+  clientId            Int
+  car                 Car                @relation(fields: [carId], references: [id])
+  carId               Int
+  services            AppoimentService[]
+  mechanic            Employee           @relation(fields: [mechanicId], references: [id])
+  mechanicId          Int
+  appoiment_date      DateTime
+  mileage_at_delivery Int                @default(0)
+  duration            Int                @default(0)
+  invoice             Invoice[]
+}
+
+model AppoimentService {
+  id           Int                    @id @default(autoincrement())
+  appoiment    Appoiment              @relation(fields: [id_appoiment], references: [id])
+  id_appoiment Int
+  services     Service                @relation(fields: [id_service], references: [id])
+  id_service   Int
+  parts_used   AppoimentServicePart[]
+}
+
+model Parts {
+  id             Int                    @id @default(autoincrement())
+  name           String
+  reference      String
+  price          Int
+  stock          Int                    @default(0)
+  frequency_km   Int                    @default(0)
+  frequency_time String                 @default("")
+  typeServices   PartsService[]
+  usedInServices AppoimentServicePart[]
+}
+
+// Este modelo se usa para indicar que piezas se usan en los tipos de servicio
+model PartsService {
+  id               Int     @id @default(autoincrement())
+  part             Parts   @relation(fields: [partId], references: [id])
+  partId           Int
+  typeService      Service @relation(fields: [typeServiceId], references: [id])
+  typeServiceId    Int
+  quantity         Int // cantidad de piezas que se tienen que cambiar
+  changeRecomended Boolean // para indicar si la pieza es recomendable de cambiar o no dependiendo del tiempo y km del coche
+}
+
+model AppoimentServicePart {
+  id                 Int                @id @default(autoincrement())
+  appoimentService   AppoimentService   @relation(fields: [appoimentServiceId], references: [id])
+  appoimentServiceId Int
+  part               Parts              @relation(fields: [partId], references: [id])
+  partId             Int
+  quantity           Int
+  replaced           Boolean
+  statePart          StateChangePart    @default(SHOULD_CHANGE)
+  urgentChangePart   PartChangeUrgent[]
+}
+
+model PartChangeUrgent {
+  id                     Int                  @id @default(autoincrement())
+  appoimentServicePart   AppoimentServicePart @relation(fields: [appoimentServicePartId], references: [id])
+  appoimentServicePartId Int
+  mechanicMessage        String
+  clientConfirmed        Boolean?
+  confirmedAt            DateTime?
+  createdAt              DateTime             @default(now())
+  urlImg                 String
+}
+
+model Invoice {
+  id                    Int       @id @default(autoincrement())
+  appoiment             Appoiment @relation(fields: [id_appoiment], references: [id])
+  id_appoiment          Int
+  userId                Int
+  user                  User      @relation(fields: [userId], references: [id])
+  total_cost            Int
+  notes                 String
+  date_invoice_issuance DateTime  @default(now())
+}
+
+enum NotificationType {
+  INFO
+  WARNING
+  URGENT
+  CONFIRMATION
+}
+
+model Notifications {
+  id               Int              @id @default(autoincrement())
+  typeNotifycation NotificationType @default(INFO)
+  title            String
+  message          String
+  read             Boolean          @default(false)
+  createdAt        DateTime         @default(now())
+  user             User?            @relation(fields: [id_user], references: [id])
+  id_user          Int?
+  employeeId       Int?
+  employee         Employee?        @relation(fields: [employeeId], references: [id])
+}

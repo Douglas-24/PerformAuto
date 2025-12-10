@@ -1,0 +1,18 @@
+<div class="flex justify-center">
+    <button
+        (click)="openModal()"
+        class="px-6 py-2 font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-lg hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80">
+            Añadir servicio
+    </button>
+</div>
+
+<div class="mt-5">
+    <app-dinamic-table
+        [dataTable]="allServices"
+        [columns]="configFields"
+        [otherAcctionButon]="true"
+        (edit)="openModal($event)"
+        (delete)="openModal($event, true)"
+        (otherAcction)="openAggregatePartToService($event)"
+    ></app-dinamic-table>
+</div>

@@ -1,0 +1,22 @@
+<section class="bg-white dark:bg-gray-900">
+    <div class="flex justify-center min-h-screen">
+        <div class=" bg-[url('/assets/imgs/fotoInicioSesion.jpg')] hidden bg-cover lg:block lg:w-2/5">
+        </div>
+        <div class="flex items-center justify-center w-full max-w-5xl p-8 mx-auto lg:px-16 lg:w-3/5">
+            <div class="w-full">
+
+                <div [routerLink]="['/']" class="flex justify-center cursor-pointer mb-10">
+                    <img src="assets/icons/logo.png" alt="Logo" class="h-30 w-auto border-4 rounded-full" />
+                </div>
+
+                @if (showFormLogin) {
+                <app-login (goRegister)="showForm($event)"></app-login>
+                }
+                @if (showFormRegister) {
+                <app-register (goLogin)="showForm($event)"></app-register>
+                }
+
+            </div>
+        </div>
+    </div>
+</section>

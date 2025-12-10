@@ -1,0 +1,37 @@
+<div class="text-center">
+    <button 
+    (click)="openModal()"
+    class="px-6 py-2 font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-lg hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80">
+    Añadir coche
+</button>
+
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 p-4">
+    @for (car of allCarsUser; track $index) {
+    <div (click)="openModal(car)" class="mt-4 max-w-2xl overflow-hidden bg-white rounded-lg shadow-md dark:bg-gray-800">
+        <img class="object-cover w-full h-64" src='{{car.photo}}' alt="Article">
+
+        <div class="p-6">
+            <div>
+                <span class="text-lg font-medium text-blue-600 uppercase dark:text-blue-400">{{car.brand}} {{car.model}}
+                </span>
+                <p href="#"
+                    class="block mt-2 text-xl font-semibold text-gray-800 transition-colors duration-300 transform dark:text-white hover:text-gray-600 hover:underline"
+                    tabindex="0" role="link">Última revisión:
+                    {{ car.last_revision ? (car.last_revision | date:'dd/MM/yyyy') : 'Sin revisiones anteriores' }} </p>
+                <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                    Matrícula: <strong>{{ car.enrolment }}</strong><br />
+                    Nº Bastidor: <strong>{{ car.chassis_number }}</strong><br />
+                    Motor: <strong>{{ car.engine }}</strong><br />
+                    Kilometraje actual: <strong>{{ car.current_mileage | number }}</strong> km
+                </p>
+            </div>
+        </div>
+    </div>
+    }
+
+</div>
+
+@if(allCarsUser.length == 0){
+<h1 class="mt-3 text-2xl font-semibold text-gray-800 dark:text-white md:text-3xl">No tienes coches registrados</h1>
+}

@@ -1,0 +1,44 @@
+<h1 class="text-3xl font-semibold tracking-wider text-center text-gray-800 capitalize dark:text-white">
+    Unete a nosotros.
+</h1>
+
+<p class="mt-4 text-gray-500 dark:text-gray-400 text-center text-lg">
+    Introduce tus datos personales para crear una cuenta gratuita.
+</p>
+
+<div class="flex items-center justify-between mt-6">
+    <span class="w-1/5 border-b dark:border-gray-600 lg:w-1/4"></span>
+
+    <p class="text-lg text-center text-gray-500 uppercase dark:text-gray-400 ">Registro</p>
+
+    <span class="w-1/5 border-b dark:border-gray-400 lg:w-1/4"></span>
+</div>
+
+
+<app-dinamic-form [formGroup]="registerForm" [configfields]="configField"></app-dinamic-form>
+
+
+<div class="flex mt-6">
+    <button [disabled]="registerForm.invalid" (click)="registerUser()" class="{{ registerForm.invalid
+    ? 'flex items-center justify-between w-full px-6 py-3 text-lg tracking-wide text-white capitalize transition-colors duration-300 transform bg-gray-400 cursor-not-allowed rounded-lg focus:outline-none focus:ring focus:ring-red-300 focus:ring-opacity-50'
+    : 'flex items-center justify-between w-full px-6 py-3 text-lg tracking-wide text-white capitalize transition-colors duration-300 transform bg-gray-800 hover:bg-gray-700 rounded-lg focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-50'
+  }}">
+        <p>Registrarse</p>
+
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 rtl:-scale-x-100" viewBox="0 0 20 20"
+            fill="currentColor">
+            <path fill-rule="evenodd"
+                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                clip-rule="evenodd" />
+        </svg>
+    </button>
+</div>
+
+<div class="flex items-center justify-between mt-4">
+    <span class="w-1/5 border-b dark:border-gray-600 md:w-1/4"></span>
+
+    <p (click)="goFormLogin()" class="text-lg text-gray-500 uppercase dark:text-gray-400 hover:underline">Ya tienes una
+        cuenta</p>
+
+    <span class="w-1/5 border-b dark:border-gray-600 md:w-1/4"></span>
+</div>
