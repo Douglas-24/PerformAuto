@@ -81,6 +81,12 @@ export class ModalCar {
     reader.readAsDataURL(file);
   }
 
+  isPhotoValid(): boolean {
+    if (this.data.car && this.data.car.photo) {
+        return true
+    }
+    return !!this.selectedFile || !!this.previewUrl;
+}
   onDrop(event: DragEvent) {
     event.preventDefault();
     const file = event.dataTransfer?.files?.[0];

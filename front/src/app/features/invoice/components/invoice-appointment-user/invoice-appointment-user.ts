@@ -27,6 +27,8 @@ export class InvoiceAppointmentUser {
     if(this.id_appointment){
       this.invoiceService.getInvoice(+this.id_appointment).subscribe({
         next: (resp) =>{
+          console.log(resp.data);
+          
           this.invoice = resp.data
         },
         error: (error) =>{

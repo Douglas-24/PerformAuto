@@ -20,7 +20,6 @@ export class UserController {
         return apiResponse(201, "Usuario creado correctamente", userCreate)
     }
 
-    @UseGuards(new RoleGuard([Role.ADMIN, Role.CUSTOMER_SERVICE]))
     @Put(':id')
     async updateUser(@Param('id') id:number, @Body() user: UpdateUserDto):Promise<successfulResponse>{
         const updateUser = await this.userService.updateUser(+id, user)

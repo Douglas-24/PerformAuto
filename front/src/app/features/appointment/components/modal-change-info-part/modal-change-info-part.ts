@@ -1,6 +1,6 @@
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { Component, inject, Inject } from '@angular/core';
-import { DataServicePartMechanic, DataServicePartUser, StateChangePart } from '../../../../core/interfaces/partTypeService.interface';
+import { ChangeServicePartMechanic, DataServicePartMechanic, DataServicePartUser, StateChangePart } from '../../../../core/interfaces/partTypeService.interface';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { AppointmentService } from '../../../../core/service/appointment.service';
 import { AwsS3Service } from '../../../../core/service/aws-s3.service';
@@ -86,13 +86,15 @@ export class ModalChangeInfoPart {
 
   updatePartAppointment() {
     const formValue = this.formChangePart.value
-    const data: DataServicePartMechanic = {
+    const data: ChangeServicePartMechanic = {
       appoimentServiceId: this.data.appoimentServiceId,
       partId: this.data.partId,
-      quatity: formValue.quantity ? formValue.statePart != StateChangePart.CHANGED ? 0 : parseInt(formValue.quantity) : 0,
+      quantity: formValue.quantity ? formValue.statePart != StateChangePart.CHANGED ? 0 : parseInt(formValue.quantity) : 0,
       replaced: formValue.statePart == StateChangePart.CHANGED ? true : false,
       statePart: formValue.statePart || StateChangePart.NO_CHANGE,
     }
+    console.log(data);
+    
     if (this.selectedFile && formValue.statePart == StateChangePart.CHANGE_URGENT) {
       this.awsS3.uploadFile(this.selectedFile).subscribe({
         next: (resp) => {

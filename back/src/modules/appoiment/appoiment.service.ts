@@ -135,7 +135,6 @@ export class AppoimentService {
 
 
   async updatePartServiceAppointment(id: number, dataPart: UpdateAppoimentServicePartDto) {
-    console.log(dataPart);
     if (dataPart.mechanicMessage && dataPart.urlImg)
       await this.uploadImgPartChangeUrgent(id, dataPart.mechanicMessage, dataPart.urlImg)
     const part = await this.prisma.parts.findFirst({ where: { id: dataPart.partId } })

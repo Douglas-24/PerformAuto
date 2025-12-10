@@ -48,6 +48,17 @@ export interface DataServicePartMechanic {
     mechanicMessage?: string | null
     urlImg?: string | null
 }
+export interface ChangeServicePartMechanic {
+    id?: number
+    appoimentServiceId: number
+    partId: number
+    quantity: number
+    replaced: boolean
+    statePart: StateChangePart
+    part?: PartUsed
+    mechanicMessage?: string | null
+    urlImg?: string | null
+}
 export interface DataServicePartUser {
     id?: number
     appoimentServiceId: number
