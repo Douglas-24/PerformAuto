@@ -27,9 +27,9 @@ export async function seedEmployee() {
                 isActive: true,
             },
             {
-                name: 'Carlos',
+                name: 'Frank',
                 lastname: 'Fernández',
-                email: 'carlos.fernandez@example.com',
+                email: 'frank.fernandez@example.com',
                 password,
                 rol: 'MECHANIC',
                 isActive: true,

@@ -28,6 +28,21 @@ export class ModalPartsService {
       classMessage: "bg-green-300 px-3 text-green-600",
       message: "No cambiar"
     },
+    CHANGED: {
+      classBorder: "border-yellow-500",
+      classMessage: "bg-yellow-300 px-3 text-yellow-600",
+      message: "Cambiado"
+    },
+    REVISED: {
+      classBorder: "border-purple-500",
+      classMessage: "bg-purple-300 px-3 text-purple-600",
+      message: "Revisado"
+    },
+    CHANGE_URGENT: {
+      classBorder: "border-purple-500",
+      classMessage: "bg-purple-300 px-3 text-purple-600",
+      message: "Revisado"
+    }
   }
 
   constructor(

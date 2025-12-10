@@ -12,9 +12,15 @@ export async function seedCars() {
   }
 
   const marcas = ['Seat', 'Renault', 'Ford', 'Peugeot', 'Volkswagen'];
-  const modelos = ['Ibiza', 'Clio', 'Focus', '208', 'Golf'];
+  const modelos = ['Ibiza', 'Laguna', 'Focus', '208', 'Golf'];
   const motores = ['1.2 TSI', '1.5 dCi', '1.0 EcoBoost', '1.6 HDi', '2.0 TDI'];
-
+  const imgCar = [
+    'https://taller-mecanico-tfg.s3.eu-north-1.amazonaws.com/seat-2266976_1280.jpg',
+    'https://taller-mecanico-tfg.s3.eu-north-1.amazonaws.com/renault-laguna-6978128_1280.jpg',
+    'https://taller-mecanico-tfg.s3.eu-north-1.amazonaws.com/ford-5167838_1280.jpg',
+    'https://taller-mecanico-tfg.s3.eu-north-1.amazonaws.com/peugeot-6969321_1280.jpg',
+    'https://taller-mecanico-tfg.s3.eu-north-1.amazonaws.com/vw-3957054_1280.jpg'
+  ]
   let cocheCount = 0;
 
   for (const cliente of clientes) {
@@ -23,7 +29,7 @@ export async function seedCars() {
 
       await prisma.car.create({
         data: {
-          photo: `https://example.com/images/car4.jpg`,
+          photo: imgCar[index],
           brand: marcas[index],
           model: modelos[index],
           enrolment: `ABC${cocheCount + 1000}`,

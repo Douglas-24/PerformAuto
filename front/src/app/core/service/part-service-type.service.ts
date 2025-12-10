@@ -15,9 +15,9 @@ export class PartServiceTypeService {
       return this.http.post<apiReponse>(this.url, partTypeService)
     }
 
-    // getAllPartTypeService(idTypeService:  number):Observable<apiReponse>{
-    //   return this.http.get<apiReponse>(this.url + 'getAllPartTypeService' + idTypeService)
-    // }
+    getAllPartTypeService(idTypeService:  number):Observable<apiReponse>{
+      return this.http.get<apiReponse>(this.url + 'getAllPartService/' + idTypeService)
+    }
     
     getAllServicesWithParts():Observable<apiReponse>{
       return this.http.get<apiReponse>(this.url + 'allPartsAndServices')

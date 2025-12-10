@@ -1,13 +1,19 @@
-import { DataSelectService } from "./partTypeService.interface"
+import { DataSelectService, DataServicePartUser } from "./partTypeService.interface"
 import { Car } from "./car.interface"
 import { User, Employee } from "./user.interfaces"
-export interface MechanicData{
+import { ServicesOfferedInterface } from "./servicesOffered.interfaces"
+export interface MechanicData {
   id: number,
   fullName: string
 }
+
+export interface DateReserved {
+  date: Date,
+  reservedDateClient: boolean
+}
 export interface MechanicSlot {
   mechanic: MechanicData
-  slot: Date[]
+  slot: DateReserved[]
 }
 
 export interface AvailableDay {
@@ -24,27 +30,38 @@ export enum StateServie {
 
 
 export interface Appointment {
-    id?:number
-    state: StateServie;
-    clientId: number;
-    carId: number;
-    mechanicId: number;
-    appoiment_date: Date;
-    mileage_at_delivery: number;
-    duration: number
+  id?: number
+  state: StateServie;
+  clientId: number;
+  carId: number;
+  mechanicId: number;
+  appoiment_date: Date;
+  mileage_at_delivery: number;
+  duration: number
+  notes?:string | null
 }
 
-export interface AppointmentMechanicInterface extends Appointment{
-  id:number
+export interface AppointmentMechanicInterface extends Appointment {
+  id: number
 }
 
-export interface DataCreateAppointment{
+export interface DataCreateAppointment {
   appoinment: Appointment,
   servicesSelected: DataSelectService[]
 }
 
-export interface AppointmentUserInterface extends AppointmentMechanicInterface{
-  client:User,
-  car:Car,
+export interface AppointmentUserInterface extends Appointment {
+  id: number
+  client: User,
+  car: Car,
   mechanic: Employee
+  services: ServicesAppointmentUser[]
+}
+
+export interface ServicesAppointmentUser {
+  id: number
+  id_appoiment: number
+  id_service: number
+  parts_used: DataServicePartUser[]
+  services: ServicesOfferedInterface
 }

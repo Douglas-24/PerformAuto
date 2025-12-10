@@ -18,6 +18,14 @@ enum Role {
   ADMIN
 }
 
+enum RoleGuard {
+  CLIENT
+  ADMIN
+  CUSTOMER_SERVICE // Atencion al cliente
+  WAREHOUSE_MANAGER // Encargado de almacen, piezas inventario
+  MECHANIC // Mecanico
+}
+
 enum RoleEmployee {
   CUSTOMER_SERVICE // Atencion al cliente
   WAREHOUSE_MANAGER // Encargado de almacen, piezas inventario
@@ -31,46 +39,45 @@ enum StateServie {
   FINISH
 }
 
-enum StatePayment {
-  PAID
-  PENDING
-  CANCELLED
-}
-
 enum StateChangePart {
   SHOULD_CHANGE
   REVIEW
   NO_CHANGE
   REVISED
   CHANGED
+  CHANGE_URGENT
 }
+
 model User {
-  id               Int         @id @default(autoincrement())
+  id               Int             @id @default(autoincrement())
   name             String
   lastname         String
-  dni              String      @unique
-  email            String      @unique
+  dni              String          @unique
+  email            String          @unique
   password         String
-  phone_number     Int         @unique
+  phone_number     Int             @unique
   address          String
   postal_code      Int
-  rol              Role        @default(CLIENT)
-  account_verified Boolean     @default(false)
+  rol              Role            @default(CLIENT)
+  account_verified Boolean         @default(false)
   cars             Car[]
   date_register    DateTime
   servicesAsClient Appoiment[]
+  notifications    Notifications[]
+  invoices         Invoice[]
 }
 
 model Employee {
-  id          Int                   @id @default(autoincrement())
-  name        String
-  lastname    String
-  email       String
-  password    String
-  rol         RoleEmployee
-  workingHour EmployeeWorkingHours?
-  isActive    Boolean               @default(true)
-  appoiment   Appoiment[]
+  id            Int                   @id @default(autoincrement())
+  name          String
+  lastname      String
+  email         String
+  password      String
+  rol           RoleEmployee
+  workingHour   EmployeeWorkingHours?
+  isActive      Boolean               @default(true)
+  appoiment     Appoiment[]
+  notifications Notifications[]
 }
 
 model EmployeeWorkingHours {
@@ -121,7 +128,7 @@ model Appoiment {
   mechanicId          Int
   appoiment_date      DateTime
   mileage_at_delivery Int                @default(0)
-  duration            Int             @default(0)
+  duration            Int                @default(0)
   invoice             Invoice[]
 }
 
@@ -158,23 +165,55 @@ model PartsService {
 }
 
 model AppoimentServicePart {
-  id                 Int              @id @default(autoincrement())
-  appoimentService   AppoimentService @relation(fields: [appoimentServiceId], references: [id])
+  id                 Int                @id @default(autoincrement())
+  appoimentService   AppoimentService   @relation(fields: [appoimentServiceId], references: [id])
   appoimentServiceId Int
-  part               Parts            @relation(fields: [partId], references: [id])
+  part               Parts              @relation(fields: [partId], references: [id])
   partId             Int
   quantity           Int
   replaced           Boolean
-  statePart          StateChangePart @default(SHOULD_CHANGE)
+  statePart          StateChangePart    @default(SHOULD_CHANGE)
+  urgentChangePart   PartChangeUrgent[]
+}
+
+model PartChangeUrgent {
+  id                     Int                  @id @default(autoincrement())
+  appoimentServicePart   AppoimentServicePart @relation(fields: [appoimentServicePartId], references: [id])
+  appoimentServicePartId Int
+  mechanicMessage        String
+  clientConfirmed        Boolean?
+  confirmedAt            DateTime?
+  createdAt              DateTime             @default(now())
+  urlImg                 String
 }
 
 model Invoice {
-  id             Int          @id @default(autoincrement())
-  appoiment      Appoiment    @relation(fields: [id_appoiment], references: [id])
-  id_appoiment   Int
-  total_cost     Int
-  date_entered   DateTime
-  departure_date DateTime
-  state          StatePayment
-  notes          String
+  id                    Int       @id @default(autoincrement())
+  appoiment             Appoiment @relation(fields: [id_appoiment], references: [id])
+  id_appoiment          Int
+  userId                Int
+  user                  User      @relation(fields: [userId], references: [id])
+  total_cost            Int
+  notes                 String
+  date_invoice_issuance DateTime  @default(now())
+}
+
+enum NotificationType {
+  INFO
+  WARNING
+  URGENT
+  CONFIRMATION
+}
+
+model Notifications {
+  id               Int              @id @default(autoincrement())
+  typeNotifycation NotificationType @default(INFO)
+  title            String
+  message          String
+  read             Boolean          @default(false)
+  createdAt        DateTime         @default(now())
+  user             User?            @relation(fields: [id_user], references: [id])
+  id_user          Int?
+  employeeId       Int?
+  employee         Employee?        @relation(fields: [employeeId], references: [id])
 }

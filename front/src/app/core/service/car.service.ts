@@ -24,7 +24,7 @@ export class CarService {
     return this.http.post<apiReponse>(this.url, car)
   }
 
-  updateCar(car:Car):Observable<apiReponse>{
+  updateCar(car:Partial<Car>):Observable<apiReponse>{
     return this.http.put<apiReponse>(this.url + car.id, car)
   }
 

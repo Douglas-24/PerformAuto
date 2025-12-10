@@ -18,7 +18,8 @@ export enum StateChangePart {
     REVIEW = 'REVIEW',
     CHANGED = 'CHANGED',
     REVISED = 'REVISED',
-    NO_CHANGE = 'NO_CHANGE'
+    NO_CHANGE = 'NO_CHANGE',
+    CHANGE_URGENT = 'CHANGE_URGENT'
 }
 
 export interface postDataPartsService {
@@ -37,20 +38,58 @@ export interface DataPartChange {
     observation: string
 }
 export interface DataServicePartMechanic {
-    id?:number
-    appoimentServiceId:number
-    partId:number
+    id?: number
+    appoimentServiceId: number
+    partId: number
     quatity: number
     replaced: boolean
     statePart: StateChangePart
     part?: PartUsed
+    mechanicMessage?: string | null
+    urlImg?: string | null
+}
+export interface ChangeServicePartMechanic {
+    id?: number
+    appoimentServiceId: number
+    partId: number
+    quantity: number
+    replaced: boolean
+    statePart: StateChangePart
+    part?: PartUsed
+    mechanicMessage?: string | null
+    urlImg?: string | null
+}
+export interface DataServicePartUser {
+    id?: number
+    appoimentServiceId: number
+    partId: number
+    quatity: number
+    replaced: boolean
+    statePart: StateChangePart
+    part?: PartUsed
+    urgentChangePart: UrgentChangePart[]
 }
 
+export interface UrgentChangePart {
+    appoimentServicePartId: number
+    clientConfirmed: boolean | null
+    confirmedAt: string | null
+    createdAt: string
+    id: number
+    mechanicMessage: string
+    urlImg: string
+}
 export interface DataSelectService {
-  parts: DataPartChange[]
-  service: ServicesOfferedInterface
+    parts: DataPartChange[]
+    service: ServicesOfferedInterface
 }
 export interface ServiceParts {
-  parts_used: DataServicePartMechanic[]
-  services: ServicesOfferedInterface
+    parts_used: DataServicePartUser[]
+    services: ServicesOfferedInterface
+}
+
+export interface PartDataForService {
+  partId: number;
+  quantity: number;
+  changeRecomended: boolean;
 }

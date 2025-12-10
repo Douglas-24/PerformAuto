@@ -1,6 +1,6 @@
 @if (allAppointmet.length > 0 ) {
 <div class="flex flex-col items-center justify-center mb-5">
-  <h1 class="text-4xl font-medium text-gray-800  dark:text-white">Tus citas y reservas</h1>
+  <h1 class="text-4xl font-medium text-gray-800 dark:text-white">Tus citas y reservas</h1>
   <p class="mt-2 text-xl text-gray-500 dark:text-gray-400">Se mostraran todas las citas que has realizado o vas a
     realizar </p>
 </div>
@@ -10,61 +10,87 @@
 <div class="grid grid-cols-1 mt-6 sm:grid-cols-2 lg:grid-cols-5 gap-8">
 
   @for (appointment of allAppointmet; track $index) {
-  <div class="max-w-xl overflow-hidden bg-white rounded-lg shadow-md dark:bg-gray-800">
-    <img class="object-cover w-full h-64"
-      src="https://images.unsplash.com/photo-1550439062-609e1531270e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60"
-      alt="Article">
+
+  <div
+    class="relative max-w-xl overflow-hidden rounded-lg shadow-md transition duration-300
+        {{ appointment.state === 'FINISH' ? 'bg-gray-100 dark:bg-gray-900 opacity-60' : 'bg-white dark:bg-gray-800 hover:shadow-xl' }}">
+
+    @if (getUrgentPartsCount(appointment) > 0 && appointment.state !== 'FINISH') {
+    <div (click)="openUrgentChangeModal(appointment)"
+      class="absolute top-0 right-0 m-3 p-2 rounded-full bg-red-600 text-white font-bold text-lg shadow-xl cursor-pointer transition duration-300 transform hover:scale-110"
+      title="Tienes {{ getUrgentPartsCount(appointment) }} piezas con cambio urgente pendiente de tu confirmación.">
+
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline" viewBox="0 0 20 20" fill="currentColor">
+
+        <path fill-rule="evenodd"
+          d="M10 2a8 8 0 018 8c0 2.275-.824 4.38-2.188 6.002a.75.75 0 00.103.882l.858.858a.75.75 0 01-1.06 1.06l-.858-.858a.75.75 0 00-.882-.103C14.38 18.176 12.275 19 10 19a8 8 0 01-8-8c0-2.275.824-4.38 2.188-6.002a.75.75 0 00-.103-.882l-.858-.858a.75.75 0 011.06-1.06l.858.858a.75.75 0 00.882.103C5.62 3.824 7.725 3 10 3zM9 11a1 1 0 102 0V7a1 1 0 10-2 0v4z"
+          clip-rule="evenodd" />
+
+      </svg>
+      <span class="ml-1">{{ getUrgentPartsCount(appointment) }}</span>
+    </div>
+    }
+
+    <img class="object-cover w-full h-64" [class.filter]="appointment.state === 'FINISH'"
+      [class.grayscale]="appointment.state === 'FINISH'" src="{{appointment.car.photo}}" alt="Article">
 
     <div class="p-6">
       <div>
-        <span class="text-xs font-medium text-blue-600 uppercase dark:text-blue-400">{{appointment.state}}
+        <span class="text-xs font-medium uppercase">
+          @if (appointment.state === 'FINISH') {
+          <span class="text-green-600 dark:text-green-400">FINALIZADA</span>
+          } @else {
+          <span class="text-blue-600 dark:text-blue-400">{{appointment.state}}</span>
+          }
         </span>
         <p class="mt-1 text-amber-50 font-bold">{{appointment.appoiment_date | date:'shortDate'}}
           {{appointment.appoiment_date | date:'shortTime'}}</p>
-        <p class="block mt-2 text-xl font-semibold text-gray-800  dark:text-white" tabindex="0" role="link">
+        <p class="block mt-2 text-xl font-semibold text-gray-800dark:text-white" tabindex="0" role="link">
           {{appointment.car.brand}} {{appointment.car.model}}</p>
       </div>
 
       <div class="mt-4">
         <div class="flex">
           <div class="flex items-center">
-            <p class="text-amber-50 font-bold">Mecanico:</p>
-            <a href="#" class="mx-2  text-gray-700 dark:text-gray-200" tabindex="0"
-              role="link">{{appointment.mechanic.name}} {{appointment.mechanic.lastname}} </a>
+            <p class="text-amber-50 font-bold">Mecanico:</p><a href="#" class="mx-2text-gray-700 dark:text-gray-200"
+              tabindex="0" role="link">{{appointment.mechanic.name}} {{appointment.mechanic.lastname}}
+            </a>
           </div>
 
         </div>
       </div>
+
+      <div class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+        @if (appointment.state !== 'FINISH' && appointment.state !== 'CANCELLED') {
+
+        <button (click)="cancelledAppointment(appointment)" class="w-full px-4 py-2 text-base font-medium tracking-wide text-white capitalize 
+                   transition-colors duration-300 transform bg-red-600 rounded-lg hover:bg-red-700 
+                   focus:outline-none focus:ring focus:ring-red-300 mb-2">
+          Cancelar Cita
+        </button>
+
+        } @else if (appointment.state === 'CANCELLED') {
+
+        <div class="mt-3 p-2 bg-gray-500 rounded-lg text-sm">
+            <p class=" text-gray-400 text-lg font-bold">
+                 Cita cancelada
+            </p>
+        </div>
+
+        } @else if (appointment.state === 'FINISH') {
+
+        <button [routerLink]="['/invoice-appointment', appointment.id]" 
+          class="w-full px-4 py-2 text-base font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-green-600 rounded-lg hover:bg-green-700 focus:outline-none focus:ring focus:ring-green-300">
+          Ver Factura
+           </button>
+        
+        }
+      </div>
+
     </div>
   </div>
   }
 </div>
 
 @if (allAppointmet.length == 0) {
-<div class="m-5">
-  <div class="flex flex-col items-center justify-center">
-
-    <div class="bg-red-100 text-red-600 rounded-full p-4 mb-6">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-        stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M12 5a7 7 0 100 14a7 7 0 000-14z" />
-      </svg>
-    </div>
-
-    <h1 class="text-2xl font-semibold text-gray-800 dark:text-white mb-3 text-center">
-      No tienes citas ni reservas realizadas
-    </h1>
-
-    <p class="text-lg text-gray-600 dark:text-gray-300 mb-6 text-center">
-      Actualmente no hay ninguna cita registrada en tu perfil.
-    </p>
-
-    <button [routerLink]="['/appointment']"
-      class="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white font-medium rounded-lg transition-all duration-300 shadow-md">
-      Reservar una cita
-    </button>
-
-  </div>
-</div>
-
 }

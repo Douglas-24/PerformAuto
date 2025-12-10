@@ -56,7 +56,7 @@ export class SelectService implements OnInit {
   }
 
   getPartServiceSelect(service: ServicesOfferedInterface) {
-    if (this.data) {
+    if (this.data && service.id) {
       this.typeServiceParts.getAllPartServices(service.id, this.data).subscribe({
         next: async (resp) => {
           const partChanges: DataPartChange[] = resp.data;

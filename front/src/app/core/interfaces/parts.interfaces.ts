@@ -8,3 +8,4 @@ export interface Parts {
 export interface PartUsed extends Parts {
     id:number
 } 
+

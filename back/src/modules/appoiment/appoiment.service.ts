@@ -4,7 +4,12 @@ import { UpdateAppoimentDto, UpdateAppoimentServicePartDto } from './dto/update-
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Appoiment, Employee, StateServie } from '@prisma/client';
 import { EmployeeService } from '../employee/employee.service';
-import { DataPartChange, DataServiceSelected } from '../service-parts/dto/TypeServiceParts.dto';
+import { DataServiceSelected, StateChangePart } from '../service-parts/dto/TypeServiceParts.dto';
+import { NotificationService } from '../notification/notification.service';
+import { NotificationType } from '../notification/dto/create-notification.dto';
+import { NotificationSocketGateWay } from '../sockets/notifications-socket.gateway';
+import { InvoicesService } from '../invoices/invoices.service';
+import { CreateInvoiceDto } from '../invoices/dto/create-invoice.dto';
 interface MechanicData {
   id: number,
   fullName: string
@@ -27,7 +32,10 @@ export class AppoimentService {
   rangeDateAppoiment: number = 7
   constructor(
     private prisma: PrismaService,
-    private employeeService: EmployeeService
+    private employeeService: EmployeeService,
+    private notificationService: NotificationService,
+    private socketService: NotificationSocketGateWay,
+    private invoiceService: InvoicesService
 
   ) { }
 
@@ -41,6 +49,22 @@ export class AppoimentService {
     })
     await this.agregateServicesSelectedAppoinment(appoiment.id, createAppoimentDto.servicesSelected)
 
+    await this.notificationService.createNotificationForUser({
+      notification: {
+        typeNotifycation: NotificationType.INFO,
+        title: 'Cita solicitada correctamente',
+        message: 'Gracias por confiar en nosotros, la cita la podras ver en el apartado de citas',
+        id_user: appoiment.clientId
+      }
+    })
+    await this.notificationService.createNotificationForUser({
+      notification: {
+        typeNotifycation: NotificationType.INFO,
+        title: 'Nueva cita asignada',
+        message: 'Se te a asignado una nueva cita, cosultarlo en el partado de citas',
+        employeeId: appoiment.mechanicId
+      }
+    })
     return appoiment
   }
 
@@ -74,9 +98,45 @@ export class AppoimentService {
     await this.prisma.appoimentServicePart.createMany({ data: partsServicesAppointment })
   }
 
+  // Cliente confirma si se cambia o no la pieza
+  async confirmUrgentChangePart(id: number, data: { confirmChange: boolean, mechanicId: number }) {
+    const confirmChangeAcction = await this.prisma.partChangeUrgent.update({
+      where: { id },
+      data: {
+        clientConfirmed: data.confirmChange,
+        confirmedAt: new Date()
+      },
+      include: {
+        appoimentServicePart: true
+      }
+    })
+    const appoimentServicePartId = confirmChangeAcction.appoimentServicePartId;
+    const newState = data.confirmChange ? StateChangePart.SHOULD_CHANGE : StateChangePart.NO_CHANGE;
+
+    const updateState = await this.prisma.appoimentServicePart.update({
+      where: { id: appoimentServicePartId },
+      data: {
+        statePart: newState,
+      }
+    })
+    const messageAction = data.confirmChange ? 'aceptar' : 'rechazar';
+    const actionState = data.confirmChange ? 'proceder con' : 'ignorar';
+    this.notificationService.createNotificationForUser({
+      notification: {
+        typeNotifycation: NotificationType.INFO,
+        title: `El cliente ya a decidio si realizar o no el cambio de la pieza`,
+        message: `El cliente a decido ${messageAction} el cambio de la pieza. Puede ${actionState} el cambio. `,
+        employeeId: data.mechanicId
+      }
+    })
+    this.socketService.refreshDataEmployee(data.mechanicId)
+    return confirmChangeAcction
+  }
+
 
   async updatePartServiceAppointment(id: number, dataPart: UpdateAppoimentServicePartDto) {
-
+    if (dataPart.mechanicMessage && dataPart.urlImg)
+      await this.uploadImgPartChangeUrgent(id, dataPart.mechanicMessage, dataPart.urlImg)
     const part = await this.prisma.parts.findFirst({ where: { id: dataPart.partId } })
     const appoinmentService = await this.prisma.appoimentService.findFirst({ where: { id: dataPart.appoimentServiceId } })
     if (!part && !appoinmentService) throw new NotFoundException('No se podido encontrar la pieza de la cita')
@@ -91,6 +151,55 @@ export class AppoimentService {
       }
     })
     return partServiceAppointment
+  }
+
+
+  // Metodo para subir la imagen y descripcion del porque deberia cambiar el cliente la pieza
+  async uploadImgPartChangeUrgent(id_appoimentServicePart: number, mechanicMessage: string, urlImg: string) {
+    const partDetail = await this.prisma.appoimentServicePart.findUnique({
+      where: { id: id_appoimentServicePart },
+      select: {
+        appoimentService: {
+          select: {
+            appoiment: {
+              select: {
+                client: {
+                  select: {
+                    id: true,
+                    email: true,
+                    name: true,
+                  }
+                },
+                mechanic: {
+                  select: {
+                    id: true,
+                    name: true,
+                    lastname: true
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    })
+    const changePart = await this.prisma.partChangeUrgent.create({
+      data: {
+        appoimentServicePartId: id_appoimentServicePart,
+        mechanicMessage: mechanicMessage,
+        urlImg: urlImg
+      }
+    })
+    const mecanic = partDetail?.appoimentService.appoiment.mechanic
+    const client = partDetail?.appoimentService.appoiment.client.id
+    await this.notificationService.createNotificationForUser({
+      notification: {
+        typeNotifycation: NotificationType.INFO,
+        title: `El mecanico ${mecanic?.name} ${mecanic?.lastname} te a enviado un mensaje`,
+        message: 'Parece ser que el mecanico a visto un cambio de pieza urgente miralo',
+        id_user: client
+      }
+    })
   }
 
   async findAll(): Promise<Appoiment[]> {
@@ -136,13 +245,84 @@ export class AppoimentService {
     return appoiment;
   }
 
-  async update(id: number, updateAppoimentDto: UpdateAppoimentDto): Promise<Appoiment> {
+  async finishAppointment(id: number, updateAppoimentDto: UpdateAppoimentDto): Promise<Appoiment> {
     await this.findOne(id)
     const updated = await this.prisma.appoiment.update({
       where: { id },
-      data: updateAppoimentDto,
+      data: {
+        state: updateAppoimentDto.state
+      },
     });
+
+    if (updateAppoimentDto.state == StateServie.FINISH) {
+      await this.notificationService.createNotificationForUser({
+        notification: {
+          title: 'Su cita acaba de finalizar',
+          message: 'Su coche ya esta disponible para la recogida',
+          typeNotifycation: NotificationType.INFO,
+          id_user: updated.clientId
+        }
+      })
+      const invoice: CreateInvoiceDto = {
+        id_appoiment: id,
+        userId: updated.clientId,
+        total_cost: 0,
+        notes: updateAppoimentDto.notes ? updateAppoimentDto.notes : ''
+      }
+      await this.invoiceService.create(invoice)
+      await this.notificationService.createNotificationForUser({
+        notification: {
+          title: 'Tu factura esta lista',
+          message: 'Puedes ver la factura de la cita en la seccion de citas',
+          typeNotifycation: NotificationType.INFO,
+          id_user: updated.clientId
+        }
+      })
+
+    }
     return updated;
+  }
+
+  async canceledAppoinment(id: number) {
+    const appointment = await this.prisma.appoiment.findUnique({
+      where: { id: id },
+      select: { state: true, id: true, invoice: { select: { id: true } } }
+    });
+
+    if (!appointment) {
+      throw new NotFoundException(`Cita no encontrada.`);
+    }
+
+    if (appointment.state === StateServie.CANCELLED) {
+      throw new BadRequestException(`La cita ya está cancelada.`);
+    }
+
+    if (appointment.state === StateServie.FINISH || appointment.invoice.length > 0) {
+      throw new BadRequestException(`No se puede cancelar una cita que ya está finalizada o facturada.`);
+    }
+
+    const cancelledAppointment = await this.prisma.appoiment.update({
+      where: { id: id },
+      data: {
+        state: StateServie.CANCELLED,
+      },
+      include: {
+        client: { select: { name: true, lastname: true } },
+        car: true,
+        mechanic: { select: { name: true } }
+      }
+    });
+    await this.notificationService.createNotificationForUser({
+      notification:{
+        title: 'Hay una cita que se a cancelad',
+        message: `El cliente ${cancelledAppointment.client.name} ${cancelledAppointment.client.lastname} a cancelado su cita`,
+        typeNotifycation: NotificationType.INFO,
+        employeeId: cancelledAppointment.mechanicId
+      }
+    })
+
+    this.socketService.refreshDataEmployee(cancelledAppointment.id)
+    return appointment
   }
 
   async remove(id: number): Promise<void> {
@@ -158,7 +338,22 @@ export class AppoimentService {
         car: true,
         mechanic: true,
         invoice: true,
-      },
+        services: {
+          include: {
+            services: true,
+            parts_used: {
+              include: {
+                part: true,
+                urgentChangePart: {
+                  orderBy: {
+                    createdAt: 'desc',
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     })
   }
 
@@ -182,7 +377,8 @@ export class AppoimentService {
         services: true,
         parts_used: {
           include: {
-            part: true
+            part: true,
+            urgentChangePart: true
           }
         }
       }

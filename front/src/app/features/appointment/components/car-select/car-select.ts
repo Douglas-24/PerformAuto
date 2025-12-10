@@ -4,30 +4,47 @@ import { CarService } from '../../../../core/service/car.service';
 import { AuthService } from '../../../../core/service/auth.service';
 import { ToastServices } from '../../../../core/service/toast.service';
 import { Car, CarUser } from '../../../../core/interfaces/car.interface';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Role, RoleEmployee, User } from '../../../../core/interfaces/user.interfaces';
+import { UserService } from '../../../../core/service/user.service';
+import { RouterLink } from "@angular/router";
 @Component({
   selector: 'app-car-select',
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, FormsModule, RouterLink],
   templateUrl: './car-select.html',
   styleUrl: './car-select.css'
 })
 export class CarSelect {
   private carsService = inject(CarService)
   private authService = inject(AuthService)
+  private userService = inject(UserService)
   private toastService = inject(ToastServices)
 
-  array = Array.from({length: 10})
+  array = Array.from({ length: 10 })
   allCarsUser: CarUser[] = []
   showSelected: Car | null = null
+  showCars: boolean = false
+  allClient: User[] = []
+
+  filteredClients: User[] = []
+  searchTerm: string = ''
+
+  clientSelected: User | null = null
   @Output() userCarSelected = new EventEmitter<Car>()
   ngOnInit(): void {
     this.getIdUser()
   }
-
   getIdUser() {
     this.authService.getProfile().subscribe({
       next: (resp) => {
-        if (resp.user.id) this.getAllCars(resp.user.id)
+        if (resp.user.rol == Role.CLIENT && resp.user.id) {
+          this.getAllCars(resp.user.id)
+          this.showCars = true
+        }
+        if (resp.user.rol == RoleEmployee.CUSTOMER_SERVICE) {
+          this.showCars = false
+          this.getAllClient()
+        }
       }
     })
   }
@@ -43,21 +60,53 @@ export class CarSelect {
     })
   }
 
-  getCar(id:number){
-    this.carsService.getCar(id).subscribe({
-      next: (resp)=>{
-        this.userCarSelected = resp.data
+  getAllClient() {
+    this.userService.getAllClient().subscribe({
+      next: (resp) => {
+        this.allClient = resp.data
+      },
+      error: (error) => {
+        console.log(error);
+
       }
     })
   }
 
-  viewCarSelected(car:Car){
+
+
+  filterClients(): void {
+    const term = this.searchTerm.toLowerCase();
+    if (!term) {
+      this.filteredClients = []
+      return
+    }
+    this.filteredClients = this.allClient.filter(client => {
+      const searchIn = `${client.dni} ${client.email}`.toLowerCase()
+      return searchIn.includes(term)
+    });
+  }
+
+  selectClient(client: User) {
+    if (client && client.id) {
+      this.clientSelected = client
+      this.getAllCars(client.id)
+      this.showCars = true
+    }
+  }
+
+  changeClient() {
+    this.clientSelected = null
+    this.showCars = false
+    this.searchTerm = ''
+    this.filteredClients = []
+  }
+
+  viewCarSelected(car: Car) {
     this.showSelected = car
   }
 
-
-  nextSection(){
-    if(this.showSelected) this.userCarSelected.emit(this.showSelected)
+  nextSection() {
+    if (this.showSelected) this.userCarSelected.emit(this.showSelected)
   }
 
 

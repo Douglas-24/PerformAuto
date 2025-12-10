@@ -37,6 +37,24 @@ export class InitialBudget implements OnInit {
       class: "text-green-600",
       message: "No se cambia la pieza, por lo tanto no se incluye en el presupuesto"
     },
+    CHANGED: {
+      nameSpain: "Cambiado",
+      showPrice: "line-through decoration-[3px]",
+      class: "text-cyan-600",
+      message: "No se incluye en el presupuesto, el mecanico determinara si se cambia o no"
+    },
+    REVISED: {
+      nameSpain: "Revisado",
+      showPrice: "line-through decoration-[3px]",
+      class: "text-green-600",
+      message: "No se cambia la pieza, por lo tanto no se incluye en el presupuesto"
+    },
+    CHANGE_URGENT: {
+      nameSpain: "Cambio urgente",
+      showPrice: "line-through decoration-[3px]",
+      class: "text-red-600",
+      message: "Reemplazo inmediato de la pieza"
+    }
   }
 
 

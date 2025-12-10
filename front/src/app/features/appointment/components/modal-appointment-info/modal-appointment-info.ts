@@ -6,6 +6,8 @@ import { StateServie } from '../../../../core/interfaces/appointment.interface';
 import { Separator } from "../../../../shared/separator/separator";
 import { ModalChangeInfoPart } from '../modal-change-info-part/modal-change-info-part';
 import { DinamicModal } from '../../../../shared/dinamic-modal/dinamic-modal';
+import { NotificationSocket } from '../../../../core/service/notificationSocket.service';
+import { InvoiceModal } from '../../../invoice/components/invoice-modal/invoice-modal';
 @Component({
   selector: 'app-modal-appointment-info',
   imports: [Separator],
@@ -16,11 +18,13 @@ export class ModalAppointmentInfo {
   private appointmentService = inject(AppointmentService)
   serviceParts: ServiceParts[] = []
   private modal = inject(Dialog)
+  private notificationSocket = inject(NotificationSocket);
   constructor(
     @Inject(DIALOG_DATA) public data: number,
     private dialogRef: DialogRef
   ) {
     this.getServicePart()
+    this.listenForRefresh();
   }
 
   classPartsLabel = {
@@ -48,15 +52,18 @@ export class ModalAppointmentInfo {
       classBorder: "border-purple-500",
       classMessage: "bg-purple-300 px-3 text-purple-600",
       message: "Revisado"
+    },
+    CHANGE_URGENT: {
+      classBorder: "border-orange-600",
+      classMessage: "bg-orange-300 px-3 text-orange-700 font-bold",
+      message: "Cambio urgente"
     }
   }
 
   getServicePart() {
     this.appointmentService.getServicesPartsAppointment(this.data).subscribe({
       next: (resp) => {
-        this.serviceParts = resp.data
-        console.log(resp.data);
-
+        this.serviceParts = resp.data        
       },
       error: (error) => {
         console.log(error);
@@ -64,6 +71,12 @@ export class ModalAppointmentInfo {
       }
     })
   }
+
+  listenForRefresh() {
+        this.notificationSocket.onRefreshData().subscribe(() => {
+            this.getServicePart(); 
+        });
+    }
 
   async openModalChangeInfo(partService: DataServicePartMechanic) {
     const dialog = this.modal.open(ModalChangeInfoPart, {
@@ -76,25 +89,20 @@ export class ModalAppointmentInfo {
   }
 
   async endAppointment() {
-    const dialog = this.modal.open(DinamicModal, {
-      data: {
-        title: 'Estas seguro de terminar la cita',
-        message: 'Una vez terminada la cita, no se podran realizar modificaciones ',
-        typeModal: 'Confirmar'
-      }
-
+    const dialog = this.modal.open(InvoiceModal,{
+      data: this.data
     })
     const dialogClose = await dialog.closed.toPromise()
     if (dialogClose) {
-      this.appointmentService.updateAppointment(this.data, { state: StateServie.FINISH }).subscribe({
-        next: (resp) => {
-          this.dialogRef.close(true)
-        },
-        error: (error) => {
-          console.log(error);
+      this.dialogRef.close(true)
+      // this.appointmentService.updateAppointment(this.data, { state: StateServie.FINISH }).subscribe({
+      //   next: (resp) => {
+      //   },
+      //   error: (error) => {
+      //     console.log(error);
 
-        }
-      })
+      //   }
+      // })
     }
   }
 

@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environments } from '../environments/environments';
 import { apiReponse } from '../interfaces/apiResponse.inteface';
-import { User, UserRegister } from '../interfaces/user.interfaces';
+import { User, UserRegister, Employee } from '../interfaces/user.interfaces';
 interface credentials {
     email: string,
     dni ?: string,
@@ -25,8 +25,8 @@ export class AuthService {
     return this.http.post<apiReponse>(this.url+'register', dataUser)
   }
 
-  getProfile():Observable<{user: User}>{
-    return this.http.get<{user: User}>(this.url+'profile')
+  getProfile():Observable<{user: User | Employee}>{
+    return this.http.get<{user: User | Employee}>(this.url+'profile')
   }
 
   verifyAccount(token:string):Observable<apiReponse>{

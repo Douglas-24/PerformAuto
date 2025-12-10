@@ -4,7 +4,7 @@ import { environments } from '../environments/environments';
 import { apiReponse } from '../interfaces/apiResponse.inteface';
 import { Observable } from 'rxjs';
 import { Appointment, DataCreateAppointment } from '../interfaces/appointment.interface';
-import { DataServicePartMechanic } from '../interfaces/partTypeService.interface';
+import { ChangeServicePartMechanic, DataServicePartMechanic } from '../interfaces/partTypeService.interface';
 @Injectable({
   providedIn: 'root'
 })
@@ -33,10 +33,17 @@ export class AppointmentService {
     }
 
     updateAppointment(id:number, dataAppintment:Partial<Appointment>):Observable<apiReponse>{
-      return this.http.patch<apiReponse>(this.url + id, dataAppintment)
+      return this.http.patch<apiReponse>(this.url + 'finish-appointment/'+ id, dataAppintment)
+    }
+    cancelledAppointment(id:number):Observable<apiReponse>{
+      return this.http.get<apiReponse>(this.url + 'canceled-appointment/'+ id)
     }
 
-    updateAppointmentPart(id:number,dataPart: DataServicePartMechanic):Observable<apiReponse>{
+    updateAppointmentPart(id:number,dataPart: ChangeServicePartMechanic):Observable<apiReponse>{
       return this.http.patch<apiReponse>(this.url + 'update-part-appointment/' + id, dataPart)
+    }
+    
+    confirmChangePart(id:number, data:{confirmChange:boolean, mechanicId:number}):Observable<apiReponse>{
+      return this.http.patch<apiReponse>(this.url + 'confirm-change/' + id, data)
     }
 }

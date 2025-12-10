@@ -33,7 +33,10 @@ export class DataDto {
 export enum StateChangePart {
   SHOULD_CHANGE = 'SHOULD_CHANGE',
   REVIEW = 'REVIEW',
-  NO_CHANGE = 'NO_CHANGE'
+  NO_CHANGE = 'NO_CHANGE',
+  REVISED = 'REVISED',
+  CHANGED = 'CHANGED',
+  CHANGE_URGENT = 'CHANGE_URGENT'
 }
 
 export class DataPartChange{
