@@ -67,6 +67,12 @@ export class AppoimentController {
     return apiResponse(200, 'Cita actualizada correctamente', updated)
   }
 
+  @Get('canceled-appointment/:id')
+  async canceledAppointment(@Param('id') id:string):Promise<successfulResponse>{
+    const resp = await this.appoimentService.canceledAppoinment(+id)
+    return apiResponse(200, 'Citas cancelada', resp)
+  }
+
   @Patch('update-part-appointment/:id')
   async updateAppointmentPart(@Param('id') id:string, @Body() data:UpdateAppoimentServicePartDto):Promise<successfulResponse>{
     const resp = await this.appoimentService.updatePartServiceAppointment(+id, data)

@@ -16,7 +16,7 @@
         {{ appointment.state === 'FINISH' ? 'bg-gray-100 dark:bg-gray-900 opacity-60' : 'bg-white dark:bg-gray-800 hover:shadow-xl' }}">
 
     @if (getUrgentPartsCount(appointment) > 0 && appointment.state !== 'FINISH') {
-    <div (click)="openUrgentChangeModal(appointment)" 
+    <div (click)="openUrgentChangeModal(appointment)"
       class="absolute top-0 right-0 m-3 p-2 rounded-full bg-red-600 text-white font-bold text-lg shadow-xl cursor-pointer transition duration-300 transform hover:scale-110"
       title="Tienes {{ getUrgentPartsCount(appointment) }} piezas con cambio urgente pendiente de tu confirmación.">
 
@@ -61,12 +61,29 @@
       </div>
 
       <div class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
-        @if (appointment.state === 'FINISH') {
-        <button
-          [routerLink]="['/invoice-appointment', appointment.id]"
-          class="w-full px-4 py-2 text-base font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-green-400 rounded-lg hover:bg-green-500 focus:outline-none focus:ring focus:ring-green-300">
-          Ver Factura 
+        @if (appointment.state !== 'FINISH' && appointment.state !== 'CANCELLED') {
+
+        <button (click)="cancelledAppointment(appointment)" class="w-full px-4 py-2 text-base font-medium tracking-wide text-white capitalize 
+                   transition-colors duration-300 transform bg-red-600 rounded-lg hover:bg-red-700 
+                   focus:outline-none focus:ring focus:ring-red-300 mb-2">
+          Cancelar Cita
         </button>
+
+        } @else if (appointment.state === 'CANCELLED') {
+
+        <div class="mt-3 p-2 bg-gray-500 rounded-lg text-sm">
+            <p class=" text-gray-400 text-lg font-bold">
+                 Cita cancelada
+            </p>
+        </div>
+
+        } @else if (appointment.state === 'FINISH') {
+
+        <button [routerLink]="['/invoice-appointment', appointment.id]" 
+          class="w-full px-4 py-2 text-base font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-green-600 rounded-lg hover:bg-green-700 focus:outline-none focus:ring focus:ring-green-300">
+          Ver Factura
+           </button>
+        
         }
       </div>
 

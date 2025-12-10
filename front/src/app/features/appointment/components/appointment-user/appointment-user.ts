@@ -37,7 +37,6 @@ export class AppointmentUser implements OnInit {
 
   listenForRefresh(id_user:number) {
         this.notificationSocket.onRefreshData().subscribe(() => {
-            console.log(`[SOCKET] Recepción de 'refreshData'. Refrescando citas...`);
             this.getAllApointment(id_user);
         }, (error) => {
           console.error("[SOCKET ERROR] Error en la suscripción a 'refreshData':", error);
@@ -115,5 +114,17 @@ export class AppointmentUser implements OnInit {
         this.getAllApointment(this.user.id);
       }
     });
+  }
+
+  cancelledAppointment(appointment:AppointmentUserInterface){
+    this.appointmentService.cancelledAppointment(appointment.id).subscribe({
+      next: (resp)=>{
+        this.getAllApointment(appointment.clientId)
+      },
+      error: (error)=>{
+        console.log(error);
+        
+      }
+    })
   }
 }

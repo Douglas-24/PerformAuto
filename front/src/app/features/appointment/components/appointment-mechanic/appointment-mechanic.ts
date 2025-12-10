@@ -6,6 +6,8 @@ import { CommonModule } from '@angular/common';
 import { Dialog } from '@angular/cdk/dialog';
 import { ModalAppointmentInfo } from '../modal-appointment-info/modal-appointment-info';
 import { StateServie } from '../../../../core/interfaces/appointment.interface';
+import { NotificationSocket } from '../../../../core/service/notificationSocket.service';
+import { Subject, takeUntil } from 'rxjs';
 @Component({
   selector: 'app-appointment-mechanic',
   imports: [CommonModule],
@@ -18,32 +20,33 @@ export class AppointmentMechanic implements OnInit {
   allAppointmet: AppointmentUserInterface[] = []
   private modal = inject(Dialog)
   stateAppointment = StateServie
-  ngOnInit(){
+
+
+  ngOnInit() {
     this.getAllAppointmentMechanic()
   }
 
-  getAllAppointmentMechanic(){
-    if(this.user.id){
+  getAllAppointmentMechanic() {
+    if (this.user.id) {
       this.appointmentService.getAllAppointmentMechanic(this.user.id).subscribe({
-        next:(resp)=>{
+        next: (resp) => {
           this.allAppointmet = resp.data
-          
         },
-        error:(error)=>{
+        error: (error) => {
           console.log(error);
-          
+
         }
       })
     }
   }
 
-  async openModal(id_appoiment:number){
+  async openModal(id_appoiment: number) {
     const dialogRef = this.modal.open(ModalAppointmentInfo, {
       data: id_appoiment
     })
 
-    const dialogClose = await dialogRef.closed.toPromise() 
-    if(dialogClose){
+    const dialogClose = await dialogRef.closed.toPromise()
+    if (dialogClose) {
       this.getAllAppointmentMechanic()
     }
   }

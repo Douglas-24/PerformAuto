@@ -47,7 +47,7 @@ export class CarsController {
   }
   
   
-  @UseGuards(new RoleGuard([Role.CLIENT]))
+  @UseGuards(new RoleGuard([Role.CLIENT, Role.CUSTOMER_SERVICE]))
   @Get('carsUser/:id')
   async getAllCarsUser(@Param('id') id:string):Promise<successfulResponse>{
     const allCars = await this.carsService.getAllCarsUser(+id)

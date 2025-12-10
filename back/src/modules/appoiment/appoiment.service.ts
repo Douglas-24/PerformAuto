@@ -99,22 +99,22 @@ export class AppoimentService {
   }
 
   // Cliente confirma si se cambia o no la pieza
-  async confirmUrgentChangePart(id:number, data:{confirmChange:boolean, mechanicId:number}){
+  async confirmUrgentChangePart(id: number, data: { confirmChange: boolean, mechanicId: number }) {
     const confirmChangeAcction = await this.prisma.partChangeUrgent.update({
-      where: {id},
+      where: { id },
       data: {
-        clientConfirmed: data.confirmChange, 
+        clientConfirmed: data.confirmChange,
         confirmedAt: new Date()
       },
       include: {
-            appoimentServicePart: true
-        }
+        appoimentServicePart: true
+      }
     })
     const appoimentServicePartId = confirmChangeAcction.appoimentServicePartId;
     const newState = data.confirmChange ? StateChangePart.SHOULD_CHANGE : StateChangePart.NO_CHANGE;
 
     const updateState = await this.prisma.appoimentServicePart.update({
-      where: {id: appoimentServicePartId},
+      where: { id: appoimentServicePartId },
       data: {
         statePart: newState,
       }
@@ -122,7 +122,7 @@ export class AppoimentService {
     const messageAction = data.confirmChange ? 'aceptar' : 'rechazar';
     const actionState = data.confirmChange ? 'proceder con' : 'ignorar';
     this.notificationService.createNotificationForUser({
-       notification: {
+      notification: {
         typeNotifycation: NotificationType.INFO,
         title: `El cliente ya a decidio si realizar o no el cambio de la pieza`,
         message: `El cliente a decido ${messageAction} el cambio de la pieza. Puede ${actionState} el cambio. `,
@@ -133,7 +133,6 @@ export class AppoimentService {
     return confirmChangeAcction
   }
 
-  // Que es lo que pas cuando se confirma el cambio
 
   async updatePartServiceAppointment(id: number, dataPart: UpdateAppoimentServicePartDto) {
     console.log(dataPart);
@@ -256,16 +255,16 @@ export class AppoimentService {
       },
     });
 
-    if(updateAppoimentDto.state == StateServie.FINISH){
+    if (updateAppoimentDto.state == StateServie.FINISH) {
       await this.notificationService.createNotificationForUser({
         notification: {
           title: 'Su cita acaba de finalizar',
           message: 'Su coche ya esta disponible para la recogida',
-          typeNotifycation:NotificationType.INFO,
-          id_user:updated.clientId 
+          typeNotifycation: NotificationType.INFO,
+          id_user: updated.clientId
         }
       })
-      const invoice:CreateInvoiceDto = {
+      const invoice: CreateInvoiceDto = {
         id_appoiment: id,
         userId: updated.clientId,
         total_cost: 0,
@@ -276,13 +275,55 @@ export class AppoimentService {
         notification: {
           title: 'Tu factura esta lista',
           message: 'Puedes ver la factura de la cita en la seccion de citas',
-          typeNotifycation:NotificationType.INFO,
-          id_user:updated.clientId 
+          typeNotifycation: NotificationType.INFO,
+          id_user: updated.clientId
         }
       })
 
     }
     return updated;
+  }
+
+  async canceledAppoinment(id: number) {
+    const appointment = await this.prisma.appoiment.findUnique({
+      where: { id: id },
+      select: { state: true, id: true, invoice: { select: { id: true } } }
+    });
+
+    if (!appointment) {
+      throw new NotFoundException(`Cita no encontrada.`);
+    }
+
+    if (appointment.state === StateServie.CANCELLED) {
+      throw new BadRequestException(`La cita ya está cancelada.`);
+    }
+
+    if (appointment.state === StateServie.FINISH || appointment.invoice.length > 0) {
+      throw new BadRequestException(`No se puede cancelar una cita que ya está finalizada o facturada.`);
+    }
+
+    const cancelledAppointment = await this.prisma.appoiment.update({
+      where: { id: id },
+      data: {
+        state: StateServie.CANCELLED,
+      },
+      include: {
+        client: { select: { name: true, lastname: true } },
+        car: true,
+        mechanic: { select: { name: true } }
+      }
+    });
+    await this.notificationService.createNotificationForUser({
+      notification:{
+        title: 'Hay una cita que se a cancelad',
+        message: `El cliente ${cancelledAppointment.client.name} ${cancelledAppointment.client.lastname} a cancelado su cita`,
+        typeNotifycation: NotificationType.INFO,
+        employeeId: cancelledAppointment.mechanicId
+      }
+    })
+
+    this.socketService.refreshDataEmployee(cancelledAppointment.id)
+    return appointment
   }
 
   async remove(id: number): Promise<void> {
@@ -298,7 +339,7 @@ export class AppoimentService {
         car: true,
         mechanic: true,
         invoice: true,
-        services: { 
+        services: {
           include: {
             services: true,
             parts_used: {
@@ -338,7 +379,7 @@ export class AppoimentService {
         parts_used: {
           include: {
             part: true,
-            urgentChangePart:true
+            urgentChangePart: true
           }
         }
       }
