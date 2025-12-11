@@ -82,3 +82,15 @@ Inicia el servidor de desarrollo de Angular:
 ng serve
 ```
 
+### Usuarios de prueba
+Constraseña: Alvaro1@ (Todos usan la misma contraseña)
+Usarios
+    - Cliente 1: cliente@example.com
+    - Cliente 2: cliente2@example.com
+    - Admin: admin@example.com
+    - Mecanico 1: frank.fernandez@example.com
+    - Mecanico 2: pedro.lopez@example.com
+
+
+
+
